@@ -1,11 +1,12 @@
 {
-  "name": "@myscoutee/components",
-  "version": "0.0.0",
+  "name": "@fssrepository/myscoutee-components",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "ng-packagr -p ng-package.json -c tsconfig.lib.json",
     "watch": "npm run build -- --watch",
-    "test": "ng test components --watch=false"
+    "test": "ng test components --watch=false",
+    "prepare:release": "node scripts/prepare-release.mjs"
   },
   "peerDependencies": {
     "@angular/common": "^21.2.0",
@@ -37,8 +38,29 @@
     "vitest": "4.0.18",
     "jsdom": "27.4.0"
   },
-  "main": "./dist/fesm2022/myscoutee-components.mjs",
-  "module": "./dist/fesm2022/myscoutee-components.mjs",
-  "types": "./dist/types/myscoutee-components.d.ts",
-  "sass": "./styles/index.scss"
+  "main": "./dist/fesm2022/components.mjs",
+  "module": "./dist/fesm2022/components.mjs",
+  "types": "./dist/types/components.d.ts",
+  "sass": "./styles/index.scss",
+  "description": "Reusable Angular components, configurable forms, menus, lists, calendars and media controls.",
+  "license": "CC-BY-4.0",
+  "author": "MyScoutee (fssrepository)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fssrepository/myscoutee-components.git"
+  },
+  "homepage": "https://github.com/fssrepository/myscoutee-components#readme",
+  "bugs": {
+    "url": "https://github.com/fssrepository/myscoutee-components/issues"
+  },
+  "keywords": [
+    "angular",
+    "components",
+    "forms",
+    "calendar",
+    "ui"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }

@@ -1,19 +1,219 @@
 # MyScoutee Components
 
-Reusable UI components from MyScoutee, intended for use in other projects.
+Reusable Angular UI components extracted from MyScoutee: configurable forms,
+menus, overlays, lists, calendars, cards and media controls.
 
-[License](LICENSE) · [Logo & attribution](BRANDING.md) ·
-[Contributing](CONTRIBUTING.md)
+**Package:** `@fssrepository/myscoutee-components` · **Version:** `0.1.0` ·
+**Registry:** [GitHub Packages](https://github.com/fssrepository/myscoutee-components/packages)
 
-## About
+[Component catalogue](#component-catalogue) · [Setup](#application-setup) ·
+[Submodule development](#develop-as-a-git-submodule) ·
+[Release notes](releases/v0.1.0.md) · [License](LICENSE)
 
-This repository owns the shared Angular UI implementation. MyScoutee includes
-it as the `myscoutee-components` Git submodule inside its frontend repository.
-The application imports the public TypeScript API and Sass modules directly.
+## Requirements and installation
+
+| Dependency | Supported peer range |
+| --- | --- |
+| Angular common/core/forms/router | `^21.2.0` |
+| Angular CDK and Material | `^21.2.0` |
+| RxJS | `^7.8.0` |
+| Build/test toolchain | Node.js 24 and npm 11 |
+
+Configure the package scope in the consuming project’s `.npmrc`:
+
+```ini
+@fssrepository:registry=https://npm.pkg.github.com
+```
+
+Authenticate using your GitHub identity and a token with `read:packages`, following
+[GitHub’s npm registry instructions](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry).
+Keep the token in your user-level npm configuration or CI secret, never in the repository.
+GitHub’s npm registry requires authentication even for public packages.
+
+```sh
+npm install @fssrepository/myscoutee-components@0.1.0
+```
+
+Install compatible peer dependencies in the Angular application. Supply an Angular
+Material theme and the Material Icons font used by `mat-icon`; the library does not
+bundle your application’s fonts, logos, themes or translation catalogue.
+
+## Component catalogue
+
+All components below are exported from `@fssrepository/myscoutee-components`.
+Import the standalone components you use into the consuming component’s `imports`.
+Source links include the actual input/output contracts; supporting models and config
+types are exported through the same public API. No internal source path is needed.
+
+### Menus, overlays and feedback
+
+| Component | Selector | Purpose |
+| --- | --- | --- |
+| [`AppMenuComponent`](src/lib/ui/components/core/menu/menu.component.ts) | `app-menu` | Inline, dropdown and sheet menus; actions, radio/checkbox selection, toggles, nested items and drag handling. On/off styling uses the existing toggle kind. |
+| [`AppMenuTriggerComponent`](src/lib/ui/components/core/menu/trigger/menu-trigger.component.ts) | `app-menu-trigger` | Standalone menu trigger presentation for configured labels, icons and state. |
+| [`AppMenuOutletComponent`](src/lib/ui/components/core/menu/outlet/menu-outlet.component.ts) | `app-menu-outlet` | Menu panel/outlet rendering from the shared menu model. |
+| [`RateComponent`](src/lib/ui/components/core/menu/items/rate/rate.component.ts) | `app-menu-rate` | Rating interaction inside menu items. |
+| [`PopupComponent`](src/lib/ui/components/core/popup/popup.component.ts) | `app-popup` | Configurable modal surface with header/actions, nested overlay coordination and close handling. |
+| [`DialogComponent`](src/lib/ui/components/core/dialog/dialog.component.ts) | `app-dialog` | Confirmation and input dialogs driven by DialogStore. |
+| [`AccordionComponent`](src/lib/ui/components/core/accordion/accordion.component.ts) | `app-accordion` | Expandable sections with configurable headings and menu actions. |
+| [`FloatingLauncherComponent`](src/lib/ui/components/core/floating-launcher/floating-launcher.component.ts) | `app-floating-launcher` | Floating, draggable action launcher coordinated with other launchers. |
+| [`CopyLinkComponent`](src/lib/ui/components/core/copy-link/copy-link.component.ts) | `app-copy-link` | Copy-link action using the shared menu presentation. |
+| [`PromptComponent`](src/lib/components/prompt/prompt.component.ts) | `app-prompt` | Inline prompt with optional icon, action, busy state and dismissal. |
+| [`IndicatorComponent`](src/lib/components/indicator/indicator.component.ts) | `app-indicator` | Loading/progress feedback with timing and visibility handling. |
+
+### Forms and inputs
+
+| Component | Selector | Purpose |
+| --- | --- | --- |
+| [`FormFlowComponent`](src/lib/ui/components/core/form/flow/form-flow.component.ts) | `app-form-flow` | Model-driven multi-step forms, validation, summaries, header toggles and lazy custom controls. |
+| [`DateInputComponent`](src/lib/components/date-input/date-input.component.ts) | `app-date-input` | Single date, date range and time editing; configurable precision, bounds and optional horoscope metadata. |
+| [`LinkInputComponent`](src/lib/ui/components/core/form/inputs/link-input/link-input.component.ts) | `app-link-input` | Editable link value with configured label and length constraints. |
+| [`LocationInputComponent`](src/lib/ui/components/core/form/inputs/location-input/location-input.component.ts) | `app-location-input` | Location value and map actions, with configurable route stops. |
+| [`RouteInputComponent`](src/lib/ui/components/core/form/inputs/route-input/route-input.component.ts) | `app-route-input` | Ordered stop list, lazy route editor, stop reordering and map actions; string-array form value. |
+| [`SlotsInputComponent`](src/lib/ui/components/core/form/inputs/slots-input/slots-input.component.ts) | `app-slots-input` | Recurring base schedules and date overrides; also reuses the editor for a single recurring task. |
+| [`TextCardsInputComponent`](src/lib/ui/components/core/form/inputs/text-cards-input/text-cards-input.component.ts) | `app-text-cards-input` | Configurable text-card collection and editing actions. |
+
+### Lists, calendars and cards
+
+| Component | Selector | Purpose |
+| --- | --- | --- |
+| [`SmartListComponent`](src/lib/ui/components/core/smart-list/smart-list.component.ts) | `app-smart-list` | Model-driven list/grid, calendar and timeline rendering, pagination, sorting, filters and item actions. |
+| [`CalendarCardComponent`](src/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.ts) | `app-calendar-card, app-smart-list-page-card` | Calendar/page-card surface driven by the caller’s query, pages and callbacks. |
+| [`HeaderCardComponent`](src/lib/ui/components/core/smart-list/card/header-card/header-card.component.ts) | `app-header-card` | Header and identity presentation with configured actions. |
+| [`ImageCardComponent`](src/lib/ui/components/core/smart-list/card/image-card/image-card.component.ts) | `app-image-card` | Image-led card content and actions. |
+| [`InfoCardComponent`](src/lib/ui/components/core/smart-list/card/info-card/info-card.component.ts) | `app-info-card` | Structured information card with detail and menu interactions. |
+| [`PairCardComponent`](src/lib/ui/components/core/smart-list/card/pair-card/pair-card.component.ts) | `app-pair-card` | Paired card presentation. |
+| [`PaymentCardComponent`](src/lib/ui/components/core/smart-list/card/payment-card/payment-card.component.ts) | `app-payment-card` | Payment information presentation; payment processing remains in the consumer. |
+| [`SingleCardComponent`](src/lib/ui/components/core/smart-list/card/single-card/single-card.component.ts) | `app-single-card` | Single-item card presentation. |
+| [`SingleRowComponent`](src/lib/ui/components/core/smart-list/card/single-row/single-row.component.ts) | `single-row` | Compact row presentation and actions. |
+| [`TextCardComponent`](src/lib/ui/components/core/smart-list/card/text-card/text-card.component.ts) | `app-text-card` | Text-led card with optional menus, counters and status. |
+| [`WarpImageCardComponent`](src/lib/ui/components/core/smart-list/card/warp-image-card/warp-image-card.component.ts) | `app-warp-image-card` | Image card with transformed/warp presentation. |
+
+### Media and branding
+
+| Component | Selector | Purpose |
+| --- | --- | --- |
+| [`ImageCarouselComponent`](src/lib/ui/components/core/image-carousel/image-carousel.component.ts) | `app-image-carousel` | Form-bound image collection with selection, edit/remove actions and read-only presentation. |
+| [`ImageGalleryComponent`](src/lib/ui/components/core/image-gallery/image-gallery.component.ts) | `app-image-gallery` | Gallery entry point for shared image selection and editing state. |
+| [`ImageGalleryPopupComponent`](src/lib/ui/components/core/image-gallery/image-gallery-popup.component.ts) | `app-image-gallery-popup` | Gallery popup rendering and image-edit interactions. |
+| [`DeploymentBrandComponent`](src/lib/ui/components/core/deployment-brand/deployment-brand.component.ts) | `app-deployment-brand` | Configurable product name/logo; branding supplied by input or provider. |
+## Supporting public APIs
+
+| Area | Exports | Responsibility |
+| --- | --- | --- |
+| Translation | `UiTranslations`, `UI_TRANSLATIONS`, `provideUiTranslations`, `I18nPipe` | Connect the consumer’s existing translation engine and revision signal. |
+| Guides | `ExplanationGuideService`, `EXPLANATION_GUIDE_OPTIONS`, guide types | Guide state and progression; the consumer supplies content, eligible surfaces and persistence scope. |
+| Overlays | `DialogStore`, `PopupPresenceStore`, `OverlayNavigationStore`, `FloatingLauncherRegistry` | Dialog requests, modal presence, nested navigation and launcher coordination. |
+| Media | `ImageGalleryStore`, `UI_IMAGE_UPLOAD`, `UI_IMAGE_DETAILS`, `UI_IMAGE_URLS` | Gallery state and consumer-supplied upload, metadata and URL behavior. |
+| Form extension | `FORM_FLOW_CONTROLS`, `FormFlowControls`, `FormFlowControlDirective` | Register actual controls lazily through their existing value accessor. The route renderer is built in. |
+| Calendar conversion | `CalendarCardConverter`, `calendarCardConverter` | Convert a caller-owned calendar model while retaining pages, query and callbacks. |
+| Schedules | `SlotTemplate`, `normalizeSlotTemplates`, `normalizeSlotOverrideDate`, `normalizeScheduleFrequency` | Normalize shared scheduling fields while preserving consumer metadata. |
+| Lists | Query/page models, finite/infinite steppers, calendar/timeline/page adapters | Data-source-neutral list rendering and navigation. |
+| Dates and presentation | `UiDateUtils`, `AppCalendarDateAdapter`, `AppCalendarDateFormats`, number/rating helpers, horoscope data | Shared date, numeric and presentation operations. |
+| Rendering | `ViewportSeenDirective`, `LazyBgImageDirective`, `CounterBadgePipe`, schedulers | Viewport awareness, deferred image rendering, counters and scheduled UI work. |
+
+The implementation of each public export is indexed in [src/public-api.ts](src/public-api.ts).
+The route popup is an internal lazy implementation owned by RouteInputComponent.
+
+## Application setup
+
+The library calls your existing adapters; it contains no MyScoutee backend,
+Firebase setup, domain repositories or application session.
+
+| Provider/configuration | When to supply it |
+| --- | --- |
+| `UI_TRANSLATIONS` or `provideUiTranslations(YourI18nService)` | Components that render translated labels. The contract includes `revision`, `currentLanguage`, `translate` and `translateParams`. |
+| `EXPLANATION_GUIDE_OPTIONS` | Guide-aware controls and overlays; configure context eligibility and `loadState`. Use an empty state when the application does not use guides. |
+| Angular Router providers | Overlay navigation, such as menus and popups; reuse the application’s existing router. |
+| `UI_BRANDING` or the branding input | DeploymentBrandComponent. The token provides a function returning the current branding model. |
+| `UI_IMAGE_UPLOAD` | Image uploading; provide the consumer’s upload implementation. |
+| `UI_IMAGE_DETAILS` | Additional image fields or domain-specific validation. |
+| `UI_IMAGE_URLS` | URL variants, seeded-image conventions or a card fallback image. Default URLs pass through unchanged. |
+| `UI_LIST_DEFAULTS` | Override the shared loading-window default. |
+| `FORM_FLOW_CONTROLS` | Add or override form renderers; providers share a scope within one form. |
+
+A minimal translation/guide configuration for an application without a translation
+catalogue or guide content looks like this:
+
+```ts
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import {
+  UI_TRANSLATIONS, EXPLANATION_GUIDE_OPTIONS, type UiTranslations
+} from '@fssrepository/myscoutee-components';
+
+const translations: UiTranslations = {
+  revision: () => 0,
+  currentLanguage: () => 'en',
+  translate: (value, fallback) => fallback ?? value ?? '',
+  translateParams: (value, params, fallback) =>
+    Object.entries(params).reduce(
+      (text, [key, replacement]) => text.replaceAll(`{${key}}`, String(replacement)),
+      fallback ?? value ?? ''
+    )
+};
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter([]), // Use the consuming application's routes.
+    { provide: UI_TRANSLATIONS, useValue: translations },
+    { provide: EXPLANATION_GUIDE_OPTIONS, useValue: {
+      isExplainableContext: () => false,
+      loadState: async () => ({ activeRevision: null, guideFields: [] })
+    } }
+  ]
+};
+```
+
+For an existing application, bind its real translation and guide services instead.
+A standalone date field can then use the standard Angular value accessor:
+
+```ts
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DateInputComponent, type DateInputValue } from '@fssrepository/myscoutee-components';
+
+@Component({
+  selector: 'example-date-field',
+  imports: [FormsModule, DateInputComponent],
+  template: `<app-date-input [(ngModel)]="date"
+    [model]="{ mode: 'single', precision: 'date', valueFormat: 'iso-date',
+               field: { label: 'Date' } }" />`
+})
+export class ExampleDateField {
+  date: DateInputValue = '2026-10-10';
+}
+```
+
+### Menus, routes and schedules
+
+- Use an AppMenu item with `kind: 'toggle'` and `toggleStyle: 'on-off'` for the
+  on/off presentation. Existing menu events, disabled handling and form-bound
+  selected-value arrays remain the value contract. FormFlow header toggles keep
+  their boolean binding; no wrapper component is needed.
+- RouteInput uses a `string[]` value. Its popup edits a draft and commits on save.
+  Asset assignment rules and translated domain labels belong to the consumer.
+- SlotsInput handles common schedule fields. Use `scheduleOnly` for a recurring
+  task without slot rows. Supply `labels`, `frequencyLabel` and, when needed,
+  `normalizeTemplates` through SlotsInputConfig. Event subdefinitions and other
+  domain metadata remain consumer-owned.
+
+## Styles
+
+Import shared Sass through the public package paths:
+
+```scss
+@use '@fssrepository/myscoutee-components/styles' as ui;
+@use '@fssrepository/myscoutee-components/styles/contextual-colors' as colors;
+@use '@fssrepository/myscoutee-components/styles/popup-close-button' as popupClose;
+```
+
+The root module forwards popup, motion, Material-control, form-control and
+SmartList-shell mixins. Additional public modules are `contextual-colors`,
+`media-badge`, `popup-close-button` and `rate-card.shared`.
+The consuming application owns global layout, theme variables and the Material theme.
 
 ## Build independently
-
-Use Node.js 24 and npm 11, then run in this repository:
 
 ```sh
 npm ci
@@ -21,82 +221,45 @@ npm run build
 npm test
 ```
 
-The build uses only this repository and its declared dependencies. Output is
-written to `dist/` (gitignored). `npm test` runs the co-located component,
-store, directive and helper specs from this repository without MyScoutee. `npm run watch` rebuilds on source changes. This is a private
-buildable library; registry publication is not part of the development workflow.
+`npm run watch` rebuilds this library when its source changes. The build requires
+only this repository and its declared dependencies. Generated `dist/`, caches and
+`node_modules/` are ignored. Component/store/helper tests live beside their owners.
+The root manifest is private to prevent accidentally publishing workspace sources;
+`npm run prepare:release` prepares the built `dist/` manifest for publication.
 
-## Use as a submodule
+## Develop as a Git submodule
 
-The consuming frontend records the GitHub repository URL and an exact commit:
+The source repository is `myscoutee-components`; the consuming directory is `components`:
 
 ```sh
-git submodule update --init --recursive
-git -C myscoutee-components switch master
-npm ci
-npm run build:components
+git submodule add -b master https://github.com/fssrepository/myscoutee-components.git components
 ```
 
-MyScoutee's existing build, serve, test and dev-stack watcher invoke this
-repository's build before compiling the application. Watch mode keeps one
-library watcher and one application watcher. The application consumes `dist/`
-through its npm workspace dependency; it has no second copy of the implementation.
+In an existing checkout:
 
-If editing another checkout of this repository, commit there first, then update
-the consuming submodule with `git merge --ff-only` on `master`.
-Keep both checkouts on `master`; do not check out detached commits. Uncommitted changes in separate Git
-checkouts are independent. No absolute workstation path is part of integration.
+```sh
+git submodule update --init --recursive --merge components
+git -C components switch master
+npm ci
+```
 
-## Application adapters
+The consuming package declares `"workspaces": ["components"]` and a matching
+`@fssrepository/myscoutee-components` dependency. MyScoutee's build/serve/test entry
+points build this workspace before the application; its dev stack uses the existing
+`frontend-sync` process. Do not run a competing build alongside that process.
 
-Import the public API from `@myscoutee/components`. Supply `UI_TRANSLATIONS`
-(or `provideUiTranslations`), `EXPLANATION_GUIDE_OPTIONS`, and the features used
-by the application: `UI_IMAGE_UPLOAD`, `UI_IMAGE_URLS`, `UI_IMAGE_DETAILS`,
-`UI_BRANDING`, `UI_LIST_DEFAULTS`, and `FORM_FLOW_CONTROLS`.
+When editing a separate checkout, commit there and fast-forward the consuming
+submodule on `master`. Keep both checkouts on `master`. The application consumes the
+same implementation through the public package API; the monolith remains supported.
 
-These providers reuse the consumer's services. The library contains no
-MyScoutee API calls, event/pricing/policy models, brand assets, or translation
-session. FormFlow registers the actual consumer controls lazily and uses their existing
-ControlValueAccessor methods. Configuration maps inputs and outputs; there are
-no per-control wrapper components. Providers share a scope within one form.
-General gallery metadata survives edits; application-specific association,
-validation and selection remain in the consumer's image-details adapter.
+## Releases
 
-Shared Sass is exposed as `@myscoutee/components/styles` and its public submodules. The consuming application retains its
-existing global theme and imports these shared styles. Backend monolith and
-microservice composition are unaffected by this frontend source boundary.
-
-## Menu toggles and calendar conversion
-
-Use `AppMenuComponent` with `kind="inline"`, `layout="row"` and a menu item
-such as `{id: 'enabled', kind: 'toggle', toggleStyle: 'on-off', checked: enabled}`.
-This uses the existing menu selection event and disabled handling. The on/off
-presentation derives its translated state label and icon; ordinary `label`,
-`icon` and `ariaLabel` configuration can override them. A form-bound menu keeps
-its existing selected-value array contract; FormFlow header toggles keep their
-boolean field contract. There is no separate toggle component.
-
-`CalendarCardConverter`, `calendarCardConverter` and its input type are exported
-from `@myscoutee/components`. The converter preserves caller-owned pages, query
-and callbacks and defaults non-calendar view modes to month.
-
-## Route and schedule inputs
-
-`RouteInputComponent` edits ordered stops through its `string[]` value accessor.
-Its lazy popup and per-control editor state live here. FormFlow includes the
-`route` renderer by default; consumer renderers can override it through the
-existing `FORM_FLOW_CONTROLS` configuration.
-
-`SlotsInputComponent` owns schedule editing and date overrides. `SlotTemplate`
-contains only the shared schedule fields. Consumer metadata survives generic
-normalization; `SlotsInputConfig.normalizeTemplates` allows the existing domain
-normalizer to handle its own fields. Labels and frequency labels are configured
-through the same input config. `scheduleOnly` reuses the editor for recurring
-work without slot rows. Event subdefinitions and asset assignment rules remain
-in the application.
-
-Common stores are grouped under `ui/context/stores/overlay` and `media`;
-consumers continue using the public exports.
+[CHANGELOG.md](CHANGELOG.md) and [releases/](releases/) record versioned changes.
+An annotated `vX.Y.Z` Git tag matching package.json triggers the
+[release workflow](.github/workflows/release.yml): independent tests, library build,
+archive audit, GitHub Packages publication, then a GitHub Release containing the
+same `.tgz` and SHA-256 checksums. Publishing uses the repository's `GITHUB_TOKEN`.
+No long-lived registry token is stored in source.
 
 ## License — free to reuse with required credit
 

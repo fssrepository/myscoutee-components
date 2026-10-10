@@ -1,0 +1,60 @@
+name: Release components
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+  packages: write
+concurrency:
+  group: components-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      NG_BUILD_MAX_WORKERS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@fssrepository'
+          cache: npm
+      - name: Check release identity
+        run: |
+          node --input-type=module -e "import fs from 'node:fs'; const p=JSON.parse(fs.readFileSync('package.json')); if(process.env.GITHUB_REF_NAME !== 'v'+p.version) throw new Error('Tag/version mismatch');"
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run prepare:release
+      - name: Create release archive
+        run: |
+          mkdir release-artifacts
+          npm pack ./dist --ignore-scripts --pack-destination release-artifacts
+          cd release-artifacts
+          sha256sum *.tgz > SHA256SUMS
+      - name: Verify package contents
+        run: |
+          tar -tzf release-artifacts/*.tgz > release-artifacts/files.txt
+          if grep -E '(^|/)(node_modules|src|testing|test|tests|\.git|\.npmrc)(/|$)|\.(map|tsbuildinfo)$|\.spec\.' release-artifacts/files.txt; then
+            echo 'Unexpected source, test, cache, credentials or source-map files in package.' >&2
+            exit 1
+          fi
+      - name: Publish to GitHub Packages
+        run: npm publish release-artifacts/*.tgz --registry=https://npm.pkg.github.com --tag latest --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify published version
+        run: |
+          PACKAGE=$(node -p "const p=require('./package.json'); p.name+'@'+p.version")
+          npm view "$PACKAGE" name version dist.integrity --json --registry=https://npm.pkg.github.com
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish GitHub Release
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" release-artifacts/*.tgz release-artifacts/SHA256SUMS \
+            --verify-tag --title "MyScoutee Components $VERSION" --notes-file "releases/$GITHUB_REF_NAME.md"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
