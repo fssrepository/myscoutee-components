@@ -1267,7 +1267,8 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
   }
 
   protected isLabeledActionRowItem(item: AppMenuItem<TId, TContext>): boolean {
-    return this.itemVisualLayout(item) === 'big'
+    return this.isOnOffToggle(item)
+      || this.itemVisualLayout(item) === 'big'
       || (this.isSelectTriggerItem(item) && !(this.kind === 'inline' && item.compactOnMobile && this.isMobileViewport))
       || this.itemVisualLayout(item) === 'pill'
       || (this.itemVisualLayout(item) === 'action' && !!this.actionRowItemLabel(item));
@@ -1299,7 +1300,8 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
         return 'close';
       }
     }
-    return this.itemIcon(item);
+    return this.itemIcon(item) || (this.isOnOffToggle(item)
+      ? (this.isItemActive(item) ? 'toggle_on' : 'toggle_off') : '');
   }
 
   protected actionRowItemImageUrl(item: AppMenuItem<TId, TContext>): string {
@@ -1334,7 +1336,8 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
   }
 
   protected actionRowItemLabel(item: AppMenuItem<TId, TContext>): string {
-    return this.itemLabel(item);
+    return this.itemLabel(item) || (this.isOnOffToggle(item)
+      ? (this.isItemActive(item) ? 'on' : 'off') : '');
   }
 
   protected actionRowItemDetail(item: AppMenuItem<TId, TContext>): string {
@@ -1671,8 +1674,12 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
     return item.kind === 'toggle';
   }
 
+  protected isOnOffToggle(item: AppMenuItem<TId, TContext>): boolean {
+    return this.isToggleItem(item) && item.toggleStyle === 'on-off';
+  }
+
   protected showActionRowToggleIndicator(item: AppMenuItem<TId, TContext>): boolean {
-    return this.isToggleItem(item) && this.resolveBoolean(item.showToggleIndicator);
+    return this.isToggleItem(item) && !this.isOnOffToggle(item) && this.resolveBoolean(item.showToggleIndicator);
   }
 
   protected showTabsItemToggle(item: AppMenuItem<TId, TContext>): boolean {

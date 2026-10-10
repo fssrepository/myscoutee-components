@@ -221,6 +221,8 @@ export interface AppMenuItem<TId extends string = string, TContext = unknown> {
   showCheck?: AppMenuLiveValue<boolean | null | undefined>;
   /** Optional switch color independent of the menu item palette. */
   togglePalette?: AppMenuPalette;
+  /** Inline toggle presentation; on-off supplies state labels/icons unless overridden. */
+  toggleStyle?: 'default' | 'on-off';
   showToggleIndicator?: AppMenuLiveValue<boolean | null | undefined>;
   removable?: AppMenuLiveValue<boolean | null | undefined>;
   removeIcon?: AppMenuLiveValue<string | null | undefined>;

@@ -151,9 +151,10 @@
                   <h3 id="form-flow-step-{{ step.id }}">{{ step.title }}</h3>
                   @if (step.headerControl; as control) {
                     @if (control.kind === 'toggle') {
-                      <app-on-off-toggle class="form-flow__group-header-menu" [attr.data-guide-field]="control.guideFieldId ?? null" [enabled]="controlValue(control) === true"
-                        [disabled]="isControlDisabled(control)" [label]="control.label || ''"
-                        (enabledChange)="updateControlValue(control, $event)"></app-on-off-toggle>
+                      <app-menu class="form-flow__group-header-menu" [attr.data-guide-field]="control.guideFieldId ?? null"
+                        kind="inline" layout="row" [disabled]="isControlDisabled(control)"
+                        [items]="[{id: control.id, kind: 'toggle', toggleStyle: 'on-off', checked: controlValue(control) === true, ariaLabel: control.label || ''}]"
+                        (itemSelect)="updateControlValue(control, controlValue(control) !== true)"></app-menu>
                     } @else {
                     @if (control.bind !== undefined) {
                     <app-menu class="form-flow__group-header-menu" [attr.data-guide-field]="control.guideFieldId ?? null"

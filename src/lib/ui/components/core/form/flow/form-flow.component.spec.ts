@@ -7,6 +7,32 @@ import { UI_TRANSLATIONS } from '../../../../../../public-api';
 describe('FormFlowComponent controls', () => {
   afterEach(() => {
     TestBed.resetTestingModule();
+    vi.unstubAllGlobals();
+  });
+
+  it('keeps header toggles boolean through the shared menu and honors disabled state', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: window.innerWidth <= Number(query.match(/max-width: (\d+)px/)?.[1] ?? 0),
+      media: query, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}
+    }));
+    const fixture = TestBed.createComponent(FormFlowComponent);
+    const model = {title: 'Settings', layout: 'grouped' as const, deferPreparation: false,
+      steps: [{id: 'settings', title: 'Settings', controls: [],
+        headerControl: {id: 'enabled', kind: 'toggle' as const, bind: 'enabled', label: 'Enable settings'}}]};
+    fixture.componentRef.setInput('model', model);
+    fixture.componentInstance.writeValue({enabled: false});
+    const changed = vi.fn(); fixture.componentInstance.registerOnChange(changed);
+    fixture.detectChanges();
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('.form-flow__group-header-menu button');
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    button.click(); fixture.detectChanges();
+    expect(changed).toHaveBeenLastCalledWith({enabled: true});
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    button.click(); fixture.detectChanges();
+    expect(changed).toHaveBeenLastCalledWith({enabled: false});
+    fixture.componentInstance.setDisabledState(true); fixture.detectChanges();
+    expect(button.disabled).toBe(true); button.click();
+    expect(changed).toHaveBeenCalledTimes(2);
   });
 
   it('emits an unbound menu action without replacing the form with its item ID', () => {

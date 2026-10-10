@@ -66,6 +66,20 @@ Shared Sass is exposed as `@myscoutee/components/styles` and its public submodul
 existing global theme and imports these shared styles. Backend monolith and
 microservice composition are unaffected by this frontend source boundary.
 
+## Menu toggles and calendar conversion
+
+Use `AppMenuComponent` with `kind="inline"`, `layout="row"` and a menu item
+such as `{id: 'enabled', kind: 'toggle', toggleStyle: 'on-off', checked: enabled}`.
+This uses the existing menu selection event and disabled handling. The on/off
+presentation derives its translated state label and icon; ordinary `label`,
+`icon` and `ariaLabel` configuration can override them. A form-bound menu keeps
+its existing selected-value array contract; FormFlow header toggles keep their
+boolean field contract. There is no separate toggle component.
+
+`CalendarCardConverter`, `calendarCardConverter` and its input type are exported
+from `@myscoutee/components`. The converter preserves caller-owned pages, query
+and callbacks and defaults non-calendar view modes to month.
+
 ## License — free to reuse with required credit
 
 The repository's original code and documentation are licensed under
