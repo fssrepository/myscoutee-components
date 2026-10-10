@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ImageGalleryStore, UI_IMAGE_DETAILS, normalizeImageDetails } from '@myscoutee/components';
+import { ImageGalleryStore, UI_IMAGE_DETAILS, normalizeImageDetails } from '../../public-api';
 
 describe('Generic image details', () => {
   afterEach(() => TestBed.resetTestingModule());

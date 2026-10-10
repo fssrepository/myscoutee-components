@@ -4,8 +4,9 @@ Contributions are welcome: documentation, bug reports, reproducible examples
 and focused improvements to reusable UI components.
 
 This repository owns the shared Angular implementation. Use `npm ci` and
-`npm run build` here. Consumer regression tests run through the existing
-MyScoutee Angular test runner, including the specs under this repository.
+`npm run build` and `npm test` here. Generic specs live beside their owner
+and run with this repository’s Angular test runner. MyScoutee keeps only its
+application integration tests in the consumer runner.
 Keep business services and models in the consuming application.
 
 ## Issues

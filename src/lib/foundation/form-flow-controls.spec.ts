@@ -1,7 +1,7 @@
 import { Component, Injectable, Input, Output, EventEmitter, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { FORM_FLOW_CONTROLS, FormFlowComponent } from '@myscoutee/components';
+import { FORM_FLOW_CONTROLS, FormFlowComponent } from '../../public-api';
 
 @Injectable()
 class FormScope { readonly destroyed = vi.fn(); ngOnDestroy() { this.destroyed(); } }

@@ -18,10 +18,12 @@ Use Node.js 24 and npm 11, then run in this repository:
 ```sh
 npm ci
 npm run build
+npm test
 ```
 
 The build uses only this repository and its declared dependencies. Output is
-written to `dist/`. `npm run watch` rebuilds on source changes. This is a private
+written to `dist/` (gitignored). `npm test` runs the co-located component,
+store, directive and helper specs from this repository without MyScoutee. `npm run watch` rebuilds on source changes. This is a private
 buildable library; registry publication is not part of the development workflow.
 
 ## Use as a submodule
@@ -30,6 +32,7 @@ The consuming frontend records the GitHub repository URL and an exact commit:
 
 ```sh
 git submodule update --init --recursive
+git -C myscoutee-components switch master
 npm ci
 npm run build:components
 ```
@@ -40,7 +43,8 @@ library watcher and one application watcher. The application consumes `dist/`
 through its npm workspace dependency; it has no second copy of the implementation.
 
 If editing another checkout of this repository, commit there first, then update
-the consuming submodule to that commit. Uncommitted changes in separate Git
+the consuming submodule with `git merge --ff-only` on `master`.
+Keep both checkouts on `master`; do not check out detached commits. Uncommitted changes in separate Git
 checkouts are independent. No absolute workstation path is part of integration.
 
 ## Application adapters

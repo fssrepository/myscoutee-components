@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { IndicatorComponent } from '@myscoutee/components';
+import { IndicatorComponent } from '../../../public-api';
 
 describe('Timed load ring', () => {
   afterEach(() => { vi.restoreAllMocks(); TestBed.resetTestingModule(); });
