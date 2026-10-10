@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ImageCarouselComponent } from '../image-carousel/image-carousel.component';
 import { PopupComponent, PopupModel } from '../popup/index';
-import { ImageGalleryStore } from '../../../context/stores/image-gallery.store';
+import { ImageGalleryStore } from '../../../context/stores/media/image-gallery.store';
 
 @Component({
   selector: 'app-image-gallery-popup',

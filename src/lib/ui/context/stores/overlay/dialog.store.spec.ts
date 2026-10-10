@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { DialogStore } from '../../../../public-api';
+import { DialogStore } from '../../../../../public-api';
 
 describe('DialogStore optional confirmation message', () => {
   it('keeps confirmation busy until saving succeeds and prevents duplicate submission', async () => {

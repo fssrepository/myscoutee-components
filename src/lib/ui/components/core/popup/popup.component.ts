@@ -19,8 +19,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { I18nPipe } from '../../../../pipes/index';
-import { PopupPresenceStore } from '../../../context/stores/popup-presence.store';
-import { OverlayNavigationStore } from '../../../context/stores/overlay-navigation.store';
+import { PopupPresenceStore } from '../../../context/stores/overlay/popup-presence.store';
+import { OverlayNavigationStore } from '../../../context/stores/overlay/overlay-navigation.store';
 import { DateInputComponent, type DateInputValue } from '../../../../components/date-input/date-input.component';
 import { AppMenuComponent, type AppMenuItemSelectEvent } from '../menu/index';
 import type {

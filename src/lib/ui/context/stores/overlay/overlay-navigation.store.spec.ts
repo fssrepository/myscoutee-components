@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { OverlayNavigationStore } from '../../../../public-api';
+import { OverlayNavigationStore } from '../../../../../public-api';
 
 class Browser extends EventTarget {
   location = { href: 'https://app.test/game' };

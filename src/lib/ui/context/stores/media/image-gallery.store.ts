@@ -1,6 +1,6 @@
-import { ImageDetailsMap } from '../../../foundation/image-details';
-import { ImageDetailsConfig } from '../../../foundation/image-details';
-import { UI_IMAGE_DETAILS } from '../../../foundation/image-details';
+import { ImageDetailsMap } from '../../../../foundation/image-details';
+import { ImageDetailsConfig } from '../../../../foundation/image-details';
+import { UI_IMAGE_DETAILS } from '../../../../foundation/image-details';
 import { Injectable, computed, signal, inject } from '@angular/core';
 
 export interface ImageGalleryRequest {

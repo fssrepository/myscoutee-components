@@ -1,4 +1,4 @@
-import { OverlayNavigationStore } from '../../../context/stores/overlay-navigation.store';
+import { OverlayNavigationStore } from '../../../context/stores/overlay/overlay-navigation.store';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,

@@ -32,10 +32,10 @@ export * from './lib/ui/components/core/floating-launcher/floating-launcher.comp
 export * from './lib/ui/components/core/copy-link/copy-link.component';
 export * from './lib/ui/components/core/form/inputs/link-input/link-input.component';
 export * from './lib/ui/components/core/form/inputs/location-input/location-input.component';
-export * from './lib/ui/context/stores/dialog.store';
-export * from './lib/ui/context/stores/popup-presence.store';
-export * from './lib/ui/context/stores/overlay-navigation.store';
-export * from './lib/ui/context/stores/floating-launcher-registry.service';
+export * from './lib/ui/context/stores/overlay/dialog.store';
+export * from './lib/ui/context/stores/overlay/popup-presence.store';
+export * from './lib/ui/context/stores/overlay/overlay-navigation.store';
+export * from './lib/ui/context/stores/overlay/floating-launcher-registry.service';
 export * from './lib/ui/pipes/counter-badge.pipe';
 export * from './lib/foundation/image-urls';
 export * from './lib/foundation/list-defaults';
@@ -72,7 +72,7 @@ export * from './lib/ui/components/core/image-carousel/image-carousel.component'
 export * from './lib/ui/components/core/image-gallery/image-gallery-popup.component';
 export * from './lib/ui/components/core/image-gallery/image-gallery.component';
 export * from './lib/ui/components/core/deployment-brand/deployment-brand.component';
-export * from './lib/ui/context/stores/image-gallery.store';
+export * from './lib/ui/context/stores/media/image-gallery.store';
 export * from './lib/ui/components/core/form/flow/form-flow.component';
 export * from './lib/ui/components/core/form/flow/form-flow.types';
 export * from './lib/ui/components/core/form/flow/form-flow.utils';

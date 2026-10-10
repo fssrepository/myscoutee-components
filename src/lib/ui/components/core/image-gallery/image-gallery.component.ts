@@ -2,7 +2,7 @@ import { ImageDetailsMap } from '../../../../foundation/image-details';
 import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ImageCarouselComponent } from '../image-carousel/image-carousel.component';
-import { ImageGalleryStore } from '../../../context/stores/image-gallery.store';
+import { ImageGalleryStore } from '../../../context/stores/media/image-gallery.store';
 
 /** Single cover; expansion delegates to the shared signal-driven gallery popup. */
 @Component({

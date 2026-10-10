@@ -1,6 +1,6 @@
 import { Injectable, effect, inject } from '@angular/core';
 
-import { PopupPresenceStore } from '../context/stores/popup-presence.store';
+import { PopupPresenceStore } from '../context/stores/overlay/popup-presence.store';
 
 export type UiPollPriority = 'background' | 'foreground' | 'notification';
 

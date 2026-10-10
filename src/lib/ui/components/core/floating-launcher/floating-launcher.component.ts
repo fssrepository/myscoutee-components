@@ -1,7 +1,7 @@
 import { Component, DestroyRef, ElementRef, EventEmitter, Input, Output, ViewChild, afterEveryRender, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AppMenuComponent, type AppMenuDragEvent, type AppMenuDragPosition, type AppMenuItemSelectEvent, type AppMenuTrigger } from '../menu/index';
-import { FloatingLauncherRegistry } from '../../../context/stores/floating-launcher-registry.service';
+import { FloatingLauncherRegistry } from '../../../context/stores/overlay/floating-launcher-registry.service';
 
 interface LauncherObstacle {
   box: DOMRect;

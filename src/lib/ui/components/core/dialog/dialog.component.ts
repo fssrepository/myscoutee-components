@@ -1,11 +1,11 @@
-import { OverlayNavigationStore } from '../../../context/stores/overlay-navigation.store';
+import { OverlayNavigationStore } from '../../../context/stores/overlay/overlay-navigation.store';
 
 import { Component, DoCheck, HostListener, Input, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
-import { DialogStore, type DialogState, type DialogTone } from '../../../context/stores/dialog.store';
-import { PopupPresenceStore } from '../../../context/stores/popup-presence.store';
+import { DialogStore, type DialogState, type DialogTone } from '../../../context/stores/overlay/dialog.store';
+import { PopupPresenceStore } from '../../../context/stores/overlay/popup-presence.store';
 import {
   AppMenuComponent,
   type AppMenuItem,

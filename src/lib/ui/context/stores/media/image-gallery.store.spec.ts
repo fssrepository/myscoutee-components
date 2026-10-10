@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ImageGalleryStore, ImageGalleryRequest } from '../../../../public-api';
+import { ImageGalleryStore, ImageGalleryRequest } from '../../../../../public-api';
 
 describe('Shared signal gallery', () => {
   const request = (patch: Partial<ImageGalleryRequest> = {}): ImageGalleryRequest => ({
