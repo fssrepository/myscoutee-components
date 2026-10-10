@@ -3,9 +3,10 @@
 Contributions are welcome: documentation, bug reports, reproducible examples
 and focused improvements to reusable UI components.
 
-This repository currently contains documentation only. There is no component
-implementation or build/test command yet. Check the current files and open
-issues before proposing implementation work.
+This repository owns the shared Angular implementation. Use `npm ci` and
+`npm run build` here. Consumer regression tests run through the existing
+MyScoutee Angular test runner, including the specs under this repository.
+Keep business services and models in the consuming application.
 
 ## Issues
 
@@ -26,8 +27,9 @@ Do not include credentials or private data.
 5. Open a pull request describing the problem, the change and verification.
    State any checks you could not run.
 
-Documentation-only contributions do not need an application build. Once build
-or test tooling is published, follow its versioned instructions.
+Documentation-only contributions do not need an application build. Commit a
+component change before updating the consuming frontend submodule pointer.
+Separate checkouts do not share uncommitted edits.
 
 ## License and branding
 

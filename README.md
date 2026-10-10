@@ -7,12 +7,59 @@ Reusable UI components from MyScoutee, intended for use in other projects.
 
 ## About
 
-This repository is the starting point for publishing MyScoutee's reusable UI
-library.
+This repository owns the shared Angular UI implementation. MyScoutee includes
+it as the `myscoutee-components` Git submodule inside its frontend repository.
+The old application import paths only re-export these components.
 
-**Current status:** repository groundwork. The component implementation,
-installation instructions and runnable examples have not been published here
-yet.
+## Build independently
+
+Use Node.js 24 and npm 11, then run in this repository:
+
+```sh
+npm ci
+npm run build
+```
+
+The build uses only this repository and its declared dependencies. Output is
+written to `dist/`. `npm run watch` rebuilds on source changes. This is a private
+buildable library; registry publication is not part of the development workflow.
+
+## Use as a submodule
+
+The consuming frontend records the GitHub repository URL and an exact commit:
+
+```sh
+git submodule update --init --recursive
+npm ci
+npm run build:components
+```
+
+MyScoutee's existing build, serve, test and dev-stack watcher invoke this
+repository's build before compiling the application. Watch mode keeps one
+library watcher and one application watcher. The application consumes `dist/`
+through its TypeScript alias; it has no second copy of the implementation.
+
+If editing another checkout of this repository, commit there first, then update
+the consuming submodule to that commit. Uncommitted changes in separate Git
+checkouts are independent. No absolute workstation path is part of integration.
+
+## Application adapters
+
+Import the public API from `@myscoutee/components`. Supply `UI_TRANSLATIONS`
+(or `provideUiTranslations`), `EXPLANATION_GUIDE_OPTIONS`, and the features used
+by the application: `UI_IMAGE_UPLOAD`, `UI_IMAGE_URLS`, `UI_IMAGE_DETAILS`,
+`UI_BRANDING`, `UI_LIST_DEFAULTS`, and `FORM_FLOW_CONTROLS`.
+
+These providers reuse the consumer's services. The library contains no
+MyScoutee API calls, event/pricing/policy models, brand assets, or translation
+session. FormFlow's custom controls are lazy renderers receiving a
+`FormFlowControlContext`; their providers share a scope within one form.
+General gallery metadata survives edits; application-specific association,
+validation and selection remain in the consumer's image-details adapter.
+
+Shared Sass is in `src/lib/ui/styles`. The consuming application retains its
+existing global theme and imports these shared styles. Backend monolith and
+microservice composition are unaffected by this frontend source boundary.
 
 ## License — free to reuse with required credit
 
