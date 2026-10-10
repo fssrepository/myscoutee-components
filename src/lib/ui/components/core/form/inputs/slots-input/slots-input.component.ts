@@ -37,7 +37,7 @@ export interface SlotsInputLabels {
 }
 
 const DEFAULT_SLOTS_LABELS: SlotsInputLabels = {
-  "slotsDisabledDescription": "Use the main date range date range without slot schedules.",
+  "slotsDisabledDescription": "Use the main date range without slot schedules.",
   "slotsTimePending": "Time pending",
   "slotsAddBaseAria": "Add base slot",
   "scheduleEdit": "Edit Schedule",
@@ -60,7 +60,7 @@ export interface SlotsInputConfig {
   frequencyLabel?: (frequency: string) => string;
   /** Consumer normalization for additional slot metadata. */
   normalizeTemplates?: (items: readonly SlotTemplate[]) => SlotTemplate[];
-  /** Reuse the schedule popup for one recurring task, without event slot rows. */
+  /** Reuse the schedule popup for one recurring task, without slot rows. */
   scheduleOnly?: boolean;
   scheduleChange?: (value: { frequency: string; startAtIso: string }) => void;
   enabled?: SlotsInputConfigValue<boolean | null | undefined>;

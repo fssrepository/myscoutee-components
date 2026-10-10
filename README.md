@@ -80,6 +80,24 @@ boolean field contract. There is no separate toggle component.
 from `@myscoutee/components`. The converter preserves caller-owned pages, query
 and callbacks and defaults non-calendar view modes to month.
 
+## Route and schedule inputs
+
+`RouteInputComponent` edits ordered stops through its `string[]` value accessor.
+Its lazy popup and per-control editor state live here. FormFlow includes the
+`route` renderer by default; consumer renderers can override it through the
+existing `FORM_FLOW_CONTROLS` configuration.
+
+`SlotsInputComponent` owns schedule editing and date overrides. `SlotTemplate`
+contains only the shared schedule fields. Consumer metadata survives generic
+normalization; `SlotsInputConfig.normalizeTemplates` allows the existing domain
+normalizer to handle its own fields. Labels and frequency labels are configured
+through the same input config. `scheduleOnly` reuses the editor for recurring
+work without slot rows. Event subdefinitions and asset assignment rules remain
+in the application.
+
+Common stores are grouped under `ui/context/stores/overlay` and `media`;
+consumers continue using the public exports.
+
 ## License — free to reuse with required credit
 
 The repository's original code and documentation are licensed under
