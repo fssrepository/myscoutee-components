@@ -255,11 +255,25 @@ same implementation through the public package API; the monolith remains support
 ## Releases
 
 [CHANGELOG.md](CHANGELOG.md) and [releases/](releases/) record versioned changes.
-An annotated `vX.Y.Z` Git tag matching package.json triggers the
-[release workflow](.github/workflows/release.yml): independent tests, library build,
-archive audit, GitHub Packages publication, then a GitHub Release containing the
-same `.tgz` and SHA-256 checksums. Publishing uses the repository's `GITHUB_TOKEN`.
-No long-lived registry token is stored in source.
+Releases are built and published locally. After a completed build:
+
+```sh
+npm run prepare:release
+npm pack ./dist --ignore-scripts
+npm publish ./fssrepository-myscoutee-components-0.1.0.tgz --registry=https://npm.pkg.github.com
+```
+
+The preparation script fixes package-relative entry points, includes the license
+and documentation, and excludes source maps, tests and build caches from the archive.
+If `frontend-sync` is already running, use a separate copy of its completed library
+output in the release checkout's ignored `dist/`; do not run a competing build or
+change the output being watched by the application. Preparation replaces ng-packagr's
+watch timestamp version with the source manifest's release version.
+
+Tag the verified source with `vX.Y.Z`, push the tag and create a GitHub Release using
+its versioned release notes. Attach the published `.tgz` and its SHA-256 checksum.
+GitHub Packages publication requires a local login with `write:packages` permission.
+No registry token is stored in source and no GitHub Action is required.
 
 ## License — free to reuse with required credit
 

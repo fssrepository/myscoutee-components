@@ -6,9 +6,13 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const source = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const output = path.join(root, 'dist');
 const pkg = JSON.parse(await readFile(path.join(output, 'package.json'), 'utf8'));
-if (pkg.name !== source.name || pkg.version !== source.version) {
-  throw new Error('Release needs a non-watch build of the current package version.');
+// frontend-sync already builds the library; ng-packagr substitutes a timestamp
+// version in watch mode. Prepare a separate copy of that completed output.
+const watchBuild = /^0\.0\.0-watch\+\d+$/.test(pkg.version);
+if (pkg.name !== source.name || (pkg.version !== source.version && !watchBuild)) {
+  throw new Error('Build identity does not match the source package.');
 }
+pkg.version = source.version;
 if (process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME !== `v${pkg.version}`) {
   throw new Error('Git tag and package version differ.');
 }
