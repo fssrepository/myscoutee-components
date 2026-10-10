@@ -1,0 +1,61 @@
+import { ComponentRef, Directive, ErrorHandler, Injector, Input, OnChanges, OnDestroy, ViewContainerRef, inject } from '@angular/core';
+import type { ControlValueAccessor } from '@angular/forms';
+import { FORM_FLOW_CONTROLS, type FormFlowControlContext, type FormFlowControlDefinition } from '../../../../../foundation/form-flow-controls';
+
+/** Creates the registered component directly; no proxy component or duplicate state. */
+@Directive({selector: '[formFlowControl]', standalone: true})
+export class FormFlowControlDirective implements OnChanges, OnDestroy {
+  @Input({required: true}) formFlowControl!: FormFlowControlContext;
+  @Input({required: true}) controlInjector!: Injector;
+  private readonly controls = inject(FORM_FLOW_CONTROLS);
+  private readonly view = inject(ViewContainerRef);
+  private readonly errors = inject(ErrorHandler);
+  private ref?: ComponentRef<ControlValueAccessor>;
+  private definition?: FormFlowControlDefinition;
+  private kind = '';
+  private version = 0;
+  private subscriptions: {unsubscribe(): void}[] = [];
+  private value: unknown;
+  private disabled?: boolean;
+  private written = false;
+
+  ngOnChanges(): void {
+    const kind = this.formFlowControl.control.kind;
+    if (kind === this.kind) { this.update(); return; }
+    this.kind = kind;
+    this.clear();
+    const version = ++this.version;
+    const definition = this.controls.renderers[kind];
+    this.definition = definition;
+    definition.load().then(type => {
+      if (this.version !== version) return;
+      const ref = this.view.createComponent(type, {injector: this.controlInjector});
+      this.ref = ref;
+      ref.instance.registerOnChange((value: unknown) => this.formFlowControl.change(value));
+      ref.instance.registerOnTouched(() => this.formFlowControl.touch());
+      for (const [name, listener] of Object.entries(definition.outputs ?? {})) {
+        const output = (ref.instance as unknown as Record<string, unknown>)[name] as {subscribe(fn: (value: unknown) => void): {unsubscribe(): void}};
+        this.subscriptions.push(output.subscribe(value => listener(this.formFlowControl, value)));
+      }
+      this.update();
+      ref.changeDetectorRef.detectChanges();
+    }).catch(error => this.errors.handleError(error));
+  }
+  private update(): void {
+    if (!this.ref || !this.definition) return;
+    const context = this.formFlowControl;
+    for (const [name, value] of Object.entries(this.definition.inputs?.(context) ?? {})) this.ref.setInput(name, value);
+    const value = this.definition.value ? this.definition.value(context) : context.value;
+    if (!this.written || !Object.is(value, this.value)) {
+      this.ref.instance.writeValue(value); this.value = value;
+    }
+    if (!this.written || context.disabled !== this.disabled) this.ref.instance.setDisabledState?.(context.disabled);
+    this.disabled = context.disabled;
+    this.written = true;
+  }
+  private clear(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe()); this.subscriptions = [];
+    this.view.clear(); this.ref = undefined; this.written = false;
+  }
+  ngOnDestroy(): void { this.version++; this.clear(); }
+}

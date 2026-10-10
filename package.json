@@ -31,5 +31,9 @@
     "ng-packagr": "21.2.7",
     "typescript": "5.9.3",
     "@angular/router": "21.2.23"
-  }
+  },
+  "main": "./dist/fesm2022/myscoutee-components.mjs",
+  "module": "./dist/fesm2022/myscoutee-components.mjs",
+  "types": "./dist/types/myscoutee-components.d.ts",
+  "sass": "./styles/index.scss"
 }

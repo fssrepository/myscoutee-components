@@ -378,7 +378,7 @@
                         (ngModelChange)="updateControlValue(control, $event)"
                       ></app-link-input>
                     } @else if (customControls.renderers[control.kind]) {
-                      <app-form-flow-control-outlet [context]="customControlContext(control)" [controlInjector]="controlInjector" />
+                      <ng-container [formFlowControl]="customControlContext(control)" [controlInjector]="controlInjector" />
                     } @else {
                       <label class="form-flow__label">
                         <span>{{ control.label }}@if (control.required) { <strong>*</strong> }</span>

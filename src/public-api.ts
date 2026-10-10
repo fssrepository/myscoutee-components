@@ -76,7 +76,7 @@ export * from './lib/ui/context/stores/image-gallery.store';
 export * from './lib/ui/components/core/form/flow/form-flow.component';
 export * from './lib/ui/components/core/form/flow/form-flow.types';
 export * from './lib/ui/components/core/form/flow/form-flow.utils';
-export * from './lib/ui/components/core/form/flow/form-flow-control-outlet.component';
+export * from './lib/ui/components/core/form/flow/form-flow-control.directive';
 export * from './lib/foundation/image-details';
 export * from './lib/foundation/branding';
 export * from './lib/foundation/form-flow-controls';

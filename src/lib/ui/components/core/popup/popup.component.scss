@@ -1,6 +1,6 @@
-@use '../../../styles/contextual-colors' as colors;
-@use '../../../styles/media-badge' as mediaBadge;
-@use './popup-close-button' as popupClose;
+@use '../../../../../../styles/_contextual-colors' as colors;
+@use '../../../../../../styles/_media-badge' as mediaBadge;
+@use '../../../../../../styles/_popup-close-button' as popupClose;
 
 app-popup {
   display: contents;

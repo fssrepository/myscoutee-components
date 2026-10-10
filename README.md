@@ -9,7 +9,7 @@ Reusable UI components from MyScoutee, intended for use in other projects.
 
 This repository owns the shared Angular UI implementation. MyScoutee includes
 it as the `myscoutee-components` Git submodule inside its frontend repository.
-The old application import paths only re-export these components.
+The application imports the public TypeScript API and Sass modules directly.
 
 ## Build independently
 
@@ -37,7 +37,7 @@ npm run build:components
 MyScoutee's existing build, serve, test and dev-stack watcher invoke this
 repository's build before compiling the application. Watch mode keeps one
 library watcher and one application watcher. The application consumes `dist/`
-through its TypeScript alias; it has no second copy of the implementation.
+through its npm workspace dependency; it has no second copy of the implementation.
 
 If editing another checkout of this repository, commit there first, then update
 the consuming submodule to that commit. Uncommitted changes in separate Git
@@ -52,12 +52,13 @@ by the application: `UI_IMAGE_UPLOAD`, `UI_IMAGE_URLS`, `UI_IMAGE_DETAILS`,
 
 These providers reuse the consumer's services. The library contains no
 MyScoutee API calls, event/pricing/policy models, brand assets, or translation
-session. FormFlow's custom controls are lazy renderers receiving a
-`FormFlowControlContext`; their providers share a scope within one form.
+session. FormFlow registers the actual consumer controls lazily and uses their existing
+ControlValueAccessor methods. Configuration maps inputs and outputs; there are
+no per-control wrapper components. Providers share a scope within one form.
 General gallery metadata survives edits; application-specific association,
 validation and selection remain in the consumer's image-details adapter.
 
-Shared Sass is in `src/lib/ui/styles`. The consuming application retains its
+Shared Sass is exposed as `@myscoutee/components/styles` and its public submodules. The consuming application retains its
 existing global theme and imports these shared styles. Backend monolith and
 microservice composition are unaffected by this frontend source boundary.
 

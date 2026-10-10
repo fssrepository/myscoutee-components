@@ -1,6 +1,6 @@
 import { FORM_FLOW_CONTROLS } from '../../../../../foundation/form-flow-controls';
 import { type FormFlowControlContext } from '../../../../../foundation/form-flow-controls';
-import { FormFlowControlOutletComponent } from './form-flow-control-outlet.component';
+import { FormFlowControlDirective } from './form-flow-control.directive';
 import { TextCardsInputComponent, type TextCardsConfig } from '../inputs/text-cards-input/text-cards-input.component';
 import { OnOffToggleComponent } from '../../../../../components/on-off-toggle/on-off-toggle.component';
 import { CommonModule } from '@angular/common';
@@ -77,7 +77,7 @@ interface FormFlowSelectedMenuItem {
   standalone: true,
   imports: [
     CommonModule,
-    FormFlowControlOutletComponent,
+    FormFlowControlDirective,
     OnOffToggleComponent,
     TextCardsInputComponent,
     FormsModule,
@@ -638,6 +638,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
     return {
       control, value: this.controlValue(control), stringArrayValue: this.controlStringArrayValue(control),
       disabled: this.isControlDisabled(control), enabled: this.controlEnabled(control),
+      touch: () => this.onControlTouched(),
       change: value => this.updateControlValue(control, value),
       changeEnabled: enabled => this.updateControlEnabled(control, enabled)
     };

@@ -1,5 +1,5 @@
-@use '../../../../../styles/media-badge' as mediaBadge;
-@use '../../../../../styles/contextual-colors' as colors;
+@use '../../../../../../../../styles/_media-badge' as mediaBadge;
+@use '../../../../../../../../styles/_contextual-colors' as colors;
 
 :host {
   display: flex;

@@ -1,6 +1,6 @@
-@use '../../../styles/popup' as popup;
-@use '../../../styles/media-badge' as mediaBadge;
-@use '../../../styles/contextual-colors' as colors;
+@use '../../../../../../styles/_popup' as popup;
+@use '../../../../../../styles/_media-badge' as mediaBadge;
+@use '../../../../../../styles/_contextual-colors' as colors;
 
 :host {
   display: inline-block;

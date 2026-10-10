@@ -1,4 +1,4 @@
-@use '../../../styles' as ui;
+@use '../../../../../../styles/index' as ui;
 
 @include ui.popup-close-button();
 
