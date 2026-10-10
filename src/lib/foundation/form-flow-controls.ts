@@ -26,3 +26,12 @@ export interface FormFlowControls {
 export const FORM_FLOW_CONTROLS = new InjectionToken<FormFlowControls>('FORM_FLOW_CONTROLS', {
   providedIn: 'root', factory: () => ({ renderers: {} })
 });
+
+export const FORM_FLOW_BUILTIN_CONTROLS: FormFlowControls['renderers'] = {
+  route: {
+    load: () => import('../ui/components/core/form/inputs/route-input/route-input.component').then(m => m.RouteInputComponent),
+    inputs: context => ({config: (context.control.config as {model?: unknown} | null)?.model ?? {},
+      readOnly: context.disabled, disabled: context.disabled}),
+    value: context => context.stringArrayValue
+  }
+};

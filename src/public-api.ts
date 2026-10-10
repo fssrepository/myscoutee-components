@@ -80,3 +80,7 @@ export * from './lib/ui/components/core/form/flow/form-flow-control.directive';
 export * from './lib/foundation/image-details';
 export * from './lib/foundation/branding';
 export * from './lib/foundation/form-flow-controls';
+
+export * from './lib/foundation/slot-template';
+export * from './lib/ui/components/core/form/inputs/route-input';
+export * from './lib/ui/components/core/form/inputs/slots-input';

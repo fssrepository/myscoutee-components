@@ -1,4 +1,4 @@
-import { FORM_FLOW_CONTROLS } from '../../../../../foundation/form-flow-controls';
+import { FORM_FLOW_CONTROLS, FORM_FLOW_BUILTIN_CONTROLS } from '../../../../../foundation/form-flow-controls';
 import { type FormFlowControlContext } from '../../../../../foundation/form-flow-controls';
 import { FormFlowControlDirective } from './form-flow-control.directive';
 import { TextCardsInputComponent, type TextCardsConfig } from '../inputs/text-cards-input/text-cards-input.component';
@@ -109,7 +109,9 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   @ViewChild('flowViewport')
   private flowViewportRef?: ElementRef<HTMLDivElement>;
 
-  protected readonly customControls = inject(FORM_FLOW_CONTROLS);
+  private readonly providedControls = inject(FORM_FLOW_CONTROLS);
+  protected readonly customControls = {...this.providedControls,
+    renderers: {...FORM_FLOW_BUILTIN_CONTROLS, ...this.providedControls.renderers}};
   protected readonly controlInjector = Injector.create({providers: this.customControls.providers ?? [], parent: inject(Injector)});
   private readonly cdr = inject(ChangeDetectorRef);
   protected readonly preparing = signal(true);
