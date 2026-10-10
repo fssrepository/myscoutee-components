@@ -1,6 +1,6 @@
 import { ComponentRef, Directive, ErrorHandler, Injector, Input, OnChanges, OnDestroy, ViewContainerRef, inject } from '@angular/core';
 import type { ControlValueAccessor } from '@angular/forms';
-import { FORM_FLOW_CONTROLS, type FormFlowControlContext, type FormFlowControlDefinition } from '../../../../../foundation/form-flow-controls';
+import { FORM_FLOW_BUILTIN_CONTROLS, FORM_FLOW_CONTROLS, type FormFlowControlContext, type FormFlowControlDefinition } from '../../../../../foundation/form-flow-controls';
 
 /** Creates the registered component directly; no proxy component or duplicate state. */
 @Directive({selector: '[formFlowControl]', standalone: true})
@@ -25,7 +25,7 @@ export class FormFlowControlDirective implements OnChanges, OnDestroy {
     this.kind = kind;
     this.clear();
     const version = ++this.version;
-    const definition = this.controls.renderers[kind];
+    const definition = this.controls.renderers[kind] ?? FORM_FLOW_BUILTIN_CONTROLS[kind];
     this.definition = definition;
     definition.load().then(type => {
       if (this.version !== version) return;

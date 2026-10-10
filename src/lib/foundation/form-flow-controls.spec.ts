@@ -1,7 +1,7 @@
 import { Component, Injectable, Input, Output, EventEmitter, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { FORM_FLOW_CONTROLS, FormFlowComponent } from '../../public-api';
+import { FORM_FLOW_CONTROLS, FormFlowComponent, RouteInputComponent } from '../../public-api';
 
 @Injectable()
 class FormScope { readonly destroyed = vi.fn(); ngOnDestroy() { this.destroyed(); } }
@@ -18,7 +18,36 @@ class CustomField {
 }
 
 describe('FormFlow consumer controls', () => {
-  afterEach(() => TestBed.resetTestingModule());
+  afterEach(() => { TestBed.resetTestingModule(); vi.unstubAllGlobals(); });
+  it('renders a built-in route alongside consumer registrations and propagates changes', async () => {
+    vi.stubGlobal('matchMedia', () => ({matches: false, addEventListener() {}, removeEventListener() {}}));
+    TestBed.configureTestingModule({providers: [{provide: FORM_FLOW_CONTROLS, useValue: {
+      renderers: {custom: {load: async () => CustomField}}
+    }}]});
+    const fixture = TestBed.createComponent(FormFlowComponent);
+    fixture.componentRef.setInput('model', {title: 'Route', deferPreparation: false, steps: [
+      {id: 'route', title: 'Route', controls: [{id: 'route', kind: 'route', bind: 'stops'}]}
+    ]});
+    fixture.componentInstance.writeValue({stops: ['Budapest', 'Vienna']});
+    const changed = vi.fn();
+    fixture.componentInstance.registerOnChange(changed);
+    fixture.detectChanges(); await fixture.whenStable(); fixture.detectChanges();
+    const route = fixture.debugElement.query(By.directive(RouteInputComponent));
+    expect(route).not.toBeNull();
+    expect(route.nativeElement.textContent).toContain('Budapest');
+    route.nativeElement.querySelector('.route-input__open-btn').click();
+    fixture.detectChanges(); await fixture.whenStable(); fixture.detectChanges();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.route-input-popup__row input')).not.toBeNull();
+    });
+    const stops = fixture.nativeElement.querySelectorAll('.route-input-popup__row input');
+    stops[1].value = 'Bratislava';
+    stops[1].dispatchEvent(new Event('input')); fixture.detectChanges();
+    fixture.nativeElement.querySelector('[aria-label="Save route"]').click(); fixture.detectChanges();
+    expect(changed).toHaveBeenLastCalledWith({stops: ['Budapest', 'Bratislava']});
+  });
+
   it('loads a consumer field, writes its binding and isolates providers by form', async () => {
     const load = vi.fn(async () => CustomField);
     TestBed.configureTestingModule({providers: [{provide: FORM_FLOW_CONTROLS, useValue: {

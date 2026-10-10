@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1 — 2026-10-10
+
+Fix built-in route controls missing from FormFlow when a consumer registers its
+own controls. Preserve consumer overrides and route value propagation.
+
 ## 0.1.0 — 2026-10-10
 
 First extracted Angular UI release. Includes configurable menus, forms and inputs,

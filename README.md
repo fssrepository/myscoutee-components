@@ -3,12 +3,12 @@
 Reusable Angular UI components extracted from MyScoutee: configurable forms,
 menus, overlays, lists, calendars, cards and media controls.
 
-**Package:** `@fssrepository/myscoutee-components` · **Version:** `0.1.0` ·
+**Package:** `@fssrepository/myscoutee-components` · **Version:** `0.1.1` ·
 **Registry:** [GitHub Packages](https://github.com/fssrepository/myscoutee-components/packages)
 
 [Component catalogue](#component-catalogue) · [Setup](#application-setup) ·
 [Submodule development](#develop-as-a-git-submodule) ·
-[Release notes](releases/v0.1.0.md) · [License](LICENSE)
+[Release notes](releases/v0.1.1.md) · [License](LICENSE)
 
 ## Requirements and installation
 
@@ -31,7 +31,7 @@ Keep the token in your user-level npm configuration or CI secret, never in the r
 GitHub’s npm registry requires authentication even for public packages.
 
 ```sh
-npm install @fssrepository/myscoutee-components@0.1.0
+npm install @fssrepository/myscoutee-components@0.1.1
 ```
 
 Install compatible peer dependencies in the Angular application. Supply an Angular
@@ -260,7 +260,7 @@ Releases are built and published locally. After a completed build:
 ```sh
 npm run prepare:release
 npm pack ./dist --ignore-scripts
-npm publish ./fssrepository-myscoutee-components-0.1.0.tgz --registry=https://npm.pkg.github.com
+npm publish ./fssrepository-myscoutee-components-0.1.1.tgz --registry=https://npm.pkg.github.com
 ```
 
 The preparation script fixes package-relative entry points, includes the license
