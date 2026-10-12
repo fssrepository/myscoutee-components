@@ -1,0 +1,14 @@
+{
+  "brandName": "MyScoutee Components",
+  "publishToFrontend": false,
+  "manuals": [
+    {
+      "source": "components-guide-en.html",
+      "output": "MyScoutee_Components_Guide_EN.pdf",
+      "title": "Components Guide",
+      "documentId": "MSC-COMP-001",
+      "documentVersion": "1.0.2",
+      "releaseDate": "2026-10-12"
+    }
+  ]
+}

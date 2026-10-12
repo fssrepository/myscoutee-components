@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><title>MyScoutee Components · Catalogue and Integration</title><style>/* Shared print and screen stylesheet for the versioned MyScoutee manuals. */
+:root {
+  --ink: #1c2633;
+  --muted: #586675;
+  --line: #d9e1e8;
+  --soft: #f3f6f8;
+  --navy: #17324d;
+  --blue: #176b87;
+  --teal: #0f766e;
+  --gold: #b78112;
+  --red: #a72b2b;
+  --green: #26734d;
+}
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color: var(--ink);
+  font-family: "DejaVu Sans", "Liberation Sans", Arial, sans-serif;
+  font-size: 10.2pt;
+  line-height: 1.48;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #e9eef2;
+  margin: 0;
+}
+
+.manual {
+  background: #fff;
+  margin: 18px auto;
+  max-width: 210mm;
+  min-height: 297mm;
+  padding: 18mm 16mm 20mm;
+  box-shadow: 0 8px 26px rgb(23 50 77 / 15%);
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .manual {
+    box-shadow: none;
+    margin: 0;
+    max-width: none;
+    min-height: 0;
+    padding: 0;
+  }
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p,
+li,
+td,
+th {
+  orphans: 3;
+  widows: 3;
+}
+
+p {
+  margin: 0 0 0.72em;
+}
+
+ul,
+ol {
+  margin: 0.35em 0 0.9em;
+  padding-left: 1.55em;
+}
+
+li {
+  margin: 0.23em 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--navy);
+  line-height: 1.2;
+  page-break-after: avoid;
+}
+
+h1 {
+  border-bottom: 2px solid var(--blue);
+  font-size: 21pt;
+  margin: 0 0 0.65em;
+  padding-bottom: 0.22em;
+}
+
+h2 {
+  font-size: 15.5pt;
+  margin: 1.35em 0 0.5em;
+}
+
+h3 {
+  font-size: 12.5pt;
+  margin: 1.1em 0 0.4em;
+}
+
+h4 {
+  font-size: 10.6pt;
+  margin: 0.9em 0 0.3em;
+}
+
+code,
+pre {
+  font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+}
+
+code {
+  background: #edf2f5;
+  border-radius: 3px;
+  font-size: 0.9em;
+  padding: 0.08em 0.25em;
+  overflow-wrap: anywhere;
+}
+
+code.nowrap {
+  overflow-wrap: normal;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+pre {
+  background: #172330;
+  border-left: 4px solid var(--blue);
+  border-radius: 4px;
+  color: #f7fafc;
+  font-size: 8.35pt;
+  line-height: 1.42;
+  margin: 0.55em 0 1em;
+  overflow-wrap: anywhere;
+  padding: 0.85em 1em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0.55em 0 1.1em;
+  width: 100%;
+}
+
+thead {
+  display: table-header-group;
+}
+
+tr {
+  page-break-inside: avoid;
+}
+
+th,
+td {
+  border: 1px solid var(--line);
+  padding: 0.48em 0.58em;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #eaf1f5;
+  color: var(--navy);
+  font-size: 0.92em;
+  font-weight: 700;
+}
+
+tbody tr:nth-child(even) td {
+  background: #fafcfd;
+}
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 245mm;
+  page-break-after: always;
+}
+
+.cover-brand {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: block;
+  padding-bottom: 12px;
+}
+
+.cover-brand-name {
+  align-items: center;
+  color: var(--navy);
+  display: flex;
+  font-size: 22pt;
+  font-weight: 800;
+  gap: 0.02em;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.cover-brand-name img {
+  height: 1.18em;
+  object-fit: contain;
+  width: 1.18em;
+}
+
+.cover-brand-subtitle {
+  color: var(--muted);
+  font-size: 9.5pt;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cover-title-block {
+  border-left: 5px solid var(--blue);
+  margin: 18mm 0;
+  padding: 4mm 0 4mm 8mm;
+}
+
+.cover-kicker {
+  color: var(--teal);
+  font-size: 10pt;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin-bottom: 4mm;
+  text-transform: uppercase;
+}
+
+.cover h1 {
+  border: 0;
+  color: var(--navy);
+  font-size: 30pt;
+  line-height: 1.08;
+  margin: 0;
+  padding: 0;
+}
+
+.cover-lead {
+  color: var(--muted);
+  font-size: 13pt;
+  margin-top: 5mm;
+  max-width: 150mm;
+}
+
+.cover-meta {
+  border-top: 2px solid var(--navy);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: auto;
+}
+
+.cover-meta div {
+  border-bottom: 1px solid var(--line);
+  min-height: 15mm;
+  padding: 3mm 2mm;
+}
+
+.cover-meta div:nth-child(odd) {
+  border-right: 1px solid var(--line);
+}
+
+.cover-meta strong {
+  color: var(--muted);
+  display: block;
+  font-size: 7.8pt;
+  letter-spacing: 0.08em;
+  margin-bottom: 1mm;
+  text-transform: uppercase;
+}
+
+.cover-status {
+  align-items: center;
+  display: flex;
+  gap: 7px;
+}
+
+.status-dot {
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+}
+
+.toc {
+  page-break-after: always;
+}
+
+.major,
+.page-break {
+  page-break-before: always;
+}
+
+.keep-together,
+.callout,
+.procedure,
+.quick-card,
+.role-card,
+.architecture,
+figure {
+  page-break-inside: avoid;
+}
+
+.toc ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.toc > ol > li {
+  border-bottom: 1px dotted #aab6c0;
+  font-weight: 700;
+  margin: 0;
+  padding: 0.38em 0;
+}
+
+.toc ol ol {
+  margin: 0.22em 0 0.12em 1.2em;
+}
+
+.toc ol ol li {
+  border: 0;
+  font-weight: 400;
+  padding: 0.15em 0;
+}
+
+.callout {
+  background: #eef6fa;
+  border-left: 4px solid var(--blue);
+  border-radius: 3px;
+  margin: 0.7em 0 1em;
+  padding: 0.72em 0.9em;
+}
+
+.callout > strong:first-child,
+.callout > .callout-title {
+  color: var(--navy);
+  display: block;
+  margin-bottom: 0.2em;
+}
+
+.callout.note {
+  background: #edf6f7;
+  border-left-color: var(--teal);
+}
+
+.callout.warning {
+  background: #fff8e7;
+  border-left-color: var(--gold);
+}
+
+.callout.danger {
+  background: #fff0f0;
+  border-left-color: var(--red);
+}
+
+.callout.success {
+  background: #edf8f2;
+  border-left-color: var(--green);
+}
+
+.procedure {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  margin: 0.7em 0 1.1em;
+  padding: 0.85em 1em;
+}
+
+.procedure > h3,
+.procedure > h4 {
+  margin-top: 0;
+}
+
+.procedure ol {
+  counter-reset: procedure-step;
+  list-style: none;
+  padding-left: 0;
+}
+
+.procedure ol > li {
+  counter-increment: procedure-step;
+  min-height: 2em;
+  padding: 0.22em 0 0.45em 2.45em;
+  position: relative;
+}
+
+.procedure ol > li::before {
+  align-items: center;
+  background: var(--navy);
+  border-radius: 50%;
+  color: #fff;
+  content: counter(procedure-step);
+  display: flex;
+  font-size: 8.2pt;
+  font-weight: 700;
+  height: 1.85em;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0.22em;
+  width: 1.85em;
+}
+
+.checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+.checklist li {
+  padding-left: 1.55em;
+  position: relative;
+}
+
+.checklist li::before {
+  border: 1.5px solid var(--teal);
+  border-radius: 2px;
+  content: "";
+  height: 0.85em;
+  left: 0;
+  position: absolute;
+  top: 0.26em;
+  width: 0.85em;
+}
+
+.role-grid,
+.quick-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0.7em 0 1.1em;
+}
+
+.role-card,
+.quick-card {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 0.75em 0.85em;
+}
+
+.role-card h3,
+.quick-card h3,
+.role-card h4,
+.quick-card h4 {
+  margin: 0 0 0.35em;
+}
+
+.architecture {
+  align-items: stretch;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 0.8em 0 1.2em;
+}
+
+.architecture .node {
+  align-items: center;
+  background: #eef4f7;
+  border: 1px solid #b9c9d3;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  font-size: 8.4pt;
+  justify-content: center;
+  min-height: 17mm;
+  padding: 0.5em;
+  text-align: center;
+}
+
+.architecture .node strong {
+  color: var(--navy);
+  font-size: 9pt;
+}
+
+.architecture .arrow {
+  align-items: center;
+  color: var(--blue);
+  display: flex;
+  font-size: 15pt;
+  justify-content: center;
+}
+
+.architecture.flow-3 {
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+}
+
+.small {
+  font-size: 8.5pt;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.label {
+  background: #e9f2f5;
+  border-radius: 999px;
+  color: var(--navy);
+  display: inline-block;
+  font-size: 7.8pt;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin: 0 0.18em 0.2em 0;
+  padding: 0.18em 0.55em;
+  text-transform: uppercase;
+}
+
+.command-label {
+  color: var(--muted);
+  display: block;
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-top: 0.7em;
+  text-transform: uppercase;
+}
+
+.signature-grid {
+  display: grid;
+  gap: 12mm;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 18mm;
+}
+
+.signature-line {
+  border-top: 1px solid var(--ink);
+  color: var(--muted);
+  font-size: 8pt;
+  padding-top: 2mm;
+}
+
+.source-note {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 8.2pt;
+  margin-top: 1.5em;
+  padding-top: 0.5em;
+}
+
+@media screen and (max-width: 820px) {
+  .manual {
+    margin: 0;
+    max-width: none;
+    padding: 22px;
+  }
+
+  .role-grid,
+  .quick-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+table{font-size:8.5pt} td{overflow-wrap:anywhere} h1:first-of-type{font-size:24pt}
+</style></head><body><article class="manual"><section class="cover"><div class="cover-brand"><div class="cover-brand-name" aria-label="MyScoutee Components"><img src="img/myscoutee-heart.png" alt="" aria-hidden="true"><span>yScoutee Components</span></div><div class="cover-brand-subtitle">Reusable Angular UI</div></div><div class="cover-title-block"><div class="cover-kicker">Catalogue and integration</div><h1>Components Guide</h1><p class="cover-lead">Forms, lists, menus, overlays and media controls, with application-owned data and services.</p></div><div class="cover-meta"><div><strong>Document ID</strong><span>MSC-COMP-001</span></div><div><strong>Document version</strong><span>1.0.2</span></div><div><strong>Applies to</strong><span>Components 1.4.0</span></div><div><strong>Released</strong><span>2026-10-12</span></div></div></section><section class="document-control"><h2>Document control</h2><p>This is the canonical HTML source for the Components Guide. The PDF retains a stable filename; Git history records revisions. The catalogue and integration examples were moved from the repository README without changing the library.</p><p>Contracts are linked to their public source owners. The consumer supplies its theme, translation catalogue, application data and backend integration.</p></section><nav class="toc"><h2>Contents</h2><ol><li><a href="#requirements-and-installation">Requirements and installation</a></li><li><a href="#component-catalogue">Component catalogue</a></li><li><a href="#supporting-public-apis">Supporting public APIs</a></li><li><a href="#application-setup">Application setup</a></li><li><a href="#styles">Styles</a></li><li><a href="#build-independently">Build independently</a></li><li><a href="#develop-as-a-git-submodule">Develop as a Git submodule</a></li><li><a href="#releases">Releases</a></li><li><a href="#license--free-to-reuse-with-required-credit">License — free to reuse with required credit</a></li><li><a href="#make-it-your-own">Make it your own</a></li><li><a href="#contributing">Contributing</a></li><li><a href="#related-project">Related project</a></li></ol></nav><h1 id="myscoutee-components">MyScoutee Components</h1>
+<p>Reusable Angular UI components extracted from MyScoutee: configurable forms, menus, overlays, lists, calendars, cards and media controls.</p>
+<p><strong>Package:</strong> <code>@fssrepository/myscoutee-components</code> · <strong>Version:</strong> <code>1.4.0</code> · <strong>Registry:</strong> <a href="https://github.com/fssrepository/myscoutee-components/packages">GitHub Packages</a></p>
+<p><a href="#component-catalogue">Component catalogue</a> · <a href="#application-setup">Setup</a> · <a href="#develop-as-a-git-submodule">Submodule development</a> · <a href="https://github.com/fssrepository/myscoutee-components/blob/master/releases/v1.4.0.md">Release notes</a> · <a href="https://github.com/fssrepository/myscoutee-components/blob/master/LICENSE">License</a></p>
+<h2 id="requirements-and-installation">Requirements and installation</h2>
+<table><thead><tr><th>Dependency</th><th>Supported peer range</th></tr></thead><tbody><tr><td>Angular common/core/forms/router</td><td><code>^21.2.0</code></td></tr><tr><td>Angular CDK and Material</td><td><code>^21.2.0</code></td></tr><tr><td>RxJS</td><td><code>^7.8.0</code></td></tr><tr><td>Build/test toolchain</td><td>Node.js 24 and npm 11</td></tr></tbody></table>
+<p>Configure the package scope in the consuming project’s <code>.npmrc</code>:</p>
+<pre><code>@fssrepository:registry=https://npm.pkg.github.com</code></pre>
+<p>Authenticate using your GitHub identity and a token with <code>read:packages</code>, following <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry">GitHub’s npm registry instructions</a>. Keep the token in your user-level npm configuration or CI secret, never in the repository. GitHub’s npm registry requires authentication even for public packages.</p>
+<pre><code>npm install @fssrepository/myscoutee-components@1.4.0</code></pre>
+<p>Install compatible peer dependencies in the Angular application. Supply an Angular Material theme and the Material Icons font used by <code>mat-icon</code>; the library does not bundle your application’s fonts, logos, themes or translation catalogue.</p>
+<h2 id="component-catalogue">Component catalogue</h2>
+<p>All components below are exported from <code>@fssrepository/myscoutee-components</code>. Import the standalone components you use into the consuming component’s <code>imports</code>. Source links include the actual input/output contracts; supporting models and config types are exported through the same public API. No internal source path is needed.</p>
+<h3 id="menus-overlays-and-feedback">Menus, overlays and feedback</h3>
+<table><thead><tr><th>Component</th><th>Selector</th><th>Purpose</th></tr></thead><tbody><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/menu/menu.component.ts"><code>AppMenuComponent</code></a></td><td><code>app-menu</code></td><td>Inline, dropdown and sheet menus; actions, radio/checkbox selection, toggles, nested items and drag handling. On/off styling uses the existing toggle kind.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/menu/trigger/menu-trigger.component.ts"><code>AppMenuTriggerComponent</code></a></td><td><code>app-menu-trigger</code></td><td>Standalone menu trigger presentation for configured labels, icons and state.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/menu/outlet/menu-outlet.component.ts"><code>AppMenuOutletComponent</code></a></td><td><code>app-menu-outlet</code></td><td>Menu panel/outlet rendering from the shared menu model.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/menu/items/rate/rate.component.ts"><code>RateComponent</code></a></td><td><code>app-menu-rate</code></td><td>Rating interaction inside menu items.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/popup/popup.component.ts"><code>PopupComponent</code></a></td><td><code>app-popup</code></td><td>Configurable modal surface with header/actions, nested overlay coordination and close handling.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/dialog/dialog.component.ts"><code>DialogComponent</code></a></td><td><code>app-dialog</code></td><td>Confirmation and input dialogs driven by DialogStore.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/accordion/accordion.component.ts"><code>AccordionComponent</code></a></td><td><code>app-accordion</code></td><td>Expandable sections with configurable headings and menu actions.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/floating-launcher/floating-launcher.component.ts"><code>FloatingLauncherComponent</code></a></td><td><code>app-floating-launcher</code></td><td>Floating, draggable action launcher coordinated with other launchers.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/copy-link/copy-link.component.ts"><code>CopyLinkComponent</code></a></td><td><code>app-copy-link</code></td><td>Copy-link action using the shared menu presentation.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/components/prompt/prompt.component.ts"><code>PromptComponent</code></a></td><td><code>app-prompt</code></td><td>Inline prompt with optional icon, action, busy state and dismissal.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/components/indicator/indicator.component.ts"><code>IndicatorComponent</code></a></td><td><code>app-indicator</code></td><td>Loading/progress feedback with timing and visibility handling.</td></tr></tbody></table>
+<h3 id="forms-and-inputs">Forms and inputs</h3>
+<table><thead><tr><th>Component</th><th>Selector</th><th>Purpose</th></tr></thead><tbody><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/form/flow/form-flow.component.ts"><code>FormFlowComponent</code></a></td><td><code>app-form-flow</code></td><td>Model-driven multi-step forms, validation, summaries, header toggles and lazy custom controls.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/components/date-input/date-input.component.ts"><code>DateInputComponent</code></a></td><td><code>app-date-input</code></td><td>Single date, date range and time editing; configurable precision, bounds and optional horoscope metadata.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/form/inputs/link-input/link-input.component.ts"><code>LinkInputComponent</code></a></td><td><code>app-link-input</code></td><td>Editable link value with configured label and length constraints.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/form/inputs/location-input/location-input.component.ts"><code>LocationInputComponent</code></a></td><td><code>app-location-input</code></td><td>Location value and map actions, with configurable route stops.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/form/inputs/route-input/route-input.component.ts"><code>RouteInputComponent</code></a></td><td><code>app-route-input</code></td><td>Ordered stop list, lazy route editor, stop reordering and map actions; string-array form value.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/form/inputs/slots-input/slots-input.component.ts"><code>SlotsInputComponent</code></a></td><td><code>app-slots-input</code></td><td>Recurring base schedules and date overrides; also reuses the editor for a single recurring task.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/form/inputs/text-cards-input/text-cards-input.component.ts"><code>TextCardsInputComponent</code></a></td><td><code>app-text-cards-input</code></td><td>Configurable text-card collection and editing actions.</td></tr></tbody></table>
+<h3 id="lists-calendars-and-cards">Lists, calendars and cards</h3>
+<table><thead><tr><th>Component</th><th>Selector</th><th>Purpose</th></tr></thead><tbody><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/smart-list.component.ts"><code>SmartListComponent</code></a></td><td><code>app-smart-list</code></td><td>Model-driven list/grid, calendar and timeline rendering, pagination, sorting, filters and item actions.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component.ts"><code>CalendarCardComponent</code></a></td><td><code>app-calendar-card, app-smart-list-page-card</code></td><td>Calendar/page-card surface driven by the caller’s query, pages and callbacks.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/header-card/header-card.component.ts"><code>HeaderCardComponent</code></a></td><td><code>app-header-card</code></td><td>Header and identity presentation with configured actions.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/image-card/image-card.component.ts"><code>ImageCardComponent</code></a></td><td><code>app-image-card</code></td><td>Image-led card content and actions.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/info-card/info-card.component.ts"><code>InfoCardComponent</code></a></td><td><code>app-info-card</code></td><td>Structured information card with detail and menu interactions.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/pair-card/pair-card.component.ts"><code>PairCardComponent</code></a></td><td><code>app-pair-card</code></td><td>Paired card presentation.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/payment-card/payment-card.component.ts"><code>PaymentCardComponent</code></a></td><td><code>app-payment-card</code></td><td>Payment information presentation; payment processing remains in the consumer.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/single-card/single-card.component.ts"><code>SingleCardComponent</code></a></td><td><code>app-single-card</code></td><td>Single-item card presentation.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/single-row/single-row.component.ts"><code>SingleRowComponent</code></a></td><td><code>single-row</code></td><td>Compact row presentation and actions.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/text-card/text-card.component.ts"><code>TextCardComponent</code></a></td><td><code>app-text-card</code></td><td>Text-led card with optional menus, counters and status.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/smart-list/card/warp-image-card/warp-image-card.component.ts"><code>WarpImageCardComponent</code></a></td><td><code>app-warp-image-card</code></td><td>Image card with transformed/warp presentation.</td></tr></tbody></table>
+<h3 id="media-and-branding">Media and branding</h3>
+<table><thead><tr><th>Component</th><th>Selector</th><th>Purpose</th></tr></thead><tbody><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/image-carousel/image-carousel.component.ts"><code>ImageCarouselComponent</code></a></td><td><code>app-image-carousel</code></td><td>Form-bound image collection with selection, edit/remove actions and read-only presentation.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/image-gallery/image-gallery.component.ts"><code>ImageGalleryComponent</code></a></td><td><code>app-image-gallery</code></td><td>Gallery entry point for shared image selection and editing state.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/image-gallery/image-gallery-popup.component.ts"><code>ImageGalleryPopupComponent</code></a></td><td><code>app-image-gallery-popup</code></td><td>Gallery popup rendering and image-edit interactions.</td></tr><tr><td><a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/lib/ui/components/core/deployment-brand/deployment-brand.component.ts"><code>DeploymentBrandComponent</code></a></td><td><code>app-deployment-brand</code></td><td>Configurable product name/logo; branding supplied by input or provider.</td></tr></tbody></table>
+<h2 id="supporting-public-apis">Supporting public APIs</h2>
+<table><thead><tr><th>Area</th><th>Exports</th><th>Responsibility</th></tr></thead><tbody><tr><td>Translation</td><td><code>UiTranslations</code>, <code>UI_TRANSLATIONS</code>, <code>provideUiTranslations</code>, <code>I18nPipe</code></td><td>Connect the consumer’s existing translation engine and revision signal.</td></tr><tr><td>Guides</td><td><code>ExplanationGuideService</code>, <code>EXPLANATION_GUIDE_OPTIONS</code>, guide types</td><td>Guide state and progression; the consumer supplies content, eligible surfaces and persistence scope.</td></tr><tr><td>Overlays</td><td><code>DialogStore</code>, <code>PopupPresenceStore</code>, <code>OverlayNavigationStore</code>, <code>FloatingLauncherRegistry</code></td><td>Dialog requests, modal presence, nested navigation and launcher coordination.</td></tr><tr><td>Media</td><td><code>ImageGalleryStore</code>, <code>UI_IMAGE_UPLOAD</code>, <code>UI_IMAGE_DETAILS</code>, <code>UI_IMAGE_URLS</code></td><td>Gallery state and consumer-supplied upload, metadata and URL behavior.</td></tr><tr><td>Form extension</td><td><code>FORM_FLOW_CONTROLS</code>, <code>FormFlowControls</code>, <code>FormFlowControlDirective</code></td><td>Register actual controls lazily through their existing value accessor. The route renderer is built in.</td></tr><tr><td>Calendar conversion</td><td><code>CalendarCardConverter</code>, <code>calendarCardConverter</code></td><td>Convert a caller-owned calendar model while retaining pages, query and callbacks.</td></tr><tr><td>Schedules</td><td><code>SlotTemplate</code>, <code>normalizeSlotTemplates</code>, <code>normalizeSlotOverrideDate</code>, <code>normalizeScheduleFrequency</code></td><td>Normalize shared scheduling fields while preserving consumer metadata.</td></tr><tr><td>Lists</td><td>Query/page models, finite/infinite steppers, calendar/timeline/page adapters</td><td>Data-source-neutral list rendering and navigation.</td></tr><tr><td>Dates and presentation</td><td><code>UiDateUtils</code>, <code>AppCalendarDateAdapter</code>, <code>AppCalendarDateFormats</code>, number/rating helpers, horoscope data</td><td>Shared date, numeric and presentation operations.</td></tr><tr><td>Rendering</td><td><code>ViewportSeenDirective</code>, <code>LazyBgImageDirective</code>, <code>CounterBadgePipe</code>, schedulers</td><td>Viewport awareness, deferred image rendering, counters and scheduled UI work.</td></tr></tbody></table>
+<p>The implementation of each public export is indexed in <a href="https://github.com/fssrepository/myscoutee-components/blob/master/src/public-api.ts">src/public-api.ts</a>. The route popup is an internal lazy implementation owned by RouteInputComponent.</p>
+<h2 id="application-setup">Application setup</h2>
+<p>The library calls your existing adapters; it contains no MyScoutee backend, Firebase setup, domain repositories or application session.</p>
+<table><thead><tr><th>Provider/configuration</th><th>When to supply it</th></tr></thead><tbody><tr><td><code>UI_TRANSLATIONS</code> or <code>provideUiTranslations(YourI18nService)</code></td><td>Components that render translated labels. The contract includes <code>revision</code>, <code>currentLanguage</code>, <code>translate</code> and <code>translateParams</code>.</td></tr><tr><td><code>EXPLANATION_GUIDE_OPTIONS</code></td><td>Guide-aware controls and overlays; configure context eligibility and <code>loadState</code>. Use an empty state when the application does not use guides.</td></tr><tr><td>Angular Router providers</td><td>Overlay navigation, such as menus and popups; reuse the application’s existing router.</td></tr><tr><td><code>UI_BRANDING</code> or the branding input</td><td>DeploymentBrandComponent. The token provides a function returning the current branding model.</td></tr><tr><td><code>UI_IMAGE_UPLOAD</code></td><td>Image uploading; provide the consumer’s upload implementation.</td></tr><tr><td><code>UI_IMAGE_DETAILS</code></td><td>Additional image fields or domain-specific validation.</td></tr><tr><td><code>UI_IMAGE_URLS</code></td><td>URL variants, seeded-image conventions or a card fallback image. Default URLs pass through unchanged.</td></tr><tr><td><code>UI_LIST_DEFAULTS</code></td><td>Override the shared loading-window default.</td></tr><tr><td><code>FORM_FLOW_CONTROLS</code></td><td>Add or override form renderers; providers share a scope within one form.</td></tr></tbody></table>
+<p>A minimal translation/guide configuration for an application without a translation catalogue or guide content looks like this:</p>
+<pre><code>import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import {
+  UI_TRANSLATIONS, EXPLANATION_GUIDE_OPTIONS, type UiTranslations
+} from '@fssrepository/myscoutee-components';
+
+const translations: UiTranslations = {
+  revision: () =&gt; 0,
+  currentLanguage: () =&gt; 'en',
+  translate: (value, fallback) =&gt; fallback ?? value ?? '',
+  translateParams: (value, params, fallback) =&gt;
+    Object.entries(params).reduce(
+      (text, [key, replacement]) =&gt; text.replaceAll(`{${key}}`, String(replacement)),
+      fallback ?? value ?? ''
+    )
+};
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter([]), // Use the consuming application's routes.
+    { provide: UI_TRANSLATIONS, useValue: translations },
+    { provide: EXPLANATION_GUIDE_OPTIONS, useValue: {
+      isExplainableContext: () =&gt; false,
+      loadState: async () =&gt; ({ activeRevision: null, guideFields: [] })
+    } }
+  ]
+};</code></pre>
+<p>For an existing application, bind its real translation and guide services instead. A standalone date field can then use the standard Angular value accessor:</p>
+<pre><code>import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DateInputComponent, type DateInputValue } from '@fssrepository/myscoutee-components';
+
+@Component({
+  selector: 'example-date-field',
+  imports: [FormsModule, DateInputComponent],
+  template: `&lt;app-date-input [(ngModel)]="date"
+    [model]="{ mode: 'single', precision: 'date', valueFormat: 'iso-date',
+               field: { label: 'Date' } }" /&gt;`
+})
+export class ExampleDateField {
+  date: DateInputValue = '2026-10-10';
+}</code></pre>
+<h3 id="menus-routes-and-schedules">Menus, routes and schedules</h3>
+<ul><li>Use an AppMenu item with <code>kind: 'toggle'</code> and <code>toggleStyle: 'on-off'</code> for the   on/off presentation. Existing menu events, disabled handling and form-bound   selected-value arrays remain the value contract. FormFlow header toggles keep   their boolean binding; no wrapper component is needed.</li><li>RouteInput uses a <code>string[]</code> value. Its popup edits a draft and commits on save.   Asset assignment rules and translated domain labels belong to the consumer.</li><li>SlotsInput handles common schedule fields. Use <code>scheduleOnly</code> for a recurring   task without slot rows. Supply <code>labels</code>, <code>frequencyLabel</code> and, when needed,   <code>normalizeTemplates</code> through SlotsInputConfig. Event subdefinitions and other   domain metadata remain consumer-owned.</li></ul>
+<h2 id="styles">Styles</h2>
+<p>Import shared Sass through the public package paths:</p>
+<pre><code>@use '@fssrepository/myscoutee-components/styles' as ui;
+@use '@fssrepository/myscoutee-components/styles/contextual-colors' as colors;
+@use '@fssrepository/myscoutee-components/styles/popup-close-button' as popupClose;</code></pre>
+<p>The root module forwards popup, motion, Material-control, form-control and SmartList-shell mixins. Additional public modules are <code>contextual-colors</code>, <code>media-badge</code>, <code>popup-close-button</code> and <code>rate-card.shared</code>. The consuming application owns global layout, theme variables and the Material theme.</p>
+<h2 id="build-independently">Build independently</h2>
+<pre><code>npm ci
+npm run build
+npm test</code></pre>
+<p><code>npm run watch</code> rebuilds this library when its source changes. The build requires only this repository and its declared dependencies. Generated <code>dist/</code>, caches and <code>node_modules/</code> are ignored. Component/store/helper tests live beside their owners. The root manifest is private to prevent accidentally publishing workspace sources; <code>npm run prepare:release</code> prepares the built <code>dist/</code> manifest for publication.</p>
+<h2 id="develop-as-a-git-submodule">Develop as a Git submodule</h2>
+<p>The source repository is <code>myscoutee-components</code>; the consuming directory is <code>components</code>:</p>
+<pre><code>git submodule add -b master https://github.com/fssrepository/myscoutee-components.git components</code></pre>
+<p>In an existing checkout:</p>
+<pre><code>git submodule update --init --recursive --merge components
+git -C components switch master
+npm ci</code></pre>
+<p>The consuming package declares <code>"workspaces": ["components"]</code> and a matching <code>@fssrepository/myscoutee-components</code> dependency. MyScoutee's build/serve/test entry points build this workspace before the application; its dev stack uses the existing <code>frontend-sync</code> process. Do not run a competing build alongside that process.</p>
+<p>When editing a separate checkout, commit there and fast-forward the consuming submodule on <code>master</code>. Keep both checkouts on <code>master</code>. The application consumes the same implementation through the public package API; the monolith remains supported.</p>
+<h2 id="releases">Releases</h2>
+<p><a href="https://github.com/fssrepository/myscoutee-components/blob/master/CHANGELOG.md">CHANGELOG.md</a> and <a href="https://github.com/fssrepository/myscoutee-components/blob/master/releases/">releases/</a> record versioned changes. Releases are built and published locally. After a completed build:</p>
+<pre><code>npm run prepare:release
+npm pack ./dist --ignore-scripts
+npm publish ./fssrepository-myscoutee-components-1.4.0.tgz --registry=https://npm.pkg.github.com</code></pre>
+<p>The preparation script fixes package-relative entry points, includes the license and documentation, and excludes source maps, tests and build caches from the archive. If <code>frontend-sync</code> is already running, use a separate copy of its completed library output in the release checkout's ignored <code>dist/</code>; do not run a competing build or change the output being watched by the application. Preparation replaces ng-packagr's watch timestamp version with the source manifest's release version.</p>
+<p>Tag the verified source with <code>vX.Y.Z</code>, push the tag and create a GitHub Release using its versioned release notes. Attach the published <code>.tgz</code> and its SHA-256 checksum. GitHub Packages publication requires a local login with <code>write:packages</code> permission. No registry token is stored in source and no GitHub Action is required.</p>
+<h2 id="license--free-to-reuse-with-required-credit">License — free to reuse with required credit</h2>
+<p>The repository's original code and documentation are licensed under <a href="https://github.com/fssrepository/myscoutee-components/blob/master/LICENSE">Creative Commons Attribution 4.0 International (CC BY 4.0)</a>. Anyone may copy, modify and redistribute them, including commercially.</p>
+<p><strong>Attribution is a condition of the license, not an optional request.</strong> When sharing the material, including modified versions, follow <strong>Section 3(a)</strong> of <a href="https://github.com/fssrepository/myscoutee-components/blob/master/LICENSE">LICENSE</a>: credit <strong>MyScoutee (fssrepository)</strong>, retain the required notices, link to the source and license, and indicate changes.</p>
+<p>Place the credit somewhere readers or users can access it, as appropriate to what you share: a README, documentation, an About/Credits page or a website footer. The full, unmodified standard license text is in <a href="https://github.com/fssrepository/myscoutee-components/blob/master/LICENSE">LICENSE</a>. The attribution information for this repository is supplied in the credit below. This requirement applies when you share the licensed material; private use alone does not require publishing a credit.</p>
+<p>Example credit (also describe changes if you made any):</p>
+<p>Uses <a href="https://github.com/fssrepository/myscoutee-components">MyScoutee Components</a> by MyScoutee (fssrepository). Copyright © 2026, fssrepository. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Provided without warranties; see <a href="https://github.com/fssrepository/myscoutee-components/blob/master/LICENSE">LICENSE</a>, Section 5.</p>
+<p>MyScoutee logos and brand artwork are excluded from CC BY 4.0 and follow <a href="https://github.com/fssrepository/myscoutee-components/blob/master/BRANDING.md">BRANDING.md</a>. Separately identified third-party material retains its own license and notices.</p>
+<h2 id="make-it-your-own">Make it your own</h2>
+<p>Use your own project name and logo. Any MyScoutee logo in template source, examples or UI is demonstration branding: remove or replace it wherever it identifies your product, including an adapted README header.</p>
+<p>You may display the MyScoutee logo in a clearly labeled source-credit section or when demonstrating the original MyScoutee project. It must not suggest that your project is MyScoutee, an official MyScoutee service, or endorsed by its maintainers. A text credit satisfies attribution; displaying the logo is not required. See <a href="https://github.com/fssrepository/myscoutee-components/blob/master/BRANDING.md">BRANDING.md</a>.</p>
+<h2 id="contributing">Contributing</h2>
+<p>Bug reports, documentation improvements and focused pull requests are welcome. Read <a href="https://github.com/fssrepository/myscoutee-components/blob/master/CONTRIBUTING.md">CONTRIBUTING.md</a> to get started.</p>
+<h2 id="related-project">Related project</h2>
+<p><a href="https://github.com/fssrepository/myscoutee-template">MyScoutee Template</a> is the companion repository for reusable project infrastructure.</p></article></body></html>
+
