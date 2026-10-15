@@ -1481,3 +1481,9 @@ button.asset-occupancy-badge:focus-visible {
   border-color: #abd9df;
   color: #216f7a;
 }
+
+@each $tone in 'green', 'amber', 'slate', 'violet' {
+  .ui-info-card__overlay-action--tone-#{$tone}.ui-info-card__overlay-action--badge {
+    @include badgeColors.tone($tone);
+  }
+}

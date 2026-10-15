@@ -2,6 +2,26 @@
 
 // Existing InfoCard status-badge colors, shared by configured calendar badges.
 @mixin tone($tone) {
+  @if $tone == 'green' {
+    background: colors.$green-background;
+    border-color: colors.$green-border;
+    color: colors.$green-foreground;
+  }
+  @if $tone == 'amber' {
+    background: colors.$amber-background;
+    border-color: colors.$amber-border;
+    color: colors.$amber-foreground;
+  }
+  @if $tone == 'slate' {
+    background: colors.$slate-background;
+    border-color: colors.$slate-border;
+    color: colors.$slate-foreground;
+  }
+  @if $tone == 'violet' {
+    background: colors.$violet-background;
+    border-color: colors.$violet-border;
+    color: colors.$violet-foreground;
+  }
   @if $tone == public {
     border-color: rgba(46, 111, 178, 0.4);
     background: linear-gradient(180deg, #eef7ff 0%, #dcecff 100%);
