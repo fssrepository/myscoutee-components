@@ -461,7 +461,7 @@ export class InfoCardComponent implements OnDestroy, OnChanges {
         label: config.label,
         icon: config.icon,
         palette: this.sharedMenuActionPalette(config.tone),
-        surface: 'tinted',
+        surface: 'action',
         context: {
           ...(this.sharedMenuContext ?? {}),
           card,
@@ -555,7 +555,7 @@ export class InfoCardComponent implements OnDestroy, OnChanges {
       case 'destructive':
         return 'danger';
       default:
-        return 'default';
+        return 'blue';
     }
   }
 

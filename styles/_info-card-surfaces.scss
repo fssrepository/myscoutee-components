@@ -1,0 +1,103 @@
+// Shared list-card and calendar-badge surfaces. Keep semantic tones in one place.
+@mixin surfaces {
+  .ui-info-card--tone-full {
+    border-color: rgba(201, 83, 83, 0.42);
+    background: linear-gradient(180deg, #fff8f8 0%, #fff1f1 100%);
+  }
+  
+  .ui-info-card--tone-draft {
+    border-color: rgba(96, 108, 136, 0.34);
+    background: linear-gradient(180deg, #fafbff 0%, #f0f3fb 100%);
+    box-shadow: 0 8px 18px rgba(74, 88, 118, 0.08);
+  }
+  
+  .ui-info-card--tone-stage {
+    border-color: hsl(var(--ui-info-card-accent-hue) 54% 58% / 0.52);
+    background:
+      radial-gradient(circle at 10% 4%, hsl(var(--ui-info-card-accent-hue) 90% 98% / 0.86), transparent 36%),
+      linear-gradient(180deg, hsl(var(--ui-info-card-accent-hue) 82% 97%) 0%, hsl(var(--ui-info-card-accent-hue) 64% 92%) 100%);
+    box-shadow: 0 8px 18px hsl(var(--ui-info-card-accent-hue) 42% 36% / 0.12);
+  }
+  
+  .ui-info-card--tone-subevent-light {
+    border-color: hsl(var(--ui-info-card-accent-hue) 44% 66% / 0.38);
+    background:
+      radial-gradient(circle at 10% 4%, hsl(var(--ui-info-card-accent-hue) 92% 99% / 0.9), transparent 38%),
+      linear-gradient(180deg, hsl(var(--ui-info-card-accent-hue) 78% 98%) 0%, hsl(var(--ui-info-card-accent-hue) 54% 94%) 100%);
+    box-shadow: 0 7px 16px hsl(var(--ui-info-card-accent-hue) 34% 40% / 0.08);
+  }
+  
+  .ui-info-card--tone-subevent-strong {
+    border-color: hsl(var(--ui-info-card-accent-hue) 56% 54% / 0.52);
+    background:
+      radial-gradient(circle at 10% 4%, hsl(var(--ui-info-card-accent-hue) 88% 97% / 0.82), transparent 36%),
+      linear-gradient(180deg, hsl(var(--ui-info-card-accent-hue) 72% 95%) 0%, hsl(var(--ui-info-card-accent-hue) 54% 87%) 100%);
+    box-shadow: 0 8px 18px hsl(var(--ui-info-card-accent-hue) 42% 34% / 0.15);
+  }
+  
+  .ui-info-card--tone-stage-runtime {
+    border-color: hsl(var(--ui-info-card-accent-hue) 48% 58% / 0.5);
+    background: linear-gradient(180deg, #fbfcff 0%, #f3f6fb 100%);
+    box-shadow: 0 8px 18px hsl(var(--ui-info-card-accent-hue) 34% 34% / 0.075);
+  }
+  
+  .ui-info-card--tone-published {
+    border-color: rgba(50, 132, 90, 0.44);
+    background: linear-gradient(180deg, #eef8f2 0%, #d9ecdf 100%);
+    box-shadow: 0 8px 18px rgba(39, 111, 75, 0.15);
+  }
+  
+  .ui-info-card--tone-pending {
+    border-color: rgba(202, 145, 52, 0.34);
+    background: linear-gradient(180deg, #fffaf0 0%, #fff2d9 100%);
+    box-shadow: 0 8px 18px rgba(171, 122, 40, 0.12);
+  }
+  
+  .ui-info-card--tone-waitlist {
+    border-color: rgba(73, 119, 154, 0.36);
+    background: linear-gradient(180deg, #f3fbff 0%, #e7f2f7 100%);
+    box-shadow: 0 8px 18px rgba(50, 98, 135, 0.12);
+  }
+  
+  .ui-info-card--tone-series {
+    border-color: rgba(42, 126, 134, 0.34);
+    background: linear-gradient(180deg, #f2fbfb 0%, #e4f4f5 100%);
+    box-shadow: 0 8px 18px rgba(31, 111, 118, 0.12);
+  }
+  
+  .ui-info-card--tone-system {
+    border-color: rgba(94, 62, 205, 0.66);
+    background:
+      radial-gradient(circle at 12% 2%, rgba(64, 223, 255, 0.42), transparent 40%),
+      radial-gradient(circle at 94% 96%, rgba(255, 83, 177, 0.3), transparent 42%),
+      linear-gradient(145deg, #dddfff 0%, #cddcff 45%, #ecd6f4 100%);
+    box-shadow:
+      0 10px 24px rgba(62, 43, 153, 0.25),
+      0 0 0 1px rgba(85, 193, 255, 0.16) inset;
+  }
+  
+  .ui-info-card--tone-review {
+    border-color: rgba(126, 82, 35, 0.5);
+    background: linear-gradient(180deg, #f6ead8 0%, #ecd5b5 100%);
+    box-shadow: 0 8px 18px rgba(105, 68, 29, 0.16);
+  }
+  
+  .ui-info-card--tone-blocked {
+    border-color: rgba(180, 52, 64, 0.28);
+    background: linear-gradient(180deg, #fff2f2 0%, #f8dede 100%);
+    box-shadow: 0 8px 18px rgba(150, 48, 61, 0.12);
+  }
+  
+  .ui-info-card--tone-deleted {
+    border-color: rgba(97, 105, 118, 0.34);
+    background: linear-gradient(180deg, #f7f8fa 0%, #e9edf2 100%);
+    box-shadow: 0 8px 18px rgba(60, 70, 88, 0.1);
+  }
+  
+  .ui-info-card--tone-inactive {
+    border-color: rgba(102, 112, 128, 0.28);
+    background: linear-gradient(180deg, #f2f3f5 0%, #e8ebef 100%);
+    box-shadow: 0 8px 18px rgba(60, 70, 88, 0.1);
+  }
+
+}

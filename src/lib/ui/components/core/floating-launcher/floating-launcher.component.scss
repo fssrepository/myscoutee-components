@@ -1,4 +1,5 @@
-:host { display: block; pointer-events: auto; --app-menu-draggable-cursor: pointer; }
+:host(app-floating-launcher) { display: block; pointer-events: none; --app-menu-draggable-cursor: pointer; }
+app-menu { pointer-events: auto; }
 .floating-launcher-dismiss-target {
   position: fixed;
   left: 50%;

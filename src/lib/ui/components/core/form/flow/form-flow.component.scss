@@ -450,10 +450,12 @@
   border-radius: 10px;
   background: #eef6ff;
 
-  img {
+  .form-flow__step-image {
+    position: relative;
     width: 100%;
     aspect-ratio: 16 / 7;
-    object-fit: cover;
+    background-size: cover;
+    background-position: center;
     border-radius: 8px;
   }
 
@@ -467,6 +469,19 @@
     color: #506885;
     font-size: 13px;
   }
+}
+
+.form-flow__step-image-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.form-flow__step-image.lazy-bg-loading .form-flow__step-image-loader {
+  opacity: 1;
 }
 
 .form-flow__step-title-sr {
@@ -549,6 +564,14 @@
     line-height: 1.35;
     resize: vertical;
   }
+}
+
+.form-flow__menu {
+  max-width: 100%;
+  --app-menu-row-wrap: wrap;
+  --app-menu-row-justify: flex-start;
+  --app-menu-row-item-width: 9.5rem;
+  --app-menu-row-item-flex: 0 0 auto;
 }
 
 .form-flow__control--with-accessory {

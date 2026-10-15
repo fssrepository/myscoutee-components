@@ -1,3 +1,4 @@
+@use 'sass:list';
 @use '../../../../../../../../styles/_contextual-colors' as colors;
 :host {
   display: block;
@@ -129,6 +130,7 @@
   box-shadow: 0 4px 12px rgba(67, 48, 163, 0.3);
 }
 
+.ui-single-row__avatar.ui-single-row__avatar--contextual,
 .ui-single-row__avatar.notification-stage-avatar {
   position: relative;
   color: hsl(var(--ui-single-row-accent-hue, 210) 72% 30%);
@@ -534,4 +536,37 @@
   }
 }
 
-.ui-single-row--palette-gold { border-color: colors.$gold-border; background: colors.$gold-background; }
+@each $palette, $surface in (
+  'gold': (colors.$gold-background, colors.$gold-border, colors.$gold-foreground),
+  'rose': (colors.$rose-background, colors.$rose-border, colors.$rose-icon)
+) {
+  .ui-single-row--palette-#{$palette} {
+    &:not(.ui-single-row--tone-muted) {
+      border-color: list.nth($surface, 2);
+      background: list.nth($surface, 1);
+    }
+    .ui-single-row__avatar--contextual {
+      background: list.nth($surface, 1);
+      border-color: list.nth($surface, 2);
+      color: list.nth($surface, 3);
+      box-shadow: none;
+    }
+  }
+}
+
+// Explicit badge palettes reuse the same contextual surfaces as menu choices.
+@each $palette, $surface in (
+  'blue': (colors.$blue-background, colors.$blue-border, colors.$blue-foreground),
+  'green': (colors.$green-background, colors.$green-border, colors.$green-foreground),
+  'cyan': (colors.$cyan-background, colors.$cyan-border, colors.$cyan-foreground),
+  'violet': (colors.$violet-background, colors.$violet-border, colors.$violet-foreground),
+  'amber': (colors.$amber-background, colors.$amber-border, colors.$amber-foreground),
+  'gold': (colors.$gold-background, colors.$gold-border, colors.$gold-foreground),
+  'rose': (colors.$rose-background, colors.$rose-border, colors.$rose-icon)
+) {
+  .ui-single-row__badge-palette--#{$palette} {
+    background: list.nth($surface, 1);
+    border-color: list.nth($surface, 2);
+    color: list.nth($surface, 3);
+  }
+}

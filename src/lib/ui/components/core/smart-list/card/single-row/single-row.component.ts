@@ -173,6 +173,7 @@ export class SingleRowComponent {
       'ui-single-row__badge-pill',
       `ui-single-row__badge-pill--${badge.tone ?? 'default'}`
     ];
+    if (badge.palette) classes.push(`ui-single-row__badge-palette--${badge.palette}`);
     const className = `${badge.className ?? ''}`.trim();
     if (className) {
       classes.push(className);

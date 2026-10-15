@@ -7,6 +7,8 @@ export interface ExplanationGuideOptions {
   storageKey?: string;
   dismissalScope?: 'context' | 'visit';
   isExplainableContext: (contextKey: string) => boolean;
+  /** Visible overlays retain ownership when a background route mounts later. */
+  contextPriority?: (contextKey: string | null) => number;
   introduction?: {
     contextKey: string;
     shouldOffer: () => boolean;
@@ -36,7 +38,7 @@ export class ExplanationGuideService {
   private readonly loadedContextRef = signal<string | null>(null);
   private readonly loadedLanguageRef = signal<string | null>(null);
   private readonly resolvedContextRef = signal<string | null>(null);
-  private readonly contextStack: Array<{ contextKey: string | null }> = [];
+  private readonly contextStack: Array<{ contextKey: string | null; priority: number }> = [];
   private loadSerial = 0;
   private introductionOffered = false;
   private releaseIntroduction: (() => void) | null = null;
@@ -91,10 +93,11 @@ export class ExplanationGuideService {
       return () => undefined;
     }
     const registration = {
-      contextKey: this.isExplainableContext(normalized) ? normalized : null
+      contextKey: this.isExplainableContext(normalized) ? normalized : null,
+      priority: this.options.contextPriority?.(contextKey === null ? null : normalized) ?? 0
     };
     this.contextStack.push(registration);
-    this.setCurrentContext(registration.contextKey);
+    this.selectCurrentContext();
     let registered = true;
     return () => {
       if (!registered) {
@@ -105,8 +108,16 @@ export class ExplanationGuideService {
       if (index >= 0) {
         this.contextStack.splice(index, 1);
       }
-      this.setCurrentContext(this.contextStack[this.contextStack.length - 1]?.contextKey ?? null);
+      this.selectCurrentContext();
     };
+  }
+
+  private selectCurrentContext(): void {
+    let top: (typeof this.contextStack)[number] | undefined;
+    for (const registration of this.contextStack) {
+      if (!top || registration.priority >= top.priority) top = registration;
+    }
+    this.setCurrentContext(top?.contextKey ?? null);
   }
 
   setEnabled(enabled: boolean): void {

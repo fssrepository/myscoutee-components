@@ -1,3 +1,4 @@
+import type { InfoCardData } from './card/card.types';
 import type { RatingSnapshot } from '../../../../foundation/rating';
 import { Observable } from 'rxjs';
 import type {
@@ -175,6 +176,8 @@ export interface SmartListCalendarTimedBadge<T> {
 }
 
 export interface SmartListCalendarCounter {
+  /** Key in the caller-owned calendar color palette. */
+  colorKey?: string | null;
   label: string;
   ariaLabel?: string | null;
   alertLabel?: string | null;
@@ -228,6 +231,12 @@ export interface SmartListTimelinePage<T> {
   spans: SmartListTimelineSpan<T>[];
 }
 
+export type SmartListCalendarBadgeColors = Pick<InfoCardData, 'surfaceTone' | 'accentHue'> & {
+  badgeTone?: 'public' | 'stage-scheduled' | 'orange' | 'stage-finalized' | 'stage-suspended' | 'deleted'
+    | 'stage-active' | 'stage-blocked' | 'stage-start' | 'stage-review'
+    | 'review' | 'blocked' | 'inactive' | 'teal' | 'purple' | 'danger' | 'full';
+};
+
 export interface SmartListCalendarConfig<T, TFilters extends SmartListFilters = SmartListFilters> {
   weekdayLabels?: ReadonlyArray<string>;
   weekStartHour?: number;
@@ -235,9 +244,17 @@ export interface SmartListCalendarConfig<T, TFilters extends SmartListFilters = 
   anchorRadius?: number;
   initialAnchor?: SmartListConfigValue<string | Date | null | undefined, TFilters>;
   counterGranularity?: 'day' | 'hour';
+  /** Opt-in hybrid cells. Custom counters can represent server-side aggregates. */
+  density?: { monthMaxBadges?: number; weekMaxBadgesPerHour?: number };
   resolveDateRange: (item: T, query: ListQuery<TFilters>) => SmartListCalendarDateRange | null;
   badgeLabel?: (item: T, query: ListQuery<TFilters>) => string;
   badgeToneClass?: (item: T, query: ListQuery<TFilters>) => SmartListClassValue;
+  /** Caller-owned color keys and palette; no domain semantics in the calendar. */
+  badgeColors?: {
+    palette: Readonly<Record<string, SmartListCalendarBadgeColors>>;
+    counterKey?: string;
+    resolveKey: (item: T, query: ListQuery<TFilters>) => string | null;
+  };
   dayCounter?: (day: SmartListCalendarDay<T>, query: ListQuery<TFilters>) => SmartListCalendarCounter | null;
   hourCounter?: (
     day: SmartListCalendarDay<T>,
@@ -391,6 +408,7 @@ export interface SmartListConfig<T, TFilters extends SmartListFilters = SmartLis
   /** Defaults to true; borderless decorative lists can omit the empty message. */
   showEmptyState?: boolean;
   emptyLabel?: string | ((query: ListQuery<TFilters>) => string);
+  emptyPlacement?: 'center' | 'start';
   emptyDescription?: string | ((query: ListQuery<TFilters>) => string);
   emptyStickyLabel?: string | ((query: ListQuery<TFilters>) => string);
   showStickyHeader?: boolean;

@@ -61,6 +61,7 @@ export * from './lib/ui/components/core/smart-list/smart-list-local-sort';
 export * from './lib/ui/components/core/smart-list/smart-list-page.adapter';
 export * from './lib/ui/components/core/smart-list/smart-list-timeline.adapter';
 export * from './lib/ui/components/core/smart-list/smart-list.component';
+export * from './lib/ui/components/core/smart-list/smart-list-empty-state.component';
 export * from './lib/ui/components/core/smart-list/smart-list.types';
 export * from './lib/ui/scheduler/after-paint';
 export * from './lib/ui/scheduler/ui-poll-coordinator';

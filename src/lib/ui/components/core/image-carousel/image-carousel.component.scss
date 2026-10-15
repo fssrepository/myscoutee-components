@@ -667,6 +667,7 @@
 
 .image-carousel__expand {
   @include mediaBadge.surface;
+  @include mediaBadge.actionable;
   position: absolute;
   z-index: 5;
   top: .7rem;
@@ -680,7 +681,7 @@
   cursor: pointer;
 }
 .image-carousel__expand .mat-icon {
-  width: 16px; height: 16px; font-size: 16px; line-height: 16px;
+  @include mediaBadge.chevron;
 }
 .image-carousel__empty { padding: 2rem; text-align: center; }
 :host(.image-carousel-host--slideshow) {

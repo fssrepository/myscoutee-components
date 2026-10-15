@@ -96,23 +96,30 @@ export class FloatingLauncherComponent {
     const frozen = mobile && !!document.querySelector('.explanation-guide-overlay, .activities-rate-profile-stack.is-resizing');
     const rail = mobile && !frozen ? host.closest<HTMLElement>('.floating-launcher-rail:not(.is-embedded)') : null;
     const rates = rail ? document.querySelector('app-activities-popup .smart-list__surface--retained-fullscreen') : null;
-    if (!frozen) this.ratingPanelAnchor = !!(rail && rates);
+    const home = rail && !rates && !document.querySelector('.ui-popup')
+      ? document.querySelector<HTMLElement>('.home-smart-list .smart-list__fullscreen-card--active') : null;
+    const panel = rates ?? home;
+    if (!frozen) this.ratingPanelAnchor = !!(rail && panel);
     // Keep automatic clearance separate from the user's drag position.
     const baseTop = rect.top + this.lift();
     let top = frozen ? rect.top : baseTop;
-    if (rail && rates) {
+    if (rail && panel) {
       // Anchor both launchers to the panel, independently of scrolling cards
       // and controls appearing/disappearing. Fullscreen has a fixed footer.
-      const bottomInset = rates.closest('.activities-popup-rates-fullscreen') ? 96 : 56;
-      const bottom = rates.getBoundingClientRect().bottom - bottomInset;
+      const bottomInset = rates?.closest('.activities-popup-rates-fullscreen') ? 96 : 56;
+      // The page-turn transforms the card, but not its SmartList layout slot.
+      // Measure that slot so every Home using this launcher keeps its anchor.
+      const bottom = (home
+        ? home.parentElement!.getBoundingClientRect().top + home.offsetTop + home.offsetHeight
+        : panel.getBoundingClientRect().bottom) - bottomInset;
       top -= rail.getBoundingClientRect().bottom - bottom;
     }
     const gap = 8;
-    // Desktop and Rates only compare registered launchers. In particular, the
-    // Rates scroll path never looks up Save buttons or individual card eyes.
+    // Desktop and anchored panels only compare registered launchers. Panel
+    // placement never depends on Save buttons or individual card eyes.
     const obstacles: LauncherObstacle[] = mobile && !frozen && !this.ratingPanelAnchor
       ? [...document.querySelectorAll<HTMLElement>(
-        '.document-viewer-actions, .rate__commit, .form-flow__save, .shared-card-profile-view-btn'
+        '.document-viewer-actions, .rate__commit, .form-flow__save, .form-flow__group-header-menu, .form-flow__table-actions, .shared-card-profile-view-btn'
       )].flatMap(element => {
         // SmartList retains its list and neighbouring fullscreen cards. Their
         // controls cannot obstruct the launcher; don't measure hidden layouts.

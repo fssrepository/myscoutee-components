@@ -265,6 +265,7 @@ export const CARD_MENU_ACTIONS: Readonly<Record<CardMenuActionId, CardMenuAction
   openNotificationAnnouncement: { label: 'announcement.view', icon: 'campaign', tone: 'accent' },
   openNotificationCase: { label: 'case.view', icon: 'home_repair_service', tone: 'accent' },
   openNotificationRatings: { label: 'ratings', icon: 'star', tone: 'accent' },
+  openNotificationFeedback: { label: 'feedback.list.title', icon: 'rate_review', tone: 'accent' },
   openNotificationGroup: { label: 'groups.open', icon: 'groups', tone: 'accent' },
   openNotificationEvent: { label: 'Open event', icon: 'event', tone: 'accent' },
   openNotificationInvitation: { label: 'Open invitation', icon: 'mail', tone: 'accent' },
@@ -340,6 +341,7 @@ export interface SingleRowBadge {
   ariaLabel?: string | null;
   title?: string | null;
   tone?: SingleRowBadgeTone | null;
+  palette?: Extract<AppMenuPalette, 'blue' | 'green' | 'cyan' | 'violet' | 'amber' | 'gold' | 'rose'> | null;
   position?: SingleRowBadgePosition | null;
   className?: string | null;
 }

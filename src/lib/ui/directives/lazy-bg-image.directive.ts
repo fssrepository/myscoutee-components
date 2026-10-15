@@ -34,6 +34,8 @@ interface LazyImageScrollState {
 export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input() appLazyBgImage: string | null = null;
   @Input() appLazyImageEnabled = true;
+  // Small shared atlases stay painted across carousel transitions once loaded.
+  @Input() appLazyImageRetainLoaded = false;
   @Input() appLazyHtmlImages: boolean | string | null = false;
   @Input() appLazyImageFallback: string | null = null;
 
@@ -364,6 +366,7 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
     this.observer = new IntersectionObserver(
       entries => {
         if (!entries.some(entry => entry.isIntersecting)) {
+          if (this.appLazyImageRetainLoaded && this.hasLoaded) return;
           // Suspend only a photo that has actually left the viewport. A picture
           // still on screen must not blink when scrolling speed changes.
           this.renderer.addClass(this.elementRef.nativeElement, 'lazy-bg-suspended');
@@ -382,6 +385,15 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
     if (!this.appLazyImageEnabled || this.currentUrl !== url) return;
     const element = this.elementRef.nativeElement;
     const ready = this.hasLoaded;
+    const retainedUrl = this.appLazyImageRetainLoaded ? this.renderedImageUrl(url) : null;
+    if (!ready && retainedUrl && LazyBgImageDirective.loadedUrls.has(retainedUrl)) {
+      this.applyBackground(retainedUrl);
+      return;
+    }
+    if (ready && this.appLazyImageRetainLoaded) {
+      this.renderer.removeClass(element, 'lazy-bg-suspended');
+      return;
+    }
     if (ready && !element.classList.contains('lazy-bg-suspended')) return;
     let ancestor: Node | null = this.elementRef.nativeElement;
     while (ancestor) {
@@ -503,6 +515,9 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
     this.renderer.removeClass(this.elementRef.nativeElement, this.loadingClass);
     this.renderer.addClass(this.elementRef.nativeElement, this.loadedClass);
     LazyBgImageDirective.loadedUrls.add(url);
+    if (this.appLazyImageRetainLoaded) {
+      this.renderer.removeClass(this.elementRef.nativeElement, 'lazy-bg-suspended');
+    }
     this.appliedUrl = url;
     this.hasLoaded = true;
   }

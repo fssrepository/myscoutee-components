@@ -252,7 +252,7 @@ app-popup {
 
 .ui-popup__header--layout-article .ui-popup__title h2 {
   margin: 0;
-  max-width: 820px;
+  max-width: 100%;
   color: #173456;
   font-size: clamp(1.2rem, 2.2vw, 1.65rem);
   line-height: 1.2;
@@ -276,7 +276,7 @@ app-popup {
 }
 
 .ui-popup__header--layout-article .ui-popup__subtitle {
-  max-width: 72ch;
+  max-width: 100%;
   margin: 0.2rem 0 0;
   color: rgba(31, 54, 88, 0.76);
   font-size: 0.94rem;
@@ -738,14 +738,14 @@ app-popup {
     margin-left: auto;
   }
 
-  .ui-popup__toolbar-group--end:has(app-menu.ui-popup__control.app-menu-host--inline-row-labelled-action) {
+  .ui-popup__toolbar-group--end:has(app-menu.ui-popup__control.app-menu-host--inline-row-labelled-action:not(.app-menu-host--content-actions)) {
     flex: 1 1 auto;
     width: 100%;
     min-width: 0;
     margin-left: 0;
   }
 
-  .ui-popup__toolbar-group--end app-menu.ui-popup__control.app-menu-host--inline-row-labelled-action {
+  .ui-popup__toolbar-group--end app-menu.ui-popup__control.app-menu-host--inline-row-labelled-action:not(.app-menu-host--content-actions) {
     flex: 1 1 auto;
     width: 100%;
     min-width: 0;

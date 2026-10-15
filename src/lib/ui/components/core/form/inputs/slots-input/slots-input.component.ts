@@ -14,6 +14,19 @@ import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/f
 import { MatIconModule } from '@angular/material/icon';
 
 
+/** Shared by schedule choices and read-only frequency badges. */
+export function scheduleFrequencyPalette(frequency: string): Extract<AppMenuPalette, 'blue' | 'green' | 'cyan' | 'violet' | 'amber' | 'gold'> {
+  if (frequency.trim().toLowerCase() === 'quarterly') return 'violet';
+  switch (normalizeScheduleFrequency(frequency)) {
+    case 'Daily': return 'green';
+    case 'Weekly': return 'cyan';
+    case 'Bi-weekly': return 'violet';
+    case 'Monthly': return 'amber';
+    case 'Yearly': return 'gold';
+    default: return 'blue';
+  }
+}
+
 export type SlotsInputConfigValue<TValue> = TValue | (() => TValue);
 export type SlotsInputEditorMode = 'base' | 'date';
 
@@ -1057,22 +1070,7 @@ export class SlotsInputComponent implements OnChanges, DoCheck, ControlValueAcce
   }
 
   private scheduleFrequencyPalette(frequency: string): AppMenuPalette {
-    switch (this.normalizeFrequency(frequency)) {
-      case 'Custom':
-        return 'blue';
-      case 'Daily':
-        return 'green';
-      case 'Weekly':
-        return 'cyan';
-      case 'Bi-weekly':
-        return 'violet';
-      case 'Monthly':
-        return 'amber';
-      case 'Yearly':
-        return 'gold';
-      default:
-        return 'blue';
-    }
+    return scheduleFrequencyPalette(this.normalizeFrequency(frequency));
   }
 
   private defaultScheduleDraftDate(): Date {

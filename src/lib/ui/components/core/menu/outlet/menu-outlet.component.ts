@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostBinding,
@@ -130,9 +131,19 @@ export class AppMenuOutletComponent<TId extends string = string, TContext = unkn
     this.dispatcher.refreshActiveRect();
   }
 
-  @HostListener('window:scroll')
-  protected onWindowScroll(): void {
-    this.dispatcher.refreshActiveRect();
+  constructor() {
+    // Element scroll events do not bubble to window. Capture them so a menu
+    // follows its trigger inside popup and SmartList scroll containers too.
+    const windowRef = this.hostRef.nativeElement.ownerDocument.defaultView;
+    if (!windowRef) return;
+    const onScroll = (event: Event): void => {
+      const menu = this.activeMenu();
+      if (!menu || this.isControlledMenu(menu) || this.isBottomMenu(menu)
+          || this.isMobileMenu(menu) || this.containsTarget(event.target)) return;
+      this.dispatcher.refreshActiveRect();
+    };
+    windowRef.addEventListener('scroll', onScroll, { capture: true, passive: true });
+    inject(DestroyRef).onDestroy(() => windowRef.removeEventListener('scroll', onScroll, true));
   }
 
   public containsTarget(target: EventTarget | null | undefined): boolean {

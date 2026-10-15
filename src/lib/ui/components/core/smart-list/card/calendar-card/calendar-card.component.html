@@ -20,6 +20,7 @@
             <div
               class="smart-list__month-week"
               [class.smart-list__month-week--counter]="isCounterCalendarVariant()"
+              [style.min-height.px]="monthMinimumHeight()"
             >
               @for (day of week.days; track trackByCalendarDayKey($index, day)) {
                 <div
@@ -29,11 +30,12 @@
                   [class.smart-list__month-cell--counter]="isCounterCalendarVariant()"
                 >
                   <div class="smart-list__month-day-num">{{ day.dayNumber }}</div>
-                  @if (isCounterCalendarVariant() && calendarDayCounter(day); as counter) {
+                  @if (day.counter; as counter) {
                     <button
                       type="button"
                       class="smart-list__month-counter"
-                      [ngClass]="calendarCounterClass(counter)"
+                      [ngClass]="counter.classes"
+                      [style.--ui-info-card-accent-hue]="counter.accentHue"
                       [attr.aria-label]="counter.ariaLabel || counter.label"
                       (click)="selectCalendarDay(day, $event)"
                     >
@@ -45,19 +47,21 @@
                   }
                 </div>
               }
-              @if (!isCounterCalendarVariant() && week.spans.length > 0) {
+              @if (week.spans; as spans) {
                 <div class="smart-list__month-week-spans">
-                  @for (span of week.spans; track trackByCalendarSpanKey($index, span)) {
+                  @for (span of spans; track trackByCalendarSpanKey($index, span)) {
                     <button
                       type="button"
                       class="smart-list__calendar-badge smart-list__month-span-badge"
-                      [ngClass]="calendarBadgeToneClass(span.item)"
-                      [style.left.%]="(span.startCol * 100) / 7"
-                      [style.width.%]="((span.endCol - span.startCol + 1) * 100) / 7"
+                      [ngClass]="span.classes"
+                      [attr.title]="span.label"
+                      [style.--ui-info-card-accent-hue]="span.accentHue"
+                      [style.grid-column-start]="span.startCol + 1"
+                      [style.grid-column-end]="span.endCol + 2"
                       [style.top.px]="18 + (span.lane * 20)"
                       (click)="selectItem(span.item, $event)"
                     >
-                      <span>{{ calendarBadgeLabel(span.item) }}</span>
+                      <span>{{ span.label }}</span>
                     </button>
                   }
                 </div>
@@ -79,11 +83,12 @@
             >
               <span>{{ calendarWeekdayLabels()[dayIndex] }}</span>
               <strong>{{ day.dayNumber }}</strong>
-              @if (isCounterCalendarVariant() && calendarDayCounter(day); as counter) {
+              @if (isCounterCalendarVariant() && day.counter; as counter) {
                 <button
                   type="button"
                   class="smart-list__week-counter-head"
-                  [ngClass]="calendarCounterClass(counter)"
+                  [ngClass]="counter.classes"
+                      [style.--ui-info-card-accent-hue]="counter.accentHue"
                   [attr.aria-label]="counter.ariaLabel || counter.label"
                   (click)="selectCalendarDay(day, $event)"
                 >
@@ -109,13 +114,14 @@
               [class.smart-list__week-day-col--counter]="isCounterCalendarVariant()"
             >
               @if (isCounterCalendarVariant() && calendarCounterGranularity() === 'hour') {
-                @for (hour of calendarWeekHours(); track hour) {
+                @for (slot of day.hours; track slot.hour) {
                   <div class="smart-list__week-hour-slot smart-list__week-counter-slot">
-                    @if (calendarHourCounter(day, hour); as counter) {
+                    @if (slot.counter; as counter) {
                       <button
                         type="button"
                         class="smart-list__week-hour-counter"
-                        [ngClass]="calendarCounterClass(counter)"
+                        [ngClass]="counter.classes"
+                      [style.--ui-info-card-accent-hue]="counter.accentHue"
                         [attr.aria-label]="counter.ariaLabel || counter.label"
                         (click)="selectCalendarDay(day, $event)"
                       >
@@ -128,14 +134,15 @@
                   </div>
                 }
               } @else if (isCounterCalendarVariant()) {
-                @for (hour of calendarWeekHours(); track hour) {
+                @for (slot of day.hours; track slot.hour) {
                   <div class="smart-list__week-hour-slot"></div>
                 }
-                @if (calendarDayCounter(day); as counter) {
+                @if (day.counter; as counter) {
                   <button
                     type="button"
                     class="smart-list__week-counter"
-                    [ngClass]="calendarCounterClass(counter)"
+                    [ngClass]="counter.classes"
+                      [style.--ui-info-card-accent-hue]="counter.accentHue"
                     [attr.aria-label]="counter.ariaLabel || counter.label"
                     (click)="selectCalendarDay(day, $event)"
                   >
@@ -146,19 +153,29 @@
                   </button>
                 }
               } @else {
-                @for (hour of calendarWeekHours(); track hour) {
-                  <div class="smart-list__week-hour-slot"></div>
+                @for (slot of day.hours; track slot.hour) {
+                  <div class="smart-list__week-hour-slot smart-list__week-counter-slot">
+                    @if (slot.counter; as counter) {
+                      <button type="button" class="smart-list__week-hour-counter"
+                        [ngClass]="counter.classes"
+                        [style.--ui-info-card-accent-hue]="counter.accentHue"
+                        [attr.aria-label]="counter.ariaLabel || counter.label"
+                        (click)="selectCalendarDay(day, $event)">{{ counter.label }}</button>
+                    }
+                  </div>
                 }
-                @for (badge of weekDayTimedBadges(day); track trackByCalendarTimedBadge($index, badge)) {
+                @for (badge of day.badges; track trackByCalendarTimedBadge($index, badge)) {
                   <button
                     type="button"
                     class="smart-list__calendar-badge smart-list__week-timed-badge"
-                    [ngClass]="calendarBadgeToneClass(badge.item)"
+                    [ngClass]="badge.classes"
+                    [attr.title]="badge.label"
+                      [style.--ui-info-card-accent-hue]="badge.accentHue"
                     [style.top.%]="badge.topPct"
                     [style.height.%]="badge.heightPct"
                     (click)="selectItem(badge.item, $event)"
                   >
-                    <span>{{ calendarBadgeLabel(badge.item) }}</span>
+                    <span>{{ badge.label }}</span>
                   </button>
                 }
               }

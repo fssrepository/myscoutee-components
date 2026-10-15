@@ -163,6 +163,67 @@ describe('fast-scroll image deferral', () => {
 });
 
 describe('cached image paint visibility', () => {
+  it('reuses another atlas slice cache immediately during a fast scroll', () => {
+    const root = document.createElement('div');
+    const { instance, element } = background(true);
+    root.append(element);
+    instance.appLazyImageRetainLoaded = true;
+    const url = '/cached-atlas.jpg';
+    instance.currentUrl = url;
+    LazyBgImageDirective['loadedUrls'].add(url);
+    const event = { target: root } as unknown as Event;
+    try {
+      element.classList.add('lazy-bg-suspended');
+      LazyBgImageDirective['onScroll'](event);
+      instance.loadBackgroundUrl(url);
+      expect(element.classList.contains('lazy-bg-suspended')).toBe(false);
+      expect(element.style.backgroundImage).toContain(url);
+      expect(instance.loadRenderableUrl).not.toHaveBeenCalled();
+    } finally {
+      LazyBgImageDirective['loadedUrls'].delete(url);
+      LazyBgImageDirective['onScrollEnd'](event);
+    }
+  });
+
+  it('keeps a loaded atlas painted when it leaves and reenters during a fast carousel scroll', () => {
+    let callback!: IntersectionObserverCallback;
+    vi.stubGlobal('IntersectionObserver', class {
+      constructor(handler: IntersectionObserverCallback) { callback = handler; }
+      observe = vi.fn();
+      disconnect = vi.fn();
+    });
+    const root = document.createElement('div');
+    const { instance, element } = background(true, true);
+    root.append(element);
+    instance.appLazyImageRetainLoaded = true;
+    instance.scheduleVisibleBackgroundLoad = vi.fn();
+    const event = { target: root } as unknown as Event;
+    try {
+      instance.setupObserver();
+      callback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver);
+      expect(element.classList.contains('lazy-bg-suspended')).toBe(false);
+      LazyBgImageDirective['onScroll'](event);
+      callback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+      expect(element.classList.contains('lazy-bg-suspended')).toBe(false);
+      expect(element.classList.contains('lazy-bg-loading')).toBe(false);
+      expect(element.style.backgroundImage).toContain('/ready.jpg');
+      expect(instance.loadRenderableUrl).not.toHaveBeenCalled();
+    } finally {
+      LazyBgImageDirective['onScrollEnd'](event);
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('clears offscreen suspension when the first retained atlas load completes', () => {
+    const { instance, element } = background(true);
+    instance.appLazyImageRetainLoaded = true;
+    element.classList.add('lazy-bg-suspended', 'lazy-bg-loading');
+    instance.applyBackground('/ready.jpg');
+    expect(element.classList.contains('lazy-bg-suspended')).toBe(false);
+    expect(element.classList.contains('lazy-bg-loading')).toBe(false);
+    expect(element.style.backgroundImage).toContain('/ready.jpg');
+  });
+
   it('keeps a visible cached image unchanged and reveals an entering cached image only after the fling', () => {
     const root = document.createElement('div');
     const visible = background(true, true);

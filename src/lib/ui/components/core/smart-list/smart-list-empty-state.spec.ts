@@ -6,6 +6,7 @@ import {
   ExplanationGuideService,
   I18nPipe,
   SmartListComponent,
+  SmartListEmptyStateComponent,
   IndicatorComponent,
   type PageResult,
   type SmartListConfig
@@ -21,7 +22,7 @@ describe('SmartList existing empty states', () => {
         { provide: UI_TRANSLATIONS, useValue: { revision: signal(0), translate: (key: string) => key } }
       ]
     }).overrideComponent(SmartListComponent, {
-      set: { imports: [CommonModule, I18nPipe, IndicatorComponent], schemas: [NO_ERRORS_SCHEMA] }
+      set: { imports: [CommonModule, I18nPipe, IndicatorComponent, SmartListEmptyStateComponent], schemas: [NO_ERRORS_SCHEMA] }
     });
   });
 
@@ -33,6 +34,44 @@ describe('SmartList existing empty states', () => {
     fixture.detectChanges();
     return fixture;
   }
+
+  it('renders read errors as an accessible shared card without claiming the list is empty', () => {
+    const fixture = TestBed.createComponent(SmartListEmptyStateComponent);
+    fixture.componentRef.setInput('tone', 'error');
+    fixture.componentRef.setInput('label', 'Could not load the case');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.getAttribute('role')).toBe('alert');
+    expect(fixture.nativeElement.classList.contains('smart-list__empty--error')).toBe(true);
+    expect(fixture.nativeElement.textContent).toContain('Could not load the case');
+    expect(fixture.nativeElement.textContent).not.toContain('No items');
+    fixture.destroy();
+  });
+
+  it('replaces empty content and its header with the store error, then recovers without reloading on input changes', async () => {
+    const result = new Subject<PageResult<unknown>>();
+    const fixture = TestBed.createComponent(SmartListComponent);
+    const loadPage = vi.fn(() => result.asObservable());
+    fixture.componentRef.setInput('config', { initialPageCount: 1, emptyLabel: 'No tasks', emptyPlacement: 'start' });
+    fixture.componentRef.setInput('loadPage', loadPage);
+    fixture.detectChanges();
+    result.error(new Error('temporary failure'));
+    await vi.waitFor(() => expect(fixture.componentInstance['initialLoading']).toBe(false));
+    fixture.componentRef.setInput('emptyError', 'Could not load scheduled tasks');
+    fixture.detectChanges();
+    const error = fixture.nativeElement.querySelector('app-smart-list-empty-state');
+    expect(error.getAttribute('role')).toBe('alert');
+    expect(error.textContent).toContain('Could not load scheduled tasks');
+    expect(error.classList.contains('smart-list__empty--start')).toBe(false);
+    expect(fixture.nativeElement.querySelector('.smart-list__sticky')).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('No tasks');
+    expect(loadPage).toHaveBeenCalledTimes(1);
+    fixture.componentRef.setInput('emptyError', null);
+    fixture.detectChanges();
+    expect(loadPage).toHaveBeenCalledTimes(1);
+    expect(fixture.nativeElement.querySelector('app-smart-list-empty-state').getAttribute('role')).toBe('status');
+    expect(fixture.nativeElement.textContent).toContain('No tasks');
+    fixture.destroy();
+  });
 
   it.each(['vertical', 'horizontal'] as const)('retains configured empty content in a three-column %s list', orientation => {
     const fixture = render({ listLayout: 'card-grid', desktopColumns: 3, orientation,

@@ -1,3 +1,5 @@
+@use '../../../../../../../../styles/_badge-colors' as badgeColors;
+@use '../../../../../../../../styles/_info-card-surfaces' as surfaces;
 @use '../../../../../../../../styles/_media-badge' as mediaBadge;
 @use '../../../../../../../../styles/_contextual-colors' as colors;
 
@@ -104,105 +106,7 @@ button.asset-occupancy-badge:active::after,
   animation: ui-info-card-press-wave 0.42s ease-out;
 }
 
-.ui-info-card--tone-full {
-  border-color: rgba(201, 83, 83, 0.42);
-  background: linear-gradient(180deg, #fff8f8 0%, #fff1f1 100%);
-}
-
-.ui-info-card--tone-draft {
-  border-color: rgba(96, 108, 136, 0.34);
-  background: linear-gradient(180deg, #fafbff 0%, #f0f3fb 100%);
-  box-shadow: 0 8px 18px rgba(74, 88, 118, 0.08);
-}
-
-.ui-info-card--tone-stage {
-  border-color: hsl(var(--ui-info-card-accent-hue) 54% 58% / 0.52);
-  background:
-    radial-gradient(circle at 10% 4%, hsl(var(--ui-info-card-accent-hue) 90% 98% / 0.86), transparent 36%),
-    linear-gradient(180deg, hsl(var(--ui-info-card-accent-hue) 82% 97%) 0%, hsl(var(--ui-info-card-accent-hue) 64% 92%) 100%);
-  box-shadow: 0 8px 18px hsl(var(--ui-info-card-accent-hue) 42% 36% / 0.12);
-}
-
-.ui-info-card--tone-subevent-light {
-  border-color: hsl(var(--ui-info-card-accent-hue) 44% 66% / 0.38);
-  background:
-    radial-gradient(circle at 10% 4%, hsl(var(--ui-info-card-accent-hue) 92% 99% / 0.9), transparent 38%),
-    linear-gradient(180deg, hsl(var(--ui-info-card-accent-hue) 78% 98%) 0%, hsl(var(--ui-info-card-accent-hue) 54% 94%) 100%);
-  box-shadow: 0 7px 16px hsl(var(--ui-info-card-accent-hue) 34% 40% / 0.08);
-}
-
-.ui-info-card--tone-subevent-strong {
-  border-color: hsl(var(--ui-info-card-accent-hue) 56% 54% / 0.52);
-  background:
-    radial-gradient(circle at 10% 4%, hsl(var(--ui-info-card-accent-hue) 88% 97% / 0.82), transparent 36%),
-    linear-gradient(180deg, hsl(var(--ui-info-card-accent-hue) 72% 95%) 0%, hsl(var(--ui-info-card-accent-hue) 54% 87%) 100%);
-  box-shadow: 0 8px 18px hsl(var(--ui-info-card-accent-hue) 42% 34% / 0.15);
-}
-
-.ui-info-card--tone-stage-runtime {
-  border-color: hsl(var(--ui-info-card-accent-hue) 48% 58% / 0.5);
-  background: linear-gradient(180deg, #fbfcff 0%, #f3f6fb 100%);
-  box-shadow: 0 8px 18px hsl(var(--ui-info-card-accent-hue) 34% 34% / 0.075);
-}
-
-.ui-info-card--tone-published {
-  border-color: rgba(50, 132, 90, 0.44);
-  background: linear-gradient(180deg, #eef8f2 0%, #d9ecdf 100%);
-  box-shadow: 0 8px 18px rgba(39, 111, 75, 0.15);
-}
-
-.ui-info-card--tone-pending {
-  border-color: rgba(202, 145, 52, 0.34);
-  background: linear-gradient(180deg, #fffaf0 0%, #fff2d9 100%);
-  box-shadow: 0 8px 18px rgba(171, 122, 40, 0.12);
-}
-
-.ui-info-card--tone-waitlist {
-  border-color: rgba(73, 119, 154, 0.36);
-  background: linear-gradient(180deg, #f3fbff 0%, #e7f2f7 100%);
-  box-shadow: 0 8px 18px rgba(50, 98, 135, 0.12);
-}
-
-.ui-info-card--tone-series {
-  border-color: rgba(42, 126, 134, 0.34);
-  background: linear-gradient(180deg, #f2fbfb 0%, #e4f4f5 100%);
-  box-shadow: 0 8px 18px rgba(31, 111, 118, 0.12);
-}
-
-.ui-info-card--tone-system {
-  border-color: rgba(94, 62, 205, 0.66);
-  background:
-    radial-gradient(circle at 12% 2%, rgba(64, 223, 255, 0.42), transparent 40%),
-    radial-gradient(circle at 94% 96%, rgba(255, 83, 177, 0.3), transparent 42%),
-    linear-gradient(145deg, #dddfff 0%, #cddcff 45%, #ecd6f4 100%);
-  box-shadow:
-    0 10px 24px rgba(62, 43, 153, 0.25),
-    0 0 0 1px rgba(85, 193, 255, 0.16) inset;
-}
-
-.ui-info-card--tone-review {
-  border-color: rgba(126, 82, 35, 0.5);
-  background: linear-gradient(180deg, #f6ead8 0%, #ecd5b5 100%);
-  box-shadow: 0 8px 18px rgba(105, 68, 29, 0.16);
-}
-
-.ui-info-card--tone-blocked {
-  border-color: rgba(180, 52, 64, 0.28);
-  background: linear-gradient(180deg, #fff2f2 0%, #f8dede 100%);
-  box-shadow: 0 8px 18px rgba(150, 48, 61, 0.12);
-}
-
-.ui-info-card--tone-deleted {
-  border-color: rgba(97, 105, 118, 0.34);
-  background: linear-gradient(180deg, #f7f8fa 0%, #e9edf2 100%);
-  box-shadow: 0 8px 18px rgba(60, 70, 88, 0.1);
-}
-
-.ui-info-card--tone-inactive {
-  border-color: rgba(102, 112, 128, 0.28);
-  background: linear-gradient(180deg, #f2f3f5 0%, #e8ebef 100%);
-  box-shadow: 0 8px 18px rgba(60, 70, 88, 0.1);
-}
+@include surfaces.surfaces;
 
 .ui-info-card--tone-deleted,
 .ui-info-card--tone-inactive,
@@ -637,12 +541,15 @@ button.ui-info-card__overlay-action {
 }
 
 .ui-info-card__overlay-avatar-image {
+  position: relative;
   width: 100%;
   height: 100%;
   border-radius: inherit;
-  object-fit: cover;
+  background-size: cover;
+  background-position: center;
   display: block;
 }
+
 
 .ui-info-card--owned-asset .ui-info-card__overlay-action--avatar.asset-occupancy-badge {
   width: auto;
@@ -943,11 +850,7 @@ button.ui-info-card__overlay-action:has(> .ui-info-card__overlay-chevron) {
 }
 
 .ui-info-card__overlay-action--tone-full.ui-info-card__overlay-action--badge {
-  background: linear-gradient(180deg, #b84f4f 0%, #963636 100%);
-  border-color: rgba(126, 41, 41, 0.56);
-  box-shadow:
-    0 5px 10px rgba(72, 24, 24, 0.34),
-    inset 0 0 0 1px rgba(111, 38, 38, 0.6);
+  @include badgeColors.tone(full);
 }
 
 .ui-info-card__overlay-action--tone-stage.ui-info-card__overlay-action--badge {
@@ -979,33 +882,23 @@ button.ui-info-card__overlay-action:has(> .ui-info-card__overlay-chevron) {
 }
 
 .ui-info-card__overlay-action--tone-stage-active.ui-info-card__overlay-action--badge {
-  border-color: rgba(36, 150, 82, 0.34);
-  background: linear-gradient(180deg, #e6f9ed 0%, #cff0dc 100%);
-  color: #17663f;
+  @include badgeColors.tone(stage-active);
 }
 
 .ui-info-card__overlay-action--tone-stage-scheduled.ui-info-card__overlay-action--badge {
-  border-color: rgba(53, 107, 178, 0.34);
-  background: linear-gradient(180deg, #edf6ff 0%, #d8eaff 100%);
-  color: #24548f;
+  @include badgeColors.tone(stage-scheduled);
 }
 
 .ui-info-card__overlay-action--tone-stage-blocked.ui-info-card__overlay-action--badge {
-  border-color: rgba(191, 57, 67, 0.38);
-  background: linear-gradient(180deg, #fff0f1 0%, #ffdfe3 100%);
-  color: #9d303b;
+  @include badgeColors.tone(stage-blocked);
 }
 
 .ui-info-card__overlay-action--tone-stage-start.ui-info-card__overlay-action--badge {
-  border-color: rgba(53, 107, 178, 0.34);
-  background: rgba(232, 242, 255, 0.94);
-  color: #244f8e;
+  @include badgeColors.tone(stage-start);
 }
 
 .ui-info-card__overlay-action--tone-stage-review.ui-info-card__overlay-action--badge {
-  border-color: rgba(192, 125, 28, 0.34);
-  background: rgba(255, 247, 226, 0.94);
-  color: #8a5a12;
+  @include badgeColors.tone(stage-review);
 }
 
 .ui-info-card__overlay-action--bottom-end.ui-info-card__overlay-action--badge {
@@ -1024,50 +917,38 @@ button.ui-info-card__overlay-action:has(> .ui-info-card__overlay-chevron) {
 }
 
 .ui-info-card__overlay-action--tone-stage-finalized.ui-info-card__overlay-action--badge {
-  border-color: rgba(34, 132, 82, 0.34);
-  background: rgba(231, 250, 239, 0.94);
-  color: #17663f;
+  @include badgeColors.tone(stage-finalized);
 }
 
 .ui-info-card__overlay-action--tone-stage-suspended.ui-info-card__overlay-action--badge {
-  border-color: rgba(150, 82, 82, 0.34);
-  background: rgba(255, 238, 238, 0.94);
-  color: #8a3434;
+  @include badgeColors.tone(stage-suspended);
 }
 
 .ui-info-card__overlay-action--tone-public.ui-info-card__overlay-action--badge {
-  border-color: rgba(46, 111, 178, 0.4);
-  background: linear-gradient(180deg, #eef7ff 0%, #dcecff 100%);
-  color: #2f6cae;
+  @include badgeColors.tone(public);
   box-shadow: 0 7px 16px rgba(35, 89, 149, 0.18);
 }
 
 .ui-info-card__overlay-action--tone-inactive {
-  background: rgba(84, 102, 128, 0.74);
-  color: rgba(248, 250, 255, 0.9);
-  border-color: rgba(44, 60, 84, 0.28);
+  @include badgeColors.tone(inactive);
 }
 
 .ui-info-card__overlay-action--tone-review {
-  background: linear-gradient(180deg, #9d681c 0%, #765018 100%);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.82);
+  @include badgeColors.tone(review);
 }
 
 .ui-info-card__overlay-action--tone-blocked {
-  background: linear-gradient(180deg, #b84558 0%, #8f3143 100%);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.82);
+  @include badgeColors.tone(blocked);
 }
 
 .ui-info-card__overlay-action--layout-badge-with-leading-accessory.ui-info-card__overlay-action--tone-blocked {
-  border-color: rgba(255, 255, 255, 0.96);
-  background: linear-gradient(180deg, #e45f66 0%, #bd2635 100%);
-  color: #fff;
-  text-shadow: 0 1px 1px rgba(80, 0, 8, 0.28);
-  box-shadow:
-    0 8px 18px rgba(128, 23, 34, 0.36),
-    inset 0 0 0 1px rgba(137, 17, 29, 0.5);
+    border-color: rgba(255, 255, 255, 0.96);
+    background: linear-gradient(180deg, #e45f66 0%, #bd2635 100%);
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(80, 0, 8, 0.28);
+    box-shadow:
+      0 8px 18px rgba(128, 23, 34, 0.36),
+      inset 0 0 0 1px rgba(137, 17, 29, 0.5);
 }
 
 .ui-info-card__overlay-action--layout-badge-with-leading-accessory.ui-info-card__overlay-action--tone-blocked .ui-info-card__overlay-leading-accessory--tone-negative {
@@ -1076,9 +957,7 @@ button.ui-info-card__overlay-action:has(> .ui-info-card__overlay-chevron) {
 }
 
 .ui-info-card__overlay-action--tone-deleted {
-  background: linear-gradient(180deg, #59677d 0%, #435066 100%);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.82);
+  @include badgeColors.tone(deleted);
 }
 
 .ui-info-card__overlay-action--tone-selected.ui-info-card__overlay-action--toggle {
@@ -1569,27 +1448,19 @@ button.asset-occupancy-badge:focus-visible {
 }
 
 .ui-info-card__overlay-action--tone-orange.ui-info-card__overlay-action--badge {
-  background: colors.$orange-background;
-  border-color: colors.$orange-border;
-  color: colors.$orange-foreground;
+  @include badgeColors.tone(orange);
 }
 
 .ui-info-card__overlay-action--tone-teal.ui-info-card__overlay-action--badge {
-  background: colors.$teal-background;
-  border-color: colors.$teal-border;
-  color: colors.$teal-foreground;
+  @include badgeColors.tone(teal);
 }
 
 .ui-info-card__overlay-action--tone-purple.ui-info-card__overlay-action--badge {
-  background: colors.$purple-background;
-  border-color: colors.$purple-border;
-  color: colors.$purple-foreground;
+  @include badgeColors.tone(purple);
 }
 
 .ui-info-card__overlay-action--tone-danger.ui-info-card__overlay-action--badge {
-  background: colors.$danger-background;
-  border-color: colors.$danger-border;
-  color: colors.$danger-foreground;
+  @include badgeColors.tone(danger);
 }
 
 .ui-info-card__selection {

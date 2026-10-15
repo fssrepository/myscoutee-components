@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, Input, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, TemplateRef, computed, signal } from '@angular/core';
 
 import {
   countSmartListCalendarOverlaps
@@ -33,7 +33,9 @@ import type { CalendarCardModel } from './calendar-card.types';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarCardComponent<T, TFilters extends SmartListFilters = SmartListFilters> {
-  @Input() model: CalendarCardModel<T, TFilters> | null = null;
+  private readonly modelRef = signal<CalendarCardModel<T, TFilters> | null>(null);
+  @Input() set model(value: CalendarCardModel<T, TFilters> | null) { this.modelRef.set(value); }
+  get model(): CalendarCardModel<T, TFilters> | null { return this.modelRef(); }
 
   @HostBinding('class.is-touching')
   protected get isTouching(): boolean {
@@ -53,24 +55,48 @@ export class CalendarCardComponent<T, TFilters extends SmartListFilters = SmartL
   protected readonly trackByCalendarSpanKey = (_index: number, span: SmartListCalendarMonthSpan<T>): string => span.key;
 
   protected readonly trackByCalendarTimedBadge = (index: number, badge: SmartListCalendarTimedBadge<T>): unknown =>
-    this.calendarTrackKey(index, badge.item);
+    `${index}:${badge.topPct}`;
 
   protected readonly trackByTimelineTickKey = (_index: number, tick: SmartListTimelineTick): string => tick.key;
 
   protected readonly trackByTimelineSpanKey = (_index: number, span: SmartListTimelineSpan<T>): string => span.key;
 
-  protected monthPages(): readonly SmartListCalendarMonthPage<T>[] {
-    if (this.model?.mode !== 'month') {
-      return [];
-    }
-    return (this.model?.pages ?? []) as readonly SmartListCalendarMonthPage<T>[];
+  protected readonly monthPages = computed(() => {
+    const model = this.modelRef();
+    if (model?.mode !== 'month') return [];
+    return (model.pages as readonly SmartListCalendarMonthPage<T>[]).map(page => ({...page,
+      weeks: page.weeks.map(week => ({...week,
+        days: week.days.map(day => ({...day, counter: this.counterView(this.monthCellCounter(day))})),
+        spans: this.monthBadgeSpans(week).map(span => ({...span, ...this.badgeView(span.item)}))
+      }))
+    }));
+  });
+
+  protected readonly weekPages = computed(() => {
+    const model = this.modelRef();
+    if (model?.mode !== 'week') return [];
+    const counterVariant = this.isCounterCalendarVariant();
+    return (model.pages as readonly SmartListCalendarWeekPage<T>[]).map(page => ({...page,
+      days: page.days.map(day => ({...day,
+        counter: counterVariant ? this.counterView(this.calendarDayCounter(day)) : null,
+        hours: this.calendarWeekHours().map(hour => ({hour,
+          counter: this.counterView(counterVariant
+            ? this.calendarCounterGranularity() === 'hour' ? this.calendarHourCounter(day, hour) : null
+            : this.hybridHourCounter(day, hour))
+        })),
+        badges: counterVariant ? [] : this.weekDayTimedBadges(day).map(badge => ({...badge, ...this.badgeView(badge.item)}))
+      }))
+    }));
+  });
+
+  private counterView(counter: SmartListCalendarCounter | null) {
+    return counter ? {...counter, classes: this.calendarCounterClass(counter),
+      accentHue: this.calendarCounterSurface(counter)?.accentHue} : null;
   }
 
-  protected weekPages(): readonly SmartListCalendarWeekPage<T>[] {
-    if (this.model?.mode !== 'week') {
-      return [];
-    }
-    return (this.model?.pages ?? []) as readonly SmartListCalendarWeekPage<T>[];
+  private badgeView(item: T) {
+    return {label: this.calendarBadgeLabel(item), classes: this.calendarBadgeClasses(item),
+      accentHue: this.calendarBadgeSurface(item)?.accentHue};
   }
 
   protected timelinePages(): readonly SmartListTimelinePage<T>[] {
@@ -111,6 +137,55 @@ export class CalendarCardComponent<T, TFilters extends SmartListFilters = SmartL
 
   protected calendarCounterGranularity(): 'day' | 'hour' {
     return this.calendar()?.counterGranularity ?? 'hour';
+  }
+
+  protected readonly monthMinimumHeight = computed(() => {
+    const limit = this.calendar()?.density?.monthMaxBadges;
+    return limit == null ? null : 22 + limit * 20;
+  });
+
+  private monthCellCounter(day: SmartListCalendarDay<T>): SmartListCalendarCounter | null {
+    if (this.isCounterCalendarVariant()) return this.calendarDayCounter(day);
+    const limit = this.calendar()?.density?.monthMaxBadges;
+    if (limit == null) return null;
+    const query = this.query();
+    return (query ? this.calendar()?.dayCounter?.(day, query) : null)
+      ?? (day.items.length > limit ? this.counterFromCount(day.items.length) : null);
+  }
+
+  private hybridHourCounter(day: SmartListCalendarDay<T>, hour: number): SmartListCalendarCounter | null {
+    const calendar = this.calendar(), query = this.query();
+    const limit = calendar?.density?.weekMaxBadgesPerHour;
+    if (limit == null || !query || !calendar) return null;
+    const custom = calendar.hourCounter?.(day, hour, query);
+    if (custom) return custom;
+    const start = new Date(day.date); start.setHours(hour, 0, 0, 0);
+    const end = new Date(start); end.setHours(hour + 1);
+    const count = countSmartListCalendarOverlaps(day.items, start, end, item => calendar.resolveDateRange(item, query));
+    return count > limit ? this.counterFromCount(count) : null;
+  }
+
+  private monthBadgeSpans(week: SmartListCalendarMonthWeek<T>): SmartListCalendarMonthSpan<T>[] {
+    if (this.isCounterCalendarVariant()) return [];
+    if (this.calendar()?.density?.monthMaxBadges == null) return week.spans;
+    const dense = week.days.map(day => !!this.monthCellCounter(day));
+    const result: SmartListCalendarMonthSpan<T>[] = [];
+    const lanes: number[] = [];
+    for (const span of week.spans) {
+      let col = span.startCol;
+      while (col <= span.endCol) {
+        if (dense[col]) { col++; continue; }
+        const startCol = col;
+        while (col <= span.endCol && !dense[col]) col++;
+        const endCol = col - 1;
+        let lane = 0;
+        const mask = ((1 << (endCol - startCol + 1)) - 1) << startCol;
+        while ((lanes[lane] ?? 0) & mask) lane++;
+        lanes[lane] = (lanes[lane] ?? 0) | mask;
+        result.push({...span, key: `${span.key}:${startCol}`, startCol, endCol, lane});
+      }
+    }
+    return result;
   }
 
   protected calendarDayCounter(day: SmartListCalendarDay<T>): SmartListCalendarCounter | null {
@@ -162,6 +237,8 @@ export class CalendarCardComponent<T, TFilters extends SmartListFilters = SmartL
     dayEnd.setHours(this.calendarWeekEndHour() + 1, 0, 0, 0);
     const totalMinutes = Math.max(1, (dayEnd.getTime() - dayStart.getTime()) / 60000);
     const badges: SmartListCalendarTimedBadge<T>[] = [];
+    const denseHours = calendar.density?.weekMaxBadgesPerHour == null ? []
+      : this.calendarWeekHours().filter(hour => !!this.hybridHourCounter(day, hour));
 
     for (const item of day.items) {
       const range = calendar.resolveDateRange(item, query);
@@ -175,11 +252,25 @@ export class CalendarCardComponent<T, TFilters extends SmartListFilters = SmartL
       }
       const minutesFromTop = (segmentStart.getTime() - dayStart.getTime()) / 60000;
       const durationMinutes = (segmentEnd.getTime() - segmentStart.getTime()) / 60000;
-      badges.push({
-        item,
-        topPct: (minutesFromTop / totalMinutes) * 100,
-        heightPct: Math.max(2.2, (durationMinutes / totalMinutes) * 100)
-      });
+      if (calendar.density?.weekMaxBadgesPerHour == null) {
+        badges.push({item, topPct: minutesFromTop / totalMinutes * 100,
+          heightPct: Math.max(2.2, durationMinutes / totalMinutes * 100)});
+        continue;
+      }
+      // Keep continuous sparse portions; dense hours use the existing counter cell.
+      let start = segmentStart.getTime();
+      for (const hour of denseHours) {
+        const boundary = new Date(day.date); boundary.setHours(hour, 0, 0, 0);
+        const from = boundary.getTime(); boundary.setHours(hour + 1);
+        const until = boundary.getTime();
+        if (until <= start || from >= segmentEnd.getTime()) continue;
+        if (from > start) badges.push({item, topPct: (start - dayStart.getTime()) / 60000 / totalMinutes * 100,
+          heightPct: (from - start) / 60000 / totalMinutes * 100});
+        start = Math.max(start, until);
+      }
+      if (start < segmentEnd.getTime()) badges.push({item,
+        topPct: (start - dayStart.getTime()) / 60000 / totalMinutes * 100,
+        heightPct: (segmentEnd.getTime() - start) / 60000 / totalMinutes * 100});
     }
 
     return badges;
@@ -241,8 +332,27 @@ export class CalendarCardComponent<T, TFilters extends SmartListFilters = SmartL
     return query ? this.calendar()?.badgeToneClass?.(item, query) ?? null : null;
   }
 
+  protected calendarBadgeSurface(item: T) {
+    const query = this.query();
+    const colors = this.calendar()?.badgeColors;
+    const key = query && colors ? colors.resolveKey(item, query) : null;
+    return key == null ? null : colors?.palette[key] ?? null;
+  }
+
+  protected calendarBadgeClasses(item: T): SmartListClassValue {
+    const surface = this.calendarBadgeSurface(item);
+    return surface?.badgeTone ? `calendar-badge-color-${surface.badgeTone}`
+      : surface ? `ui-info-card--tone-${surface.surfaceTone ?? 'default'}` : this.calendarBadgeToneClass(item);
+  }
+
   protected calendarCounterClass(counter: SmartListCalendarCounter | null): SmartListClassValue {
-    return counter?.toneClass ?? null;
+    const surface = this.calendarCounterSurface(counter);
+    return surface?.badgeTone ? `calendar-badge-color-${surface.badgeTone}`
+      : surface ? `ui-info-card--tone-${surface.surfaceTone ?? 'default'}` : counter?.toneClass ?? null;
+  }
+
+  private calendarCounterSurface(counter: SmartListCalendarCounter | null) {
+    return counter?.colorKey ? this.calendar()?.badgeColors?.palette[counter.colorKey] ?? null : null;
   }
 
   protected selectCalendarDay(day: SmartListCalendarDay<T>, sourceEvent?: Event): void {
@@ -361,6 +471,7 @@ export class CalendarCardComponent<T, TFilters extends SmartListFilters = SmartL
   private counterFromCount(count: number): SmartListCalendarCounter {
     return {
       label: this.counterLabel(count),
+      colorKey: this.calendar()?.badgeColors?.counterKey,
       toneClass: this.counterHeatClassByCount(count)
     };
   }

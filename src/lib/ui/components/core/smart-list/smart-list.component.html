@@ -379,7 +379,9 @@
 </div>
 
 <ng-template #fullscreenEmptyState>
-  @if (!initialLoading && config.showEmptyState !== false) {
+  @if (!initialLoading && emptyError) {
+    <app-smart-list-empty-state tone="error" [label]="emptyError"></app-smart-list-empty-state>
+  } @else if (!initialLoading && config.showEmptyState !== false) {
     <div class="smart-list__fullscreen-empty">
       <h4>{{ hostedFullscreenEmptyLabel() | i18n }}</h4>
       @if (hostedFullscreenEmptyDescription()) {
@@ -390,13 +392,8 @@
 </ng-template>
 
 <ng-template #emptyState>
-  @if (!initialLoading && config.showEmptyState !== false) {
-    <div class="smart-list__empty">
-      <h4>{{ emptyLabel() | i18n }}</h4>
-      @if (emptyDescription()) {
-        <p>{{ emptyDescription() | i18n }}</p>
-      }
-    </div>
+  @if (!initialLoading && (emptyError || config.showEmptyState !== false)) {
+    <app-smart-list-empty-state [tone]="emptyError ? 'error' : 'empty'" [label]="emptyError || emptyLabel()" [description]="emptyError ? '' : emptyDescription()" [placement]="emptyError ? 'center' : config.emptyPlacement ?? 'center'"></app-smart-list-empty-state>
   }
 </ng-template>
 

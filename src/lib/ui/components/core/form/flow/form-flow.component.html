@@ -88,7 +88,7 @@
 
   @if (loading || preparing()) {
     <article class="form-flow__loading" role="status">
-      <app-indicator kind="spinner-ring" state="loading"></app-indicator>
+      <app-indicator kind="load-ring" state="loading"></app-indicator>
       <span>{{ (model?.loadingLabel || 'Loading form') | i18n }}</span>
     </article>
   } @else if (model && totalPageCount() > 0) {
@@ -203,7 +203,9 @@
                     ></app-info-card>
                   } @else {
                     @if (step.header.imageUrl) {
-                      <img [src]="step.header.imageUrl" alt="" />
+                      <div class="form-flow__step-image" [appLazyBgImage]="step.header.imageUrl" aria-hidden="true">
+                        <span class="form-flow__step-image-loader"><app-indicator kind="spinner-ring"></app-indicator></span>
+                      </div>
                     }
                     <div>
                       @if (step.header.icon) {

@@ -87,17 +87,20 @@
 
 .app-indicator--bar.is-state-loading .app-indicator__bar-fill,
 .app-indicator--bar.is-state-loading-overdue .app-indicator__bar-fill,
+.app-indicator--bar.is-state-error .app-indicator__bar-fill,
 .app-indicator--bar.is-state-inactive .app-indicator__bar-fill {
   opacity: 0;
 }
 
 .app-indicator--bar.is-state-loading .app-indicator__bar-loading,
 .app-indicator--bar.is-state-loading-overdue .app-indicator__bar-loading,
+.app-indicator--bar.is-state-error .app-indicator__bar-loading,
 .app-indicator--bar.is-state-inactive .app-indicator__bar-loading {
   opacity: 1;
 }
 
-.app-indicator--bar.is-state-loading-overdue .app-indicator__bar-loading {
+.app-indicator--bar.is-state-loading-overdue .app-indicator__bar-loading,
+.app-indicator--bar.is-state-error .app-indicator__bar-loading {
   transform: scaleX(1) !important;
   background: linear-gradient(270deg, rgba(213, 54, 68, 0.98) 0%, rgba(196, 29, 42, 0.98) 100%);
 }

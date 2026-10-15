@@ -2335,6 +2335,9 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
     if (width <= 0) {
       return null;
     }
+    if (this.isMobileViewport && candidates.includes(2)) {
+      return 2;
+    }
     if (items.length <= 4 && width >= 420) {
       return items.length;
     }

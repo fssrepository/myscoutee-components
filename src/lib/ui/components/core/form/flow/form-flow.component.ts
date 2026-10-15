@@ -65,6 +65,7 @@ import {
   formFlowMissingRequiredControls
 } from './form-flow.utils';
 import { I18nPipe } from '../../../../../pipes/index';
+import { LazyBgImageDirective } from '../../../../directives/lazy-bg-image.directive';
 
 interface FormFlowSelectedMenuItem {
   item: AppMenuItem<string, unknown>;
@@ -89,6 +90,7 @@ interface FormFlowSelectedMenuItem {
     IndicatorComponent,
     ImageCardComponent,
     InfoCardComponent,
+    LazyBgImageDirective,
     I18nPipe
   ],
   templateUrl: './form-flow.component.html',

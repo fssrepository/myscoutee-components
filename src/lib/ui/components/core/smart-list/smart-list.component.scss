@@ -890,31 +890,6 @@
   padding: 0.32rem 0.58rem;
 }
 
-.smart-list__empty {
-  grid-column: 1 / -1;
-  margin: auto 0;
-  overflow-anchor: none;
-  border: 1px dashed rgba(37, 54, 82, 0.16);
-  border-radius: 18px;
-  background: rgba(248, 250, 253, 0.92);
-  padding: 1.15rem 1rem;
-  text-align: center;
-}
-
-.smart-list__empty h4 {
-  margin: 0;
-  color: #18314d;
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
-.smart-list__empty p {
-  margin: 0.45rem 0 0;
-  color: rgba(27, 45, 69, 0.74);
-  font-size: 0.82rem;
-  line-height: 1.45;
-}
-
 @media (max-width: 760px) {
   .smart-list__surface--fullscreen-with-rating-bar {
     --smart-list-fullscreen-bottom-offset: calc(5.25rem + env(safe-area-inset-bottom));

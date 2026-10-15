@@ -5,6 +5,7 @@
     [class.is-state-loading]="isLoadingState"
     [class.is-state-loading-overdue]="isLoadingOverdueState"
     [class.is-state-inactive]="isInactiveState"
+    [class.is-state-error]="isErrorState"
   >
     <span class="app-indicator__bar-fill" [style.transform]="progressTransform()"></span>
     <span class="app-indicator__bar-loading" [style.transform]="progressTransform()"></span>

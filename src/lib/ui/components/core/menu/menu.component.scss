@@ -269,7 +269,7 @@
   --app-menu-action-border: transparent;
   --app-menu-action-shadow: 0 12px 24px rgba(60, 92, 167, 0.24);
   --app-menu-border: #{colors.$blue-border};
-  --app-menu-fg: #2b5d98;
+  --app-menu-fg: #{colors.$blue-foreground};
   --app-menu-icon: #{colors.$blue-icon};
   --app-menu-line: rgba(45, 94, 168, 0.34);
   --app-menu-shadow: rgba(34, 91, 160, 0.2);
@@ -287,11 +287,11 @@
 }
 
 .app-menu__palette--cyan {
-  --app-menu-bg: linear-gradient(180deg, #eefdff 0%, #d9f4f9 100%);
+  --app-menu-bg: #{colors.$cyan-background};
   --app-menu-bg-hover: linear-gradient(180deg, #f6feff 0%, #d2f0f6 100%);
   --app-menu-bg-strong: linear-gradient(180deg, #39aabb 0%, #238493 100%);
-  --app-menu-border: rgba(45, 142, 154, 0.32);
-  --app-menu-fg: #1f7280;
+  --app-menu-border: #{colors.$cyan-border};
+  --app-menu-fg: #{colors.$cyan-foreground};
   --app-menu-icon: #2f8e9d;
   --app-menu-line: rgba(45, 142, 154, 0.34);
   --app-menu-shadow: rgba(28, 118, 130, 0.2);
@@ -319,7 +319,7 @@
   --app-menu-action-border: rgba(37, 127, 95, 0.28);
   --app-menu-action-shadow: 0 5px 14px rgba(35, 118, 72, 0.14);
   --app-menu-border: #{colors.$green-border};
-  --app-menu-fg: #236d51;
+  --app-menu-fg: #{colors.$green-foreground};
   --app-menu-icon: #{colors.$green-icon};
   --app-menu-line: rgba(47, 143, 102, 0.34);
   --app-menu-shadow: rgba(35, 118, 72, 0.22);
@@ -341,7 +341,7 @@
   --app-menu-bg-hover: linear-gradient(180deg, #f9f5ff 0%, #e4d5ff 100%);
   --app-menu-bg-strong: linear-gradient(180deg, #8a66d2 0%, #6948b1 100%);
   --app-menu-border: #{colors.$violet-border};
-  --app-menu-fg: #65459b;
+  --app-menu-fg: #{colors.$violet-foreground};
   --app-menu-icon: #{colors.$violet-icon};
   --app-menu-line: rgba(106, 69, 163, 0.34);
   --app-menu-shadow: rgba(92, 62, 150, 0.2);
@@ -416,11 +416,11 @@
 
 .app-menu__palette--amber,
 .app-menu__palette--warning {
-  --app-menu-bg: linear-gradient(180deg, #fff7e8 0%, #ffe9c6 100%);
+  --app-menu-bg: #{colors.$amber-background};
   --app-menu-bg-hover: linear-gradient(180deg, #fffaf2 0%, #ffe3b7 100%);
   --app-menu-bg-strong: linear-gradient(180deg, #e6a63a 0%, #c68124 100%);
-  --app-menu-border: rgba(190, 127, 37, 0.38);
-  --app-menu-fg: #865a1f;
+  --app-menu-border: #{colors.$amber-border};
+  --app-menu-fg: #{colors.$amber-foreground};
   --app-menu-icon: #c17b22;
   --app-menu-line: rgba(190, 127, 37, 0.34);
   --app-menu-shadow: rgba(157, 95, 24, 0.24);
@@ -431,7 +431,7 @@
   --app-menu-bg-hover: linear-gradient(180deg, #fffaf0 0%, #ffe6a8 100%);
   --app-menu-bg-strong: linear-gradient(180deg, #dfb13f 0%, #bf8b22 100%);
   --app-menu-border: #{colors.$gold-border};
-  --app-menu-fg: #835d14;
+  --app-menu-fg: #{colors.$gold-foreground};
   --app-menu-icon: #c8921e;
   --app-menu-line: rgba(189, 141, 51, 0.34);
   --app-menu-shadow: rgba(157, 111, 24, 0.22);
@@ -993,7 +993,7 @@
   display: inline-flex;
   flex-wrap: var(--app-menu-row-wrap, nowrap);
   align-items: center;
-  justify-content: flex-end;
+  justify-content: var(--app-menu-row-justify, flex-end);
   gap: 0.34rem;
   width: 100%;
   min-width: 0;
@@ -1053,7 +1053,7 @@
 }
 
 .app-menu__button-row-item--labelled {
-  flex: 1 1 auto;
+  flex: var(--app-menu-row-item-flex, 1 1 auto);
   width: var(--app-menu-row-item-width, auto);
   justify-content: var(--app-menu-row-item-justify, center);
   min-width: 118px;
@@ -2810,6 +2810,25 @@ a.app-menu__item {
 .app-menu__panel--dropdown-list .app-menu__item.app-menu__palette--danger .app-menu__item-icon,
 .app-menu__panel--dropdown-list .app-menu__item.app-menu__palette--red .app-menu__item-icon {
   color: #cf4747;
+}
+
+// Reuse the confirmation action button palette for contextual menu actions.
+.app-menu__panel--dropdown-list .app-menu__item.app-menu__item--surface-action {
+  border: 1px solid var(--app-menu-action-border, transparent);
+  background: var(--app-menu-action-bg, var(--app-menu-bg-strong));
+  color: var(--app-menu-action-fg, #fff);
+}
+
+.app-menu__panel--dropdown-list .app-menu__item.app-menu__item--surface-action:not(:disabled):not(.app-menu__item--disabled):hover,
+.app-menu__panel--dropdown-list .app-menu__item.app-menu__item--surface-action.app-menu__item--active {
+  background: var(--app-menu-action-bg-hover, var(--app-menu-action-bg, var(--app-menu-bg-strong)));
+  color: var(--app-menu-action-fg, #fff);
+}
+
+.app-menu__panel--dropdown-list .app-menu__item.app-menu__item--surface-action .app-menu__item-icon,
+.app-menu__panel--dropdown-list .app-menu__item.app-menu__item--surface-action .app-menu__item-branch,
+.app-menu__panel--dropdown-list .app-menu__item.app-menu__item--surface-action .app-menu__item-check {
+  color: inherit;
 }
 
 .app-menu__item-main {

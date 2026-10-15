@@ -1,3 +1,4 @@
+import { SmartListEmptyStateComponent } from './smart-list-empty-state.component';
 import { clampNumber } from '../../../../foundation/number-utils';
 import { UiDateUtils } from '../../../../foundation/date-utils';
 import { UI_LIST_DEFAULTS } from '../../../../foundation/list-defaults';
@@ -106,6 +107,7 @@ import type {
     IndicatorComponent,
     AppMenuOutletComponent,
     SmartListPageCardComponent,
+    SmartListEmptyStateComponent,
     I18nPipe
   ],
   providers: [AppMenuDispatcher],
@@ -142,6 +144,8 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
   private paginationMenuOutlet?: AppMenuOutletComponent<string, unknown>;
 
   @Input() config: SmartListConfig<T, TFilters> = {};
+  /** Read failure supplied by the owning store; replaces empty content without reloading. */
+  @Input() emptyError: string | null = null;
   @Input() loadPage: SmartListLoadPage<T, TFilters> | null = null;
   @Input() loaders: SmartListLoaders<T, TFilters> | null = null;
   @Input() itemTemplate: TemplateRef<SmartListItemTemplateContext<T, TFilters>> | null = null;
@@ -173,6 +177,7 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
   protected stickyHeaderHeightPx = 0;
   protected autoFooterSpacerHeightPx = 0;
   protected loading = false;
+  private loadFailed = false;
   protected initialLoading = true;
   protected suppressListSnapNearEnd = false;
   protected horizontalListScrollInProgress = false;
@@ -623,7 +628,7 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
     return this.indicatorBarConfig({
       tone: this.resolveConfigValue(this.config.headerProgress?.tone, 'default'),
       placement,
-      ...(state === 'inactive' ? { state: 'inactive' } : {})
+      ...(state === 'inactive' ? { state: 'inactive' } : this.loadFailed ? { state: 'error' } : {})
     }, this.resolvedHeaderProgressMode());
   }
 
@@ -1214,7 +1219,7 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
   }
 
   protected shouldShowStickyHeader(): boolean {
-    return this.config.showStickyHeader !== false;
+    return this.config.showStickyHeader !== false && !(this.emptyError && this.items.length === 0);
   }
 
   protected shouldRenderPrependRestoreSpacer(item: T, index: number): boolean {
@@ -1617,6 +1622,7 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
   };
 
   private resetAndReload(): void {
+    this.loadFailed = false;
     this.listPageLoadAbortController?.abort();
     this.listPageLoadAbortController = null;
     this.resetHostedFullscreenTransition();
@@ -1842,6 +1848,7 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
     this.listPageLoadAbortController?.abort();
     const abortController = typeof AbortController === 'undefined' ? null : new AbortController();
     this.listPageLoadAbortController = abortController;
+    this.loadFailed = false;
     const sequence = ++this.loadSequence;
     const shouldSuppressVisibleLoadingProgress = !isInitial
       && this.currentViewMode === 'list'
@@ -1896,10 +1903,11 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
       if (restoreContext && shouldUseManualPrependRestore) {
         handledManualPrepend = true;
       }
-    } catch {
+    } catch (error) {
       if (sequence !== this.loadSequence) {
         return;
       }
+      this.loadFailed = !this.isAbortError(error);
       this.initialLoading = false;
       this.hasMore = false;
     } finally {
@@ -4448,6 +4456,7 @@ private updateListSnapNearEndSuppression(scrollElement?: HTMLDivElement | null):
     const sequence = ++this.loadSequence;
     const abortController = typeof AbortController === 'undefined' ? null : new AbortController();
     this.stepperPageLoadAbortController = abortController;
+    this.loadFailed = false;
     this.stepper.beginPendingPage(this.stepper.normalizeAnchor(anchor), this.progress);
     this.loading = true;
     this.startLoadingAnimation();
@@ -4473,6 +4482,7 @@ private updateListSnapNearEndSuppression(scrollElement?: HTMLDivElement | null):
       if (this.isAbortError(error)) {
         return;
       }
+      this.loadFailed = true;
       this.stepper.setEmptyPage(anchor, {
         deferRender: !isInitial && this.stepper.scrollInProgress
       });

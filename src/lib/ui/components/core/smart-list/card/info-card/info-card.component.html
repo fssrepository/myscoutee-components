@@ -560,7 +560,7 @@
     }
     @default {
       @if (overlayImageUrl(action); as overlayActionImageUrl) {
-        <img class="ui-info-card__overlay-avatar-image" [src]="overlayActionImageUrl" alt="" />
+        <span class="ui-info-card__overlay-avatar-image" [appLazyBgImage]="overlayActionImageUrl" aria-hidden="true"></span>
       } @else {
         @if (overlayIcon(action); as overlayActionIcon) {
           <mat-icon>{{ overlayActionIcon }}</mat-icon>

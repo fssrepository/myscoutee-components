@@ -1,3 +1,11 @@
+@use '../../../../../../../../styles/_badge-colors' as badgeColors;
+@use '../../../../../../../../styles/_info-card-surfaces' as surfaces;
+
+.smart-list__week-board,
+.smart-list__month-grid {
+  cursor: default;
+}
+
 :host {
   position: relative;
   display: flex;
@@ -313,6 +321,10 @@
 .smart-list__month-week-spans {
   position: absolute;
   inset: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  column-gap: inherit;
+  align-items: start;
   pointer-events: none;
 }
 
@@ -383,8 +395,19 @@
   color: #2f435e;
 }
 
+.smart-list__calendar-badge {
+  --ui-info-card-accent-hue: 210;
+}
+
+@include surfaces.surfaces;
+
+
 .smart-list__month-span-badge {
-  position: absolute;
+  position: relative;
+  grid-row: 1;
+  min-width: 0;
+  margin-inline: 2px;
+  box-sizing: border-box;
   pointer-events: auto;
   z-index: 3;
   width: auto;
@@ -393,6 +416,13 @@
   justify-content: flex-start;
   min-height: 18px;
   padding: 0.1rem 0.34rem;
+}
+
+.smart-list__month-span-badge > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .smart-list__week-board {
@@ -593,11 +623,14 @@
 }
 
 .smart-list__week-timed-badge > span {
-  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   width: 100%;
+  min-width: 0;
   white-space: normal;
-  word-break: break-word;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 1.15;
 }
 
@@ -986,4 +1019,8 @@
     font-size: 0.52rem;
     padding: 0 0.16rem;
   }
+}
+
+@each $tone in stage-active, stage-blocked, stage-start, stage-review, public, stage-scheduled, orange, stage-finalized, stage-suspended, deleted, review, blocked, inactive, teal, purple, danger, full {
+  .calendar-badge-color-#{$tone} { @include badgeColors.tone($tone); }
 }
