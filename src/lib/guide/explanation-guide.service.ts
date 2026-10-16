@@ -1,4 +1,4 @@
-import { Inject, Injectable, InjectionToken, computed, effect, inject, signal } from '@angular/core';
+import { Inject, Injectable, InjectionToken, computed, effect, inject, signal, untracked } from '@angular/core';
 
 import type { GuideField, GuideRevision, GuideState } from './guide.types';
 import { UI_TRANSLATIONS } from '../foundation/translation';
@@ -87,29 +87,33 @@ export class ExplanationGuideService {
 
   // A null modal context temporarily hides the underlying surface's guide.
   registerContext(contextKey: string | null): () => void {
-    if (this.releaseIntroduction) this.closePopup();
-    const normalized = this.normalizeContextKey(contextKey);
-    if (!normalized && contextKey !== null) {
-      return () => undefined;
-    }
-    const registration = {
-      contextKey: this.isExplainableContext(normalized) ? normalized : null,
-      priority: this.options.contextPriority?.(contextKey === null ? null : normalized) ?? 0
-    };
-    this.contextStack.push(registration);
-    this.selectCurrentContext();
-    let registered = true;
-    return () => {
-      if (!registered) {
-        return;
+    // Registering is a command: internal guide signals must not become
+    // dependencies of an effect that owns a popup's registration lifetime.
+    return untracked(() => {
+      if (this.releaseIntroduction) this.closePopup();
+      const normalized = this.normalizeContextKey(contextKey);
+      if (!normalized && contextKey !== null) {
+        return () => undefined;
       }
-      registered = false;
-      const index = this.contextStack.lastIndexOf(registration);
-      if (index >= 0) {
-        this.contextStack.splice(index, 1);
-      }
+      const registration = {
+        contextKey: this.isExplainableContext(normalized) ? normalized : null,
+        priority: this.options.contextPriority?.(contextKey === null ? null : normalized) ?? 0
+      };
+      this.contextStack.push(registration);
       this.selectCurrentContext();
-    };
+      let registered = true;
+      return () => untracked(() => {
+        if (!registered) {
+          return;
+        }
+        registered = false;
+        const index = this.contextStack.lastIndexOf(registration);
+        if (index >= 0) {
+          this.contextStack.splice(index, 1);
+        }
+        this.selectCurrentContext();
+      });
+    });
   }
 
   private selectCurrentContext(): void {

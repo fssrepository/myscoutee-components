@@ -1,6 +1,7 @@
 :host { display: block; min-width: 0; }
 
 .payment-card {
+  box-sizing: border-box;
   position: relative;
   isolation: isolate;
   overflow: hidden;

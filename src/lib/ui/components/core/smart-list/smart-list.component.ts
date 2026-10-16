@@ -127,8 +127,6 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
   private static readonly LIST_SNAP_SETTLE_GUARD_MS = 280;
   private static readonly PAGINATION_RATING_MENU_ID = 'smart-list-pagination-rating';
   private static readonly PAGINATION_RATING_ITEM_ID = 'pagination-rating';
-  private static readonly LIST_CARD_SNAP_TARGET_SELECTOR =
-    '.activities-row-item, .asset-item-card, .activities-card, .event-explore-card, .experience-item-card';
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly explanationGuide = inject(ExplanationGuideService);
   protected readonly itemTemplateInjector = inject(Injector);
@@ -1336,6 +1334,11 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
     this.config.trackBy ? this.resolvedListTrackKeyForItem(index, item) : index;
 
   protected shouldShowGroupMarker(group: SmartListGroup<T>, groupIndex: number): boolean {
+    // The sticky header already names the first group when the list cannot scroll.
+    // Keep the in-flow marker for scrolling, where it passes beneath that header.
+    if (groupIndex === 0 && this.shouldShowStickyHeader() && !this.scrollable) {
+      return false;
+    }
     if (this.config.showGroupMarker) {
       return this.config.showGroupMarker({
         group,
@@ -3485,10 +3488,7 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
   }
 
   private listCardSnapTargets(scrollElement: HTMLDivElement): HTMLElement[] {
-    if (this.isHorizontalList()) {
-      return this.ownedListElements<HTMLElement>(scrollElement, '.smart-list__item-shell[data-smart-list-index]');
-    }
-    return this.ownedListElements<HTMLElement>(scrollElement, SmartListComponent.LIST_CARD_SNAP_TARGET_SELECTOR);
+    return this.ownedListElements<HTMLElement>(scrollElement, '.smart-list__item-shell[data-smart-list-index]');
   }
 
 private updateListSnapNearEndSuppression(scrollElement?: HTMLDivElement | null): void {

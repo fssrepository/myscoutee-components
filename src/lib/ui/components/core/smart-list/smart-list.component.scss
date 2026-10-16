@@ -196,6 +196,9 @@
   display: block;
   gap: 0;
   padding-right: 0.12rem;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
   scroll-behavior: auto;
   overflow-anchor: none;
 }
@@ -222,18 +225,13 @@
   scroll-snap-type: none;
 }
 
-.smart-list--list.smart-list--snap-none > .smart-list__item-shell,
-:host ::ng-deep .smart-list--list.smart-list--snap-none .activities-row-item,
-:host ::ng-deep .smart-list--list.smart-list--snap-none .asset-item-card,
-:host ::ng-deep .smart-list--list.smart-list--snap-none .activities-card,
-:host ::ng-deep .smart-list--list.smart-list--snap-none .event-explore-card,
-:host ::ng-deep .smart-list--list.smart-list--snap-none .experience-item-card {
+.smart-list--list.smart-list--snap-none > .smart-list__item-shell {
   scroll-snap-align: none;
   scroll-snap-stop: normal;
 }
 
 
-.smart-list__group-marker.chat-thread-group-marker {
+.smart-list--thread > .smart-list__group-marker {
   position: sticky;
   top: 0;
   z-index: 3;
@@ -524,17 +522,7 @@
   }
 }
 
-:host ::ng-deep .smart-list--list.smart-list--card-grid .activities-row-item,
-:host ::ng-deep .smart-list--list.smart-list--card-grid .asset-item-card,
-:host ::ng-deep .smart-list--list.smart-list--card-grid .activities-card,
-:host ::ng-deep .smart-list--list.smart-list--card-grid .event-explore-card,
-:host ::ng-deep .smart-list--list.smart-list--card-grid .experience-item-card {
-  width: 100%;
-  max-width: 100%;
-  scroll-snap-align: start;
-  scroll-margin-top: 0;
-  scroll-snap-stop: normal;
-}
+
 
 .smart-list--list.smart-list--card-grid {
   --smart-list-card-snap-gap: 0.6rem;
@@ -678,41 +666,6 @@
 
 
 
-.smart-list--list.experience-card-list {
-  padding-bottom: 0.35rem;
-}
-
-.smart-list--list.assets-card-list {
-  gap: 0.68rem;
-}
-
-.smart-list--list.chat-thread-list {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
-  touch-action: pan-y;
-}
-
-.smart-list--list.notification-center-smart-list {
-  padding-right: 0.18rem;
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(96, 74, 154, 0.58) rgba(226, 232, 240, 0.88);
-}
-
-.smart-list--list.notification-center-smart-list::-webkit-scrollbar {
-  width: 10px;
-}
-
-.smart-list--list.notification-center-smart-list::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: rgba(226, 232, 240, 0.88);
-}
-
-.smart-list--list.notification-center-smart-list::-webkit-scrollbar-thumb {
-  border: 2px solid rgba(226, 232, 240, 0.88);
-  border-radius: 999px;
-  background: rgba(96, 74, 154, 0.58);
-}
 
 .smart-list {
   display: flex;
@@ -992,7 +945,7 @@
     padding-right: 0.08rem;
   }
 
-  .smart-list--list.chat-thread-list {
+  .smart-list--list.smart-list--thread {
     transform: translateZ(0);
     backface-visibility: hidden;
   }
@@ -1004,6 +957,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--smart-list-min-column-width)), 1fr));
   align-content: start;
+
+  @media (max-width: 760px) {
+    &.smart-list--mobile-columns {
+      grid-template-columns: repeat(var(--smart-list-mobile-columns), minmax(0, 1fr));
+    }
+  }
 
   .smart-list__sticky,
   .smart-list__group-marker,

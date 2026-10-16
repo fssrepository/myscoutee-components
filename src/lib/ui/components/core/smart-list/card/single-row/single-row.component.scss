@@ -196,15 +196,6 @@
   gap: 0.08rem;
 }
 
-.ui-single-row.notification-row.ui-single-row--with-top-right :is(.ui-single-row__headline, .ui-single-row__subtitle, .ui-single-row__meta) {
-  padding-inline-end: min(28%, 6.25rem);
-}
-
-.ui-single-row.notification-row.ui-single-row--with-top-right .ui-single-row__detail {
-  // Reserve only the 32px menu trigger and its gap below the timestamp.
-  padding-inline-end: 2.5rem;
-}
-
 .ui-single-row__headline {
   min-width: 0;
   display: flex;
@@ -252,6 +243,22 @@
 .ui-single-row__subtitle {
   font-size: 0.76rem;
   color: rgba(20, 36, 58, 0.75);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+
+.ui-single-row__detail {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+  min-height: 2.8em;
 }
 
 .ui-single-row__detail,
@@ -410,10 +417,6 @@
 }
 
 @media (max-width: 760px) {
-  .ui-single-row.notification-row.ui-single-row--with-top-right .ui-single-row__headline {
-    padding-inline-end: calc(min(28%, 6.25rem) + 4rem);
-  }
-
   .ui-single-row {
     grid-template-columns: auto minmax(0, 1fr);
   }
@@ -469,40 +472,9 @@
   right: 3rem;
 }
 
-.ui-single-row.notification-row .ui-single-row__main {
-  align-self: start;
-}
-
-.ui-single-row.notification-row .ui-single-row__headline {
-  min-height: 28px;
-}
-
-.ui-single-row.notification-row .ui-single-row__top-right {
-  top: 0.48rem;
-}
-
-.ui-single-row.notification-row .ui-single-row__subtitle {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  overflow-wrap: anywhere;
-  line-height: 1.4;
-}
-
-.ui-single-row.notification-row .ui-single-row__detail {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  line-height: 1.4;
-  min-height: 2.8em;
-}
-
 // Reserve the badge/action column in the layout so the existing text ellipsis
 // ends before those controls, including on narrow request cards.
-.ui-single-row--with-top-right:not(.notification-row):not(.ui-single-row--menu-top-right) {
+.ui-single-row--with-top-right:not(.ui-single-row--menu-top-right) {
   grid-template-columns: auto minmax(0, 1fr) fit-content(46%);
   grid-template-areas:
     'avatar main badge'
