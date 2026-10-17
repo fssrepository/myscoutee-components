@@ -144,7 +144,7 @@ describe('FormFlowComponent initial rendering', () => {
     pending.forEach(callback => callback(0));
   }
 
-  it('paints a busy ring before creating fields, then keeps fields when values/models change', () => {
+  it('paints the ring, renders inert fields behind it, then reveals the same fields', () => {
     const fixture = TestBed.createComponent(FormFlowComponent);
     fixture.componentRef.setInput('model', model);
     fixture.componentInstance.writeValue({ name: 'Anna' });
@@ -156,6 +156,12 @@ describe('FormFlowComponent initial rendering', () => {
     paint(); fixture.detectChanges();
     const input = fixture.nativeElement.querySelector('input');
     expect(input).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('[role="status"] app-indicator').getAttribute('kind')).toBe('spinner-ring');
+    expect(input.closest('.form-flow__stage').hasAttribute('inert')).toBe(true);
+    expect(fixture.nativeElement.querySelector('.form-flow').getAttribute('aria-busy')).toBe('true');
+    paint(); fixture.detectChanges(); paint(); fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('input')).toBe(input);
+    expect(input.closest('.form-flow__stage').hasAttribute('inert')).toBe(false);
     expect(fixture.nativeElement.querySelector('.form-flow').getAttribute('aria-busy')).toBe('false');
     fixture.componentRef.setInput('model', { ...model });
     fixture.componentInstance.writeValue({ name: 'Updated' });
@@ -171,12 +177,59 @@ describe('FormFlowComponent initial rendering', () => {
     fixture.detectChanges(); paint(); paint(); fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('input')).toBeNull();
     fixture.componentRef.setInput('loading', false); fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('input')).toBeNull();
+    paint(); paint(); fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('input')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('[role="status"]')).not.toBeNull();
+    paint(); paint(); fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="status"]')).toBeNull();
     fixture.destroy();
 
     const cancelled = TestBed.createComponent(FormFlowComponent);
     cancelled.detectChanges();
     cancelled.destroy(); paint(); paint();
     expect((cancelled.componentInstance as any).preparing()).toBe(true);
+  });
+});
+
+describe('FormFlowComponent carousel navigation', () => {
+  afterEach(() => { TestBed.resetTestingModule(); vi.useRealTimers(); vi.unstubAllGlobals(); });
+
+  it('keeps the destination heading through delayed scrolling and form updates', () => {
+    vi.useFakeTimers();
+    const frames: FrameRequestCallback[] = [];
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => { frames.push(callback); return frames.length; });
+    TestBed.configureTestingModule({ imports: [FormFlowComponent], providers: [
+      { provide: UI_TRANSLATIONS, useValue: { revision: () => 0, translate: (text: string) => text } }
+    ] });
+    const fixture = TestBed.createComponent(FormFlowComponent);
+    fixture.componentRef.setInput('model', { layout: 'carousel', deferPreparation: false,
+      steps: [{ id: 'basics', title: 'Basics', controls: [] }, { id: 'photos', title: 'Photos', controls: [] }],
+      summary: { enabled: false } });
+    fixture.detectChanges();
+    const body = fixture.nativeElement.querySelector('.form-flow__body') as HTMLElement;
+    [...body.querySelectorAll('.form-flow__slide')].forEach((slide, index) =>
+      Object.defineProperty(slide, 'offsetLeft', { get: () => index * 340 }));
+    fixture.nativeElement.querySelector('.form-flow__nav--next').click();
+    fixture.detectChanges();
+    const expectDestination = () => {
+      expect(fixture.nativeElement.querySelector('.form-flow__step-badge').textContent).toContain('Photos');
+      expect(fixture.nativeElement.querySelector('.form-flow__counter').textContent.trim()).toBe('2 / 2');
+      expect(fixture.nativeElement.querySelector('.form-flow__progress-track span').style.width).toBe('100%');
+    };
+    expectDestination();
+    // A busy first render can postpone both paint callbacks beyond the old 96ms lock.
+    vi.advanceTimersByTime(150); fixture.detectChanges();
+    expectDestination();
+    fixture.componentInstance.writeValue({ name: 'Updated during transition' });
+    fixture.componentRef.setInput('model', { ...fixture.componentInstance.model });
+    fixture.detectChanges();
+    expectDestination();
+    for (let i = 0; i < 3; i++) { const queued = frames.splice(0); queued.forEach(callback => callback(0)); }
+    body.dispatchEvent(new Event('scroll'));
+    vi.advanceTimersByTime(100); fixture.detectChanges();
+    expectDestination();
+    expect(body.scrollLeft).toBe(340);
+    fixture.destroy();
   });
 });

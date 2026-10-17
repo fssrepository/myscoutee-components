@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1 — 2026-10-17
+
+Keep FormFlow labels and actions aligned with field navigation, preserve shared
+rate labels, constrain image-editor widths and reposition avatar edit/completion
+controls so the profile image remains visible. Existing focused regressions cover
+form navigation and rate-label fallback.
+
 ## 1.4.0 — 2026-10-12
 
 Retain the qualified deployment-brand font styling and configurable header text

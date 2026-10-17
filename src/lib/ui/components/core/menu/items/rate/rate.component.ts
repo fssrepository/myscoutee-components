@@ -138,7 +138,7 @@ export class RateComponent implements OnDestroy, OnChanges {
   }
 
   protected get resolvedLabel(): string | null {
-    return this.config?.label ?? 'Affinity';
+    return this.config?.label ?? 'sympathy';
   }
 
   protected get resolvedActionLabel(): string {

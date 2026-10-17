@@ -14,7 +14,7 @@ then authenticate with a GitHub token with `read:packages` in your user-level
 configuration. Keep credentials out of Git.
 
 ```sh
-npm install @fssrepository/myscoutee-components@1.4.0
+npm install @fssrepository/myscoutee-components@1.4.1
 ```
 
 ## Documentation
@@ -24,7 +24,7 @@ npm install @fssrepository/myscoutee-components@1.4.0
 | Component catalogue, setup, examples, styles and release workflow | [PDF](https://github.com/fssrepository/myscoutee-components/blob/master/guides/manuals/MyScoutee_Components_Guide_EN.pdf) |
 | Editable guide and PDF regeneration | [HTML](guides/manuals/components-guide-en.html) · [Instructions](guides/manuals/README.md) |
 | Public API | [Exports](src/public-api.ts) |
-| Changes | [Changelog](CHANGELOG.md) · [1.4.0 release notes](releases/v1.4.0.md) |
+| Changes | [Changelog](CHANGELOG.md) · [1.4.1 release notes](releases/v1.4.1.md) |
 | Complete application foundation | [MyScoutee Template](https://github.com/fssrepository/myscoutee-template) |
 
 ## Development

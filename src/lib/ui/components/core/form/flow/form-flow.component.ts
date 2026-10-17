@@ -17,7 +17,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
-  afterNextRender,
+  afterEveryRender,
   forwardRef,
   inject,
   signal
@@ -117,6 +117,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   protected readonly controlInjector = Injector.create({providers: this.customControls.providers ?? [], parent: inject(Injector)});
   private readonly cdr = inject(ChangeDetectorRef);
   protected readonly preparing = signal(true);
+  protected readonly renderForm = signal(false);
   private cancelPreparation: (() => void) | null = null;
 
   @Input() model: FormFlowModel | null = null;
@@ -131,6 +132,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   protected pageIndex = 0;
   protected isMobileViewport = this.readViewportWidth() <= FormFlowComponent.MOBILE_BREAKPOINT_PX;
   private pendingPageIndex: number | null = null;
+  private viewportSyncVersion = 0;
   private controlDisabled = false;
   private formValue: unknown = {};
   private readonly emptyStringArray: readonly string[] = [];
@@ -153,24 +155,34 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   });
 
   constructor() {
-    afterNextRender(() => {
-      if (!this.preparing()) return;
+    afterEveryRender(() => {
+      if (!this.preparing() || this.loading || !this.model || this.cancelPreparation) return;
       this.cancelPreparation = scheduleAfterPaint(() => {
         this.cancelPreparation = null;
-        this.preparing.set(false);
-        this.queueViewportSync('auto');
+        if (!this.renderForm()) {
+          // Keep the painted loader above the real controls while they render.
+          this.renderForm.set(true);
+        } else {
+          this.preparing.set(false);
+          this.queueViewportSync('auto');
+        }
       });
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.loading) {
+      this.cancelPreparation?.();
+      this.cancelPreparation = null;
+    }
     if (changes['model']) {
       if (this.model?.deferPreparation === false) {
         this.cancelPreparation?.(); this.cancelPreparation = null;
+        this.renderForm.set(true);
         this.preparing.set(false);
       }
       this.pageIndex = this.clampPageIndex(this.pageIndex);
-      this.pendingPageIndex = null;
+      if (this.pendingPageIndex !== null) this.pendingPageIndex = this.clampPageIndex(this.pendingPageIndex);
       this.queueViewportSync('auto');
       this.queuePercentEmit();
       this.pushScheduler.restart();
@@ -365,7 +377,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   }
 
   protected goPrevious(sourceEvent?: Event): void {
-    this.goToPage(this.pageIndex - 1, sourceEvent);
+    this.goToPage(this.visiblePageIndex() - 1, sourceEvent);
   }
 
   protected goNext(sourceEvent?: Event): void {
@@ -1276,16 +1288,20 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
     }
 
     const normalizedTargetIndex = this.clampPageIndex(targetIndex);
+    // Value/model updates must not replace an in-flight navigation with the old settled page.
+    if (behavior === 'auto' && this.pendingPageIndex === normalizedTargetIndex) return;
+    const syncVersion = ++this.viewportSyncVersion;
     if (behavior === 'smooth' && normalizedTargetIndex !== this.pageIndex) {
+      this.clearViewportScrollLock();
       this.pendingPageIndex = normalizedTargetIndex;
       this.viewportScrollLockTargetIndex = normalizedTargetIndex;
-      this.scheduleViewportScrollLockRelease();
     } else {
       this.pendingPageIndex = null;
       this.clearViewportScrollLock();
     }
 
     const sync = () => {
+      if (syncVersion !== this.viewportSyncVersion) return;
       const viewport = this.flowViewportRef?.nativeElement;
       if (!viewport) {
         return;
@@ -1297,6 +1313,8 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
       const previousScrollBehavior = viewport.style.scrollBehavior;
       viewport.style.scrollBehavior = behavior;
       viewport.scrollLeft = targetLeft;
+      // Start the idle window only after scrolling actually starts, not before delayed paint callbacks.
+      if (this.viewportScrollLockTargetIndex === normalizedTargetIndex) this.scheduleViewportScrollLockRelease();
       const restore = () => {
         viewport.style.scrollBehavior = previousScrollBehavior;
       };

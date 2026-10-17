@@ -70,8 +70,8 @@
     </div>
   </ng-template>
 
-  @if (!loading && !preparing() && !isCarouselLayout() && model?.header !== false) {
-    <header class="form-flow__header">
+  @if (renderForm() && !isCarouselLayout() && model?.header !== false) {
+    <header class="form-flow__header" [attr.inert]="loading || preparing() ? '' : null" [attr.aria-hidden]="loading || preparing() ? 'true' : null">
       <div class="form-flow__title-block">
         <span class="form-flow__kicker">{{ model?.title }}</span>
         <h2>{{ activeTitle() }}</h2>
@@ -88,12 +88,15 @@
 
   @if (loading || preparing()) {
     <article class="form-flow__loading" role="status">
-      <app-indicator kind="load-ring" state="loading"></app-indicator>
+      <app-indicator kind="spinner-ring" state="loading"></app-indicator>
       <span>{{ (model?.loadingLabel || 'Loading form') | i18n }}</span>
     </article>
-  } @else if (model && totalPageCount() > 0) {
+  }
+  @if (renderForm() && model && totalPageCount() > 0) {
     <div
       class="form-flow__stage"
+      [attr.inert]="loading || preparing() ? '' : null"
+      [attr.aria-hidden]="loading || preparing() ? 'true' : null"
       [class.form-flow__stage--carousel]="isCarouselLayout()"
       [class.form-flow__stage--grouped]="isGroupedLayout()"
       [class.form-flow__stage--compact-head]="isCarouselLayout() && !activeStepHasCardHeader()"
@@ -495,7 +498,7 @@
     </div>
 
     @if (!isGroupedLayout()) {
-    <footer class="form-flow__footer" [class.form-flow__footer--carousel]="isCarouselLayout()">
+    <footer [attr.inert]="loading || preparing() ? '' : null" [attr.aria-hidden]="loading || preparing() ? 'true' : null" class="form-flow__footer" [class.form-flow__footer--carousel]="isCarouselLayout()">
       @if (!isCarouselLayout()) {
         <button
           type="button"
@@ -548,7 +551,7 @@
       }
     </footer>
     }
-  } @else {
+  } @else if (!loading && !preparing()) {
     <article class="form-flow__empty">
       <mat-icon>dynamic_form</mat-icon>
       <h3>No form available</h3>

@@ -55,7 +55,7 @@
 }
 
 .header-card__avatar-stack {
-  --header-card-badge-overhang: var(--app-header-card-badge-overhang, 6px);
+  --header-card-badge-overhang: var(--app-header-card-badge-overhang, 13px);
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
@@ -105,8 +105,8 @@
 
 .header-card__edit {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -6px;
+  right: -14px;
   z-index: 1;
   width: 30px;
   height: 30px;

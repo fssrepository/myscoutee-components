@@ -1254,7 +1254,19 @@
 }
 
 .form-flow.is-loading {
-  grid-template-rows: minmax(0, 1fr);
+  min-height: max(100%, 240px);
+}
+
+.form-flow.is-loading > :not(.form-flow__loading) {
+  z-index: 0;
+  pointer-events: none;
+}
+
+.form-flow__loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--form-flow-base-bg);
 }
 
 .form-flow__loading,
