@@ -39,7 +39,7 @@
               class="image-stack-line"
               [class.active]="imageIndex === clampedActiveIndex()"
               (click)="onSlideSelect(imageIndex, $event)"
-              aria-label="Select profile image"
+              [attr.aria-label]="'profile.photo.select.aria' | i18n"
             ></button>
           }
         } @else {
@@ -79,7 +79,7 @@
             class="image-stack-hit-segment"
             [attr.data-guide-field]="imageIndex === 0 && (card?.guideImageSwitch !== true || resolvedState() === 'active') ? 'image-switch' : null"
             (click)="onSlideSelect(imageIndex, $event)"
-            aria-label="Select profile image"
+            [attr.aria-label]="'profile.photo.select.aria' | i18n"
           ></button>
         }
       </div>
@@ -99,7 +99,7 @@
           [class.shared-card-context-category]="!!contextBadge.icon"
           [style.--context-hue]="contextBadge.accentHue ?? null"
           data-guide-field="related-profile"
-          [attr.aria-label]="contextBadge.ariaLabel || contextBadge.title || 'View related profile'"
+          [attr.aria-label]="contextBadge.ariaLabel || contextBadge.title || ('profile.related.open.aria' | i18n)"
           [attr.title]="contextBadge.title || contextBadge.ariaLabel || null"
           (click)="onContextBadgeClick(contextBadge, $event)"
           >
@@ -115,7 +115,7 @@
           class="shared-card-context-avatar-badge"
           [class.shared-card-context-category]="!!contextBadge.icon"
           [style.--context-hue]="contextBadge.accentHue ?? null"
-          [attr.aria-label]="contextBadge.ariaLabel || contextBadge.title || 'Related profile'"
+          [attr.aria-label]="contextBadge.ariaLabel || contextBadge.title || ('profile.related.label' | i18n)"
           [attr.title]="contextBadge.title || contextBadge.ariaLabel || null"
           >
           @if (contextBadge.icon) { <mat-icon>{{ contextBadge.icon }}</mat-icon><span>{{ contextBadge.label }}</span> }

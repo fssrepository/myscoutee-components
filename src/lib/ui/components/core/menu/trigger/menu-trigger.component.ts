@@ -1,3 +1,4 @@
+import { UI_TRANSLATIONS } from '../../../../../foundation/translation';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -97,6 +98,8 @@ import { appMenuGuideItemIds, appMenuAlertCounter, appMenuModelSummary } from '.
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppMenuTriggerComponent<TId extends string = string, TContext = unknown> {
+  private readonly i18n = inject(UI_TRANSLATIONS);
+
   private static nextGeneratedId = 0;
 
   private readonly dispatcher = inject(AppMenuDispatcher);
@@ -334,7 +337,7 @@ export class AppMenuTriggerComponent<TId extends string = string, TContext = unk
     if (label) {
       return this.isOpen() ? `Close ${label}` : `Open ${label}`;
     }
-    return this.isOpen() ? 'Close menu' : 'Open menu';
+    return this.isOpen() ? this.i18n.translate('close.menu') : this.i18n.translate('menu.open.aria');
   }
 
   protected triggerAriaHasPopup(): string | null {

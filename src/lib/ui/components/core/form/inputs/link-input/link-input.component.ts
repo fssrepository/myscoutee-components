@@ -84,7 +84,7 @@ export class LinkInputComponent implements ControlValueAccessor {
   }
 
   protected label(): string {
-    return this.toText(this.config.label).trim() || 'Source link';
+    return this.toText(this.config.label).trim() || this.i18n.translate('source.link');
   }
 
   protected placeholder(): string {

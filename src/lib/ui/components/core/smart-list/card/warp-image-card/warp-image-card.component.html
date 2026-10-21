@@ -3,12 +3,13 @@
     <div class="ui-warp-image-card__headline">
       <span class="ui-warp-image-card__index">{{ card.index }}</span>
       <div class="ui-warp-image-card__copy">
-        <h3>{{ card.titleKey | i18n: card.title }}</h3>
+        <h3 [attr.aria-level]="headingLevel">{{ card.titleKey | i18n: card.title }}</h3>
         <p>{{ card.messageKey | i18n: card.message }}</p>
       </div>
     </div>
     <div class="ui-warp-image-card__visual" [ngStyle]="visualStyle()" aria-hidden="true">
       <div class="ui-warp-image-card__visual-image" [appLazyBgImage]="card.imageUrl || fallbackImageUrl"
+        [appLazyImagePriority]="imagePriority"
         [appLazyImageRetainLoaded]="true">
         <span class="ui-warp-image-card__image-loader">
           <app-indicator kind="spinner-ring" size="sm"></app-indicator>

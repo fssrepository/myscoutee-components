@@ -82,6 +82,7 @@ export class InfoCardComponent implements OnDestroy, OnChanges {
   protected readonly availableActions = CARD_MENU_ACTIONS;
 
   @Input() card: InfoCardData | null = null;
+  @Input() headingLevel: 1 | 2 | 3 | 4 | 5 | 6 = 4;
   @Input() useSharedMenu = false;
   @Input() useSharedMenuTrigger = false;
   @Input() sharedMenuContext: Record<string, unknown> | null = null;
@@ -438,7 +439,7 @@ export class InfoCardComponent implements OnDestroy, OnChanges {
       layout: 'icon',
       palette: 'default',
       counter: menuBadgeCount > 0 ? { value: menuBadgeCount, max: 99 } : null,
-      ariaLabel: 'Open menu'
+      ariaLabel: 'menu.open.aria'
     };
   }
 

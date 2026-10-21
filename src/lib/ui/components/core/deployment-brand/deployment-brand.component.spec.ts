@@ -31,6 +31,7 @@ describe('DeploymentBrandComponent', () => {
 
     expect(rendered.textContent?.trim()).toBe('yScoutee');
     expect(rendered.getAttribute('aria-label')).toBe('MyScoutee');
+    expect(rendered.getAttribute('role')).toBe('img');
     expect(rendered.classList.contains('deployment-brand--inline-logo')).toBe(true);
   });
 

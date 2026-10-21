@@ -78,6 +78,50 @@ describe('retained view background images', () => {
 });
 
 describe('background request lifecycle', () => {
+  it('starts a visible priority card before the observer callback, retaining offscreen and inactive deferral', () => {
+    vi.stubGlobal('IntersectionObserver', class {
+      observe = vi.fn();
+      disconnect = vi.fn();
+    });
+    try {
+      for (const [enabled, visible] of [[true, true], [true, false], [false, true]]) {
+        const { instance } = background(enabled);
+        instance.currentUrl = `/priority-visibility-${enabled}-${visible}.webp`;
+        instance.appLazyImagePriority = 'high';
+        instance.scheduleVisibleBackgroundLoad = vi.fn();
+        instance.isElementWithinPreloadRange = () => visible;
+        instance.setupObserver();
+        expect(instance.loadRenderableUrl).toHaveBeenCalledTimes(enabled && visible ? 1 : 0);
+      }
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('sets request priority before src and shares the same atlas request with ordinary cards', async () => {
+    const requests: { url: string; priority: string }[] = [];
+    vi.stubGlobal('Image', class {
+      fetchPriority = 'auto';
+      onload: (() => void) | null = null;
+      decode = () => Promise.resolve();
+      set src(url: string) {
+        requests.push({ url, priority: this.fetchPriority });
+        queueMicrotask(() => this.onload?.());
+      }
+    });
+    try {
+      const url = '/priority-shared-atlas.webp';
+      const priority = LazyBgImageDirective.preloadImageUrl(url, { fetchPriority: 'high' });
+      const ordinary = LazyBgImageDirective.preloadImageUrl(url);
+      expect(await priority).toBe(true);
+      expect(await ordinary).toBe(true);
+      expect(await LazyBgImageDirective.preloadImageUrl(url)).toBe(true);
+      expect(requests).toEqual([{ url, priority: 'high' }]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('does not restart an in-flight request on repeated observer callbacks', async () => {
     const { instance, element } = background(true);
     instance.loadBackgroundUrl('/ready.jpg');

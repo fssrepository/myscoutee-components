@@ -243,7 +243,7 @@
         type="button"
         class="app-menu__backdrop"
         (click)="closeFromBackdrop($event)"
-        aria-label="Close menu"
+        [attr.aria-label]="'close.menu' | i18n"
       ></button>
     }
 
@@ -372,7 +372,7 @@
                   type="text"
                   class="app-menu__tabs-filter-input"
                   [value]="tabsFilterText"
-                  [attr.placeholder]="resolvedTitle || 'Search'"
+                  [attr.placeholder]="resolvedTitle || ('menu.search.placeholder' | i18n)"
                   (input)="updateTabsFilter($event)"
                   (keydown)="$event.stopPropagation()"
                   />
@@ -380,8 +380,8 @@
                   <button
                     type="button"
                     class="app-menu__tabs-filter-clear"
-                    aria-label="Clear search"
-                    title="Clear search"
+                    [attr.aria-label]="'menu.search.clear.aria' | i18n"
+                    [attr.title]="'menu.search.clear.aria' | i18n"
                     (click)="clearTabsFilter($event)"
                     >
                     <mat-icon>close</mat-icon>
@@ -391,7 +391,7 @@
             </div>
           }
           @if (showTabsBar()) {
-            <div class="app-menu__tabs-tabs" role="tablist" [attr.aria-label]="resolvedTitle || 'Menu tabs'">
+            <div class="app-menu__tabs-tabs" role="tablist" [attr.aria-label]="resolvedTitle || ('menu.tabs.aria' | i18n)">
               @for (group of visibleTabsGroups; track trackByGroupId($index, group)) {
                 <button
                   type="button"
@@ -503,12 +503,12 @@
                   }
                 }
                 @if (!hasVisibleTabsItems(group)) {
-                  <div class="app-menu__tabs-empty">No matches</div>
+                  <div class="app-menu__tabs-empty">{{ 'menu.search.empty' | i18n }}</div>
                 }
               </div>
             </div>
           } @else {
-            <div class="app-menu__tabs-empty">No matches</div>
+            <div class="app-menu__tabs-empty">{{ 'menu.search.empty' | i18n }}</div>
           }
         </div>
       } @else {
@@ -518,8 +518,8 @@
               <button
                 type="button"
                 class="app-menu__branch-back"
-                aria-label="Back to menu"
-                title="Back to menu"
+                [attr.aria-label]="'menu.back.aria' | i18n"
+                [attr.title]="'menu.back.aria' | i18n"
                 (click)="closeActiveBranch($event)"
                 >
                 <mat-icon>arrow_back</mat-icon>

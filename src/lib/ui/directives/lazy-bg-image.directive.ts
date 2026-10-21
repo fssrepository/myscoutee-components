@@ -34,6 +34,7 @@ interface LazyImageScrollState {
 export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy {
   @Input() appLazyBgImage: string | null = null;
   @Input() appLazyImageEnabled = true;
+  @Input() appLazyImagePriority: 'auto' | 'high' | 'low' = 'auto';
   // Small shared atlases stay painted across carousel transitions once loaded.
   @Input() appLazyImageRetainLoaded = false;
   @Input() appLazyHtmlImages: boolean | string | null = false;
@@ -169,7 +170,10 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
     private readonly renderer: Renderer2
   ) {}
 
-  static preloadImageUrl(url: string | null | undefined, options: { crossOrigin?: string | null } = {}): Promise<boolean> {
+  static preloadImageUrl(url: string | null | undefined, options: {
+    crossOrigin?: string | null;
+    fetchPriority?: 'auto' | 'high' | 'low';
+  } = {}): Promise<boolean> {
     const normalizedUrl = `${url ?? ''}`.trim();
     if (!normalizedUrl) {
       return Promise.resolve(false);
@@ -227,6 +231,7 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
       img.onerror = () => finish(false);
       img.decoding = 'async';
       img.loading = 'eager';
+      img.fetchPriority = options.fetchPriority ?? 'auto';
       img.src = normalizedUrl;
     });
 
@@ -378,7 +383,13 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
     );
 
     this.observer.observe(this.elementRef.nativeElement);
-    this.scheduleVisibleBackgroundLoad(url);
+    // The selected LCP card can start as soon as its view is laid out. Keep
+    // visibility and fast-scroll rules: priority does not load hidden cards.
+    if (this.appLazyImagePriority === 'high' && this.isElementWithinPreloadRange()) {
+      this.loadBackgroundUrl(url);
+    } else {
+      this.scheduleVisibleBackgroundLoad(url);
+    }
   }
 
   private loadBackgroundUrl(url: string): void {
@@ -1043,6 +1054,6 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
   }
 
   private preloadUrl(url: string): Promise<boolean> {
-    return LazyBgImageDirective.preloadImageUrl(url);
+    return LazyBgImageDirective.preloadImageUrl(url, { fetchPriority: this.appLazyImagePriority });
   }
 }

@@ -118,7 +118,7 @@ export class DialogComponent implements DoCheck, OnDestroy {
         title: dialog.title?.trim() || 'Confirmation',
         message: dialog.message?.trim() ?? '',
         warningMessage: dialog.warningMessage?.trim() ?? '',
-        cancelLabel: dialog.cancelLabel === undefined ? 'Cancel' : dialog.cancelLabel,
+        cancelLabel: dialog.cancelLabel === undefined ? 'cancel' : dialog.cancelLabel,
         confirmLabel,
         busyConfirmLabel: dialog.busyConfirmLabel?.trim() || confirmLabel,
         confirmTone: dialog.confirmTone ?? 'accent',

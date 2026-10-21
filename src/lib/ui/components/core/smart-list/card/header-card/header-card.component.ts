@@ -1,3 +1,4 @@
+import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +26,7 @@ export interface HeaderCardModel {
 @Component({
   selector: 'app-header-card',
   standalone: true,
-  imports: [CommonModule, MatIconModule, IndicatorComponent],
+  imports: [CommonModule, MatIconModule, IndicatorComponent, I18nPipe],
   templateUrl: './header-card.component.html',
   styleUrl: './header-card.component.scss'
 })

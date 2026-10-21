@@ -31,7 +31,7 @@
           @if (badge.icon) {
             <mat-icon>{{ badge.icon }}</mat-icon>
           }
-          <span>{{ badge.label }}</span>
+          <span>{{ badge.label | i18n }}</span>
         </span>
       }
       @if (rowCounterValue() > 0) {
@@ -66,7 +66,7 @@
               @if (badge.icon) {
                 <mat-icon>{{ badge.icon }}</mat-icon>
               }
-              <span>{{ badge.label }}</span>
+              <span>{{ badge.label | i18n }}</span>
             </span>
           }
         </span>
@@ -100,7 +100,7 @@
               @if (badge.icon) {
                 <mat-icon>{{ badge.icon }}</mat-icon>
               }
-              <span>{{ badge.label }}</span>
+              <span>{{ badge.label | i18n }}</span>
             </span>
           }
         </span>
@@ -114,7 +114,7 @@
             [attr.aria-expanded]="menuOpen" [attr.data-guide-items]="row?.menuActions?.join('\n') ?? ''"
             [class.is-open]="menuOpen"
             [disabled]="row?.progressRing === true"
-            [attr.aria-label]="menuOpen ? 'Close menu' : 'Open menu'"
+            [attr.aria-label]="menuOpen ? ('close.menu' | i18n) : ('menu.open.aria' | i18n)"
             (pointerdown)="onSharedMenuTriggerPointerDown($event)"
             (click)="onSharedMenuTriggerClick($event)"
             >

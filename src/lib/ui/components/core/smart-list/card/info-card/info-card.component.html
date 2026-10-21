@@ -371,6 +371,7 @@
     <div class="ui-info-card__meta">
       <h4
         class="ui-info-card__title"
+        [attr.aria-level]="headingLevel"
         [attr.data-i18n-ignore]="card?.i18nIgnoreContent ? '' : null"
         >{{ card?.title }}</h4>
       @for (row of visibleMetaRows(); track row) {

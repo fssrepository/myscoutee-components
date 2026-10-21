@@ -110,7 +110,7 @@
   </div>
 } @else {
   <div class="ui-accordion__empty">
-    <strong>{{ model?.emptyTitle || 'Nothing here yet' }}</strong>
+    <strong>{{ model?.emptyTitle || ('accordion.empty.description' | i18n) }}</strong>
     @if (model?.emptyDescription) {
       <span>{{ model?.emptyDescription }}</span>
     }

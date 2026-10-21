@@ -1,3 +1,4 @@
+import { UI_TRANSLATIONS } from '../../../../foundation/translation';
 import { ExplanationGuideService } from '../../../../guide/explanation-guide.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -44,6 +45,8 @@ import type {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PopupComponent<TContext = unknown> implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+  private readonly i18n = inject(UI_TRANSLATIONS);
+
   @ViewChild('surface') private surface?: ElementRef<HTMLElement>;
   private detachedSurface: HTMLElement | null = null;
 
@@ -155,7 +158,7 @@ export class PopupComponent<TContext = unknown> implements OnInit, OnChanges, On
   }
 
   protected get closeAriaLabel(): string {
-    return this.popupModel.closeAriaLabel?.trim() || 'Close';
+    return this.popupModel.closeAriaLabel?.trim() || this.i18n.translate('close');
   }
 
   protected get closeOnBackdrop(): boolean {

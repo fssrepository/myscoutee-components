@@ -1,3 +1,4 @@
+import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
 import { inject as injectImageUrls } from '@angular/core';
 import { UI_IMAGE_URLS } from '../../../../../../foundation/image-urls';
 import { clampNumber } from '../../../../../../foundation/number-utils';
@@ -44,7 +45,7 @@ type SingleRowMenuRequestEvent = CardMenuRequestEvent<SingleRowData> & {
     MatIconModule,
     CounterBadgePipe,
     AppMenuComponent,
-    IndicatorComponent
+    IndicatorComponent, I18nPipe
   ],
   templateUrl: './single-row.component.html',
   styleUrl: './single-row.component.scss',
@@ -195,7 +196,7 @@ export class SingleRowComponent {
       layout: 'icon',
       palette: 'default',
       counter: menuBadgeCount > 0 ? { value: menuBadgeCount, max: 99 } : null,
-      ariaLabel: 'Open menu'
+      ariaLabel: 'menu.open.aria'
     };
   }
 

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { UI_TRANSLATIONS } from '../../foundation/translation';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 import type { PromptAction, PromptActionEvent, PromptIcon, PromptImageIcon, PromptModel } from './prompt.types';
@@ -12,6 +13,8 @@ import type { PromptAction, PromptActionEvent, PromptIcon, PromptImageIcon, Prom
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PromptComponent {
+  private readonly i18n = inject(UI_TRANSLATIONS);
+
   @Input() model: PromptModel | null = null;
 
   @Output() readonly action = new EventEmitter<PromptActionEvent>();
@@ -49,7 +52,7 @@ export class PromptComponent {
   }
 
   protected get closeAriaLabel(): string {
-    return this.promptModel.closeAriaLabel?.trim() || 'Dismiss';
+    return this.promptModel.closeAriaLabel?.trim() || this.i18n.translate('dismiss');
   }
 
   protected isImageIcon(icon: PromptIcon | null | undefined): icon is PromptImageIcon {

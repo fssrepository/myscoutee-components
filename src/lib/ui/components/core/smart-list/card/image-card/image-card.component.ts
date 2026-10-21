@@ -1,3 +1,4 @@
+import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
 import { inject as injectImageUrls } from '@angular/core';
 import { UI_IMAGE_URLS } from '../../../../../../foundation/image-urls';
 import { CommonModule } from '@angular/common';
@@ -29,7 +30,7 @@ import {
 @Component({
   selector: 'app-image-card',
   standalone: true,
-  imports: [CommonModule, MatIconModule, LazyBgImageDirective, AppMenuTriggerComponent, IndicatorComponent],
+  imports: [I18nPipe, CommonModule, MatIconModule, LazyBgImageDirective, AppMenuTriggerComponent, IndicatorComponent],
   templateUrl: './image-card.component.html',
   styleUrl: './image-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -243,7 +244,7 @@ export class ImageCardComponent {
       layout: 'icon',
       palette: 'default',
       counter: counter > 0 ? { value: counter, max: 99 } : null,
-      ariaLabel: 'Open menu'
+      ariaLabel: 'menu.open.aria'
     };
   }
 

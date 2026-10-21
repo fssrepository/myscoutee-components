@@ -1,6 +1,7 @@
 @if (renderModel(); as model) {
   <span
     class="deployment-brand"
+    role="img"
     [class.deployment-brand--inline-logo]="model.inlineLogo"
     [attr.aria-label]="ariaLabel || model.branding.productName"
   >

@@ -1,3 +1,4 @@
+import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
 import { inject as injectImageUrls } from '@angular/core';
 import { UI_IMAGE_URLS } from '../../../../../../foundation/image-urls';
 import { CommonModule } from '@angular/common';
@@ -33,7 +34,7 @@ import type {
 @Component({
   selector: 'app-single-card',
   standalone: true,
-  imports: [CommonModule, MatIconModule, LazyBgImageDirective, IndicatorComponent],
+  imports: [CommonModule, MatIconModule, LazyBgImageDirective, IndicatorComponent, I18nPipe],
   templateUrl: './single-card.component.html',
   styleUrl: './single-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

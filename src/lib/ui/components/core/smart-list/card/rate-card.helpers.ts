@@ -129,7 +129,7 @@ function buildPairRateSlots(input: RateCardDataInput): readonly PairCardSlot[] {
 
     return {
       key: slot,
-      label: slot === 'woman' ? 'Woman' : 'Man',
+      label: slot === 'woman' ? 'gender.woman' : 'gender.man',
       tone: slot,
       slides,
       profileView: profileViewForUser(user)

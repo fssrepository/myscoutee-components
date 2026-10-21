@@ -38,6 +38,8 @@ export interface WarpImageCardData {
 export class WarpImageCardComponent {
   protected readonly fallbackImageUrl = injectImageUrls(UI_IMAGE_URLS).cardFallbackUrl;
   @Input() card: WarpImageCardData | null = null;
+  @Input() headingLevel: 1 | 2 | 3 | 4 | 5 | 6 = 3;
+  @Input() imagePriority: 'auto' | 'high' | 'low' = 'auto';
 
   protected rootClassList(): string[] {
     return [

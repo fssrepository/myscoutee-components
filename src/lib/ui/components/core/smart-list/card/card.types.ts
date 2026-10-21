@@ -223,7 +223,7 @@ export interface CardMenuAction {
 
 export const CARD_MENU_ACTIONS: Readonly<Record<CardMenuActionId, CardMenuActionConfig>> = {
   accept: { label: 'accept', icon: 'done', tone: 'accent' },
-  addWatchlist: { label: 'Add to watchlist', icon: 'visibility', tone: 'accent' },
+  addWatchlist: { label: 'event.watchlist.add.action', icon: 'visibility', tone: 'accent' },
   addOrganizerNote: { label: 'add.organizer.note', icon: 'edit_note' },
   askOrganizer: { label: 'ask.organizer', icon: 'support_agent' },
   askAssetOwner: {
@@ -264,7 +264,7 @@ export const CARD_MENU_ACTIONS: Readonly<Record<CardMenuActionId, CardMenuAction
   openNotificationAccommodation: { label: 'Open accommodation', icon: 'apartment', tone: 'accent' },
   openNotificationRoleTarget: { label: 'notification.action.open', icon: 'open_in_new', tone: 'accent' },
   openNotificationPayments: {label:'payment.history.title',icon:'receipt_long',tone:'accent'},
-  openNotificationContacts: { label: 'Contacts', icon: 'contacts', tone: 'accent' },
+  openNotificationContacts: { label: 'contacts', icon: 'contacts', tone: 'accent' },
   openNotificationChat: { label: 'chat', icon: 'chat', tone: 'accent' },
   openNotificationAnnouncement: { label: 'announcement.view', icon: 'campaign', tone: 'accent' },
   openNotificationCase: { label: 'case.view', icon: 'home_repair_service', tone: 'accent' },
@@ -281,7 +281,7 @@ export const CARD_MENU_ACTIONS: Readonly<Record<CardMenuActionId, CardMenuAction
   approveRefund: { label: 'payment.history.refund.approve', icon: 'price_check', tone: 'positive' },
   publish: { label: 'publish', icon: 'campaign', tone: 'accent' },
   rejectInvitation: { label: 'reject.invitation', icon: 'block', tone: 'destructive' },
-  removeWatchlist: { label: 'Remove from watchlist', icon: 'visibility_off', tone: 'warning' },
+  removeWatchlist: { label: 'event.watchlist.remove.action', icon: 'visibility_off', tone: 'warning' },
   remove: { label: 'reject', icon: 'delete', tone: 'destructive' },
   removeAssignment: { label: 'remove', icon: 'link_off', tone: 'destructive' },
   removeFeedback: { label: 'remove', icon: 'remove_circle', tone: 'destructive' },
@@ -305,7 +305,7 @@ export const CARD_MENU_ACTIONS: Readonly<Record<CardMenuActionId, CardMenuAction
   unfeature: { label: 'unfeature', icon: 'star_outline', tone: 'warning' },
   unpublish: { label: 'unpublish', icon: 'visibility_off', tone: 'warning' },
   view: { label: 'view.event', icon: 'visibility' },
-  viewArticle: { label: 'Read more', icon: 'auto_stories', tone: 'accent' },
+  viewArticle: { label: 'read.more', icon: 'auto_stories', tone: 'accent' },
   viewAsset: { label: 'view.asset', icon: 'edit_square' },
   viewInvitation: { label: 'view.invitation', icon: 'visibility' },
   viewSubmittedFeedback: { label: 'View my feedback', icon: 'rate_review', tone: 'accent' }

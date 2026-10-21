@@ -112,7 +112,7 @@
                   [class.ui-popup__action--large-icon]="control.iconSize === 'large'"
                   [class.ui-popup__action--compact-mobile]="control.compactOnMobile"
                   [disabled]="control.disabled"
-                  [attr.aria-label]="control.ariaLabel || control.label || control.id"
+                  [attr.aria-label]="(control.ariaLabel || control.label || control.id) | i18n"
                   (click)="selectAction(control, $event)"
                 >
                   <mat-icon [class.ui-popup__icon--mirrored]="control.mirrorIcon">{{ control.icon }}</mat-icon>
@@ -148,7 +148,7 @@
               [class.ui-popup__action--large-icon]="headerAction.iconSize === 'large'"
               [class.ui-popup__action--compact-mobile]="headerAction.compactOnMobile"
               [disabled]="headerAction.disabled"
-              [attr.aria-label]="headerAction.ariaLabel || headerAction.label || headerAction.id"
+              [attr.aria-label]="(headerAction.ariaLabel || headerAction.label || headerAction.id) | i18n"
               (click)="selectAction(headerAction, $event)"
             >
               @if (headerAction.icon) {
@@ -229,7 +229,7 @@
                   [class.ui-popup__action--large-icon]="control.iconSize === 'large'"
                   [class.ui-popup__action--compact-mobile]="control.compactOnMobile"
                   [disabled]="control.disabled"
-                  [attr.aria-label]="control.ariaLabel || control.label || control.id"
+                  [attr.aria-label]="(control.ariaLabel || control.label || control.id) | i18n"
                   (click)="selectAction(control, $event)"
                 >
                   <mat-icon [class.ui-popup__icon--mirrored]="control.mirrorIcon">{{ control.icon }}</mat-icon>
@@ -289,7 +289,7 @@
                   [class.ui-popup__action--large-icon]="control.iconSize === 'large'"
                   [class.ui-popup__action--compact-mobile]="control.compactOnMobile"
                   [disabled]="control.disabled"
-                  [attr.aria-label]="control.ariaLabel || control.label || control.id"
+                  [attr.aria-label]="(control.ariaLabel || control.label || control.id) | i18n"
                   (click)="selectAction(control, $event)"
                 >
                   <mat-icon [class.ui-popup__icon--mirrored]="control.mirrorIcon">{{ control.icon }}</mat-icon>

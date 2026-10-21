@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.5 — MSC-126
+
+Use semantic keys for shared date/accordion captions, preserve content identities,
+correct landing wordmark/heading accessibility and prioritize the selected image
+through the existing image loader. Consumer application catalogs provide the keys.
+
 ## 1.4.1 — 2026-10-17
 
 Keep FormFlow labels and actions aligned with field navigation, preserve shared

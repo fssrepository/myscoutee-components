@@ -1,5 +1,6 @@
+import { UI_TRANSLATIONS } from '../../../../../../foundation/translation';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, inject } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { AppMenuComponent, type AppMenuItem } from '../../../menu/index';
@@ -33,6 +34,8 @@ export interface LocationInputConfig {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationInputComponent implements ControlValueAccessor {
+  private readonly i18n = inject(UI_TRANSLATIONS);
+
   @Input() config: LocationInputConfig = {};
   @Input() readOnly = false;
   @Input() disabled = false;
@@ -60,7 +63,7 @@ export class LocationInputComponent implements ControlValueAccessor {
   }
 
   protected label(): string {
-    return this.toText(this.resolveConfigValue(this.config.label)) || 'Location';
+    return this.toText(this.resolveConfigValue(this.config.label)) || this.i18n.translate('location');
   }
 
   protected placeholder(): string {

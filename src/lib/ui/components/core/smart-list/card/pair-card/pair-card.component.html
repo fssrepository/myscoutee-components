@@ -132,7 +132,7 @@
           data-motion="none"
           data-guide-field="pair-resize"
           [style.left]="resolvedSplitCssValue()"
-          aria-label="Resize pair cards"
+          [attr.aria-label]="'pair.cards.resize.aria' | i18n"
           (pointerdown)="onSplitHandlePointerDown($event, splitContainer)"
           (touchstart)="onSplitHandleTouchStart($event, splitContainer)"
           (click)="consumeClick($event)"

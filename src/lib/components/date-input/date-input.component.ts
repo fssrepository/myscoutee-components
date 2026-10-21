@@ -297,11 +297,11 @@ export class DateInputComponent implements ControlValueAccessor {
   }
 
   protected get startLabel(): string {
-    return `${this.startField.label ?? 'Start'}`;
+    return `${this.startField.label ?? 'start'}`;
   }
 
   protected get endLabel(): string {
-    return `${this.endField.label ?? 'End'}`;
+    return `${this.endField.label ?? 'end'}`;
   }
 
   protected get placeholder(): string {

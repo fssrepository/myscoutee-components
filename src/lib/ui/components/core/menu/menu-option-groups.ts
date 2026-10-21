@@ -28,6 +28,8 @@ export interface BuildTabbedMenuGroupsParams<TContext> {
   itemIcon?: (option: string, group: AppMenuStaticOptionGroup) => string;
   itemPalette?: (option: string, group: AppMenuStaticOptionGroup) => AppMenuPalette;
   groupIcon?: (group: AppMenuStaticOptionGroup) => string;
+  groupLabel?: (group: AppMenuStaticOptionGroup) => string;
+  groupAriaLabel?: (group: AppMenuStaticOptionGroup) => string;
   groupPalette?: (group: AppMenuStaticOptionGroup) => AppMenuPalette;
   removable?: (option: string, group: AppMenuStaticOptionGroup, selected: boolean) => boolean;
   removeAriaLabel?: (option: string, group: AppMenuStaticOptionGroup) => string;
@@ -58,10 +60,10 @@ export function buildTabbedMenuGroups<TId extends string = string, TContext = un
 
   return params.groups.map((group, groupIndex) => ({
     id: `${params.idPrefix}-group-${appMenuSafeId(group.shortTitle || group.title || `${groupIndex}`)}`,
-    label: group.shortTitle || group.title,
+    label: params.groupLabel?.(group) ?? (group.shortTitle || group.title),
     icon: params.groupIcon?.(group) ?? appMenuIconFromToneClass(group.toneClass),
     palette: params.groupPalette?.(group) ?? appMenuPaletteFromToneClass(group.toneClass),
-    ariaLabel: group.title,
+    ariaLabel: params.groupAriaLabel?.(group) ?? group.title,
     items: group.options.map(option => {
       const selected = selectedKeys.has(normalize(option));
       const label = params.itemLabel?.(option, group) ?? option;

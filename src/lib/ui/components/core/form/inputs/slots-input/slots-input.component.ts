@@ -50,22 +50,22 @@ export interface SlotsInputLabels {
 }
 
 const DEFAULT_SLOTS_LABELS: SlotsInputLabels = {
-  "slotsDisabledDescription": "Use the main date range without slot schedules.",
-  "slotsTimePending": "Time pending",
-  "slotsAddBaseAria": "Add base slot",
-  "scheduleEdit": "Edit Schedule",
-  "scheduleAdd": "Add Schedule",
-  "scheduleEditDescription": "Update the selected base slot start rule.",
-  "scheduleAddDescription": "Create a base slot start rule.",
-  "scheduleCloseAria": "Close schedule setup",
-  "scheduleSaveAria": "Save schedule",
-  "scheduleAddAria": "Add schedule",
-  "slotsTitle": "Slots",
-  "slotsSubtitle": "Base schedule and date-specific overrides.",
-  "startFrom": "Start from",
-  "scheduleStartTime": "Start time",
-  "slotsToggleAria": "Toggle slots",
-  "slotsEmpty": "No slots yet. Use + to create the first one."
+  'slotsDisabledDescription': 'slots.disabled.description',
+  'slotsTimePending': 'slots.time.pending',
+  'slotsAddBaseAria': 'slots.base.add.aria',
+  'scheduleEdit': 'schedule.edit.title',
+  'scheduleAdd': 'schedule.add.title',
+  'scheduleEditDescription': 'schedule.edit.description',
+  'scheduleAddDescription': 'schedule.add.description',
+  'scheduleCloseAria': 'schedule.close.aria',
+  'scheduleSaveAria': 'schedule.save.aria',
+  'scheduleAddAria': 'schedule.add.aria',
+  'slotsTitle': 'slots.title',
+  'slotsSubtitle': 'slots.subtitle',
+  'startFrom': 'schedule.start.from',
+  'scheduleStartTime': 'schedule.start.time',
+  'slotsToggleAria': 'slots.toggle.aria',
+  'slotsEmpty': 'slots.empty.description'
 };
 
 export interface SlotsInputConfig {

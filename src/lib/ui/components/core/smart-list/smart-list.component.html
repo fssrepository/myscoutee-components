@@ -47,7 +47,7 @@
                     class="smart-list__sticky-action-btn"
                     data-guide-field="pagination-prev"
                     (click)="navigatePageHeader(-1, $event)"
-                    aria-label="Previous period"
+                    [attr.aria-label]="'calendar.period.previous.aria' | i18n"
                   >
                     <mat-icon>chevron_left</mat-icon>
                   </button>
@@ -56,7 +56,7 @@
                     class="smart-list__sticky-action-btn"
                     data-guide-field="pagination-next"
                     (click)="navigatePageHeader(1, $event)"
-                    aria-label="Next period"
+                    [attr.aria-label]="'calendar.period.next.aria' | i18n"
                   >
                     <mat-icon>chevron_right</mat-icon>
                   </button>
@@ -77,7 +77,7 @@
                   data-guide-field="pagination-prev"
                   [disabled]="!canMovePagination(-1)"
                   (click)="onPaginationPrev($event)"
-                  aria-label="Previous page"
+                  [attr.aria-label]="'pagination.previous.aria' | i18n"
                 >
                   <mat-icon>chevron_left</mat-icon>
                 </button>
@@ -87,7 +87,7 @@
                   data-guide-field="pagination-next"
                   [disabled]="!canMovePagination(1)"
                   (click)="onPaginationNext($event)"
-                  aria-label="Next page"
+                  [attr.aria-label]="'pagination.next.aria' | i18n"
                 >
                   <mat-icon>chevron_right</mat-icon>
                 </button>
@@ -145,7 +145,7 @@
                     data-guide-field="pagination-prev"
                     [disabled]="!canMovePagination(-1)"
                     (click)="onPaginationPrev($event)"
-                    aria-label="Previous page"
+                    [attr.aria-label]="'pagination.previous.aria' | i18n"
                   >
                     <mat-icon>chevron_left</mat-icon>
                   </button>
@@ -155,7 +155,7 @@
                     data-guide-field="pagination-next"
                     [disabled]="!canMovePagination(1)"
                     (click)="onPaginationNext($event)"
-                    aria-label="Next page"
+                    [attr.aria-label]="'pagination.next.aria' | i18n"
                   >
                     <mat-icon>chevron_right</mat-icon>
                   </button>
@@ -341,7 +341,7 @@
         data-guide-field="pagination-prev"
         [disabled]="!canMovePagination(-1)"
         (click)="onPaginationPrev($event)"
-        aria-label="Previous item"
+        [attr.aria-label]="'carousel.previous.aria' | i18n"
       >
         <mat-icon>chevron_left</mat-icon>
       </button>
@@ -351,7 +351,7 @@
         data-guide-field="pagination-next"
         [disabled]="!canMovePagination(1)"
         (click)="onPaginationNext($event)"
-        aria-label="Next item"
+        [attr.aria-label]="'carousel.next.aria' | i18n"
       >
         <mat-icon>chevron_right</mat-icon>
       </button>

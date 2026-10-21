@@ -56,7 +56,7 @@
               [max]="resolvedStartMax()"
               [disabled]="inputDisabled()"
               [placeholder]="startPlaceholder"
-              [attr.aria-label]="startLabel"
+              [attr.aria-label]="startLabel | i18n"
             />
             <input
               matEndDate
@@ -67,7 +67,7 @@
               [max]="resolvedEndMax()"
               [disabled]="inputDisabled()"
               [placeholder]="endPlaceholder"
-              [attr.aria-label]="endLabel"
+              [attr.aria-label]="endLabel | i18n"
             />
           </mat-date-range-input>
           <button
@@ -95,7 +95,7 @@
 } @else if (isRange()) {
   <div class="date-input date-input--range" [class.date-input--with-time]="hasTime()">
     <label class="date-input__field">
-      <span class="date-input__label">{{ startLabel }}@if (startRequired) { <strong>*</strong> }</span>
+      <span class="date-input__label">{{ startLabel | i18n }}@if (startRequired) { <strong>*</strong> }</span>
       <div class="date-input__row">
         <mat-form-field appearance="outline" class="date-input__material date-input__material--date" subscriptSizing="dynamic">
           <input
@@ -163,7 +163,7 @@
     </label>
 
     <label class="date-input__field">
-      <span class="date-input__label">{{ endLabel }}@if (endRequired) { <strong>*</strong> }</span>
+      <span class="date-input__label">{{ endLabel | i18n }}@if (endRequired) { <strong>*</strong> }</span>
       <div class="date-input__row">
         <mat-form-field appearance="outline" class="date-input__material date-input__material--date" subscriptSizing="dynamic">
           <input

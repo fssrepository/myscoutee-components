@@ -151,13 +151,13 @@ export class RouteInputComponent implements ControlValueAccessor, OnDestroy {
   }
 
   protected openRouteLabel(): string {
-    return this.i18n.translate(this.resolveConfigValue(this.config.openLabel, 'Open Route Setup'));
+    return this.i18n.translate(this.resolveConfigValue(this.config.openLabel, 'route.setup.open.action'));
   }
 
   protected emptyRouteLabel(): string {
     return this.i18n.translate(this.locked()
-      ? this.resolveConfigValue(this.config.readOnlyEmptyLabel, 'No route set yet.')
-      : this.resolveConfigValue(this.config.emptyLabel, 'No route set yet.'));
+      ? this.resolveConfigValue(this.config.readOnlyEmptyLabel, 'route.empty.description')
+      : this.resolveConfigValue(this.config.emptyLabel, 'route.empty.description'));
   }
 
   protected routeCountLabel(): string {
@@ -178,7 +178,7 @@ export class RouteInputComponent implements ControlValueAccessor, OnDestroy {
   }
 
   protected mapAriaLabel(): string {
-    return this.i18n.translate(this.resolveConfigValue(this.config.mapAriaLabel, 'Open route on map'));
+    return this.i18n.translate(this.resolveConfigValue(this.config.mapAriaLabel, 'route.map.open.aria'));
   }
 
   protected visibleRoutes(): string[] {

@@ -814,7 +814,7 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
     if (label) {
       return this.open ? `Close ${label}` : `Open ${label}`;
     }
-    return this.open ? 'Close menu' : 'Open menu';
+    return this.open ? this.i18n.translate('close.menu') : this.i18n.translate('menu.open.aria');
   }
 
   protected triggerAriaHasPopup(): string | null {

@@ -1,3 +1,4 @@
+import { UI_TRANSLATIONS } from '../../../../../../foundation/translation';
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, ElementRef, Output, inject } from '@angular/core';
 import { DecimalPipe, NgTemplateOutlet, NgStyle } from '@angular/common';
@@ -23,6 +24,8 @@ import type {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RateComponent implements OnDestroy, OnChanges {
+  private readonly i18n = inject(UI_TRANSLATIONS);
+
   private readonly host = inject(ElementRef<HTMLElement>);
   protected detailModel: PopupModel | null = null;
   protected criterionValues: number[] = [];
@@ -142,7 +145,7 @@ export class RateComponent implements OnDestroy, OnChanges {
   }
 
   protected get resolvedActionLabel(): string {
-    return this.config?.actionLabel?.trim() || 'Go';
+    return this.config?.actionLabel?.trim() || this.i18n.translate('go');
   }
 
   protected get resolvedPresentation(): AppMenuRatePresentation {

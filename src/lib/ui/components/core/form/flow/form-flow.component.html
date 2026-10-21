@@ -44,14 +44,14 @@
   </ng-template>
 
   <ng-template #stepNavControls>
-    <div class="form-flow__slide-nav" aria-label="Form step navigation">
+    <div class="form-flow__slide-nav" [attr.aria-label]="'form.steps.navigation.aria' | i18n">
       <button
         type="button"
         class="form-flow__nav form-flow__nav--prev"
         data-motion="none"
         [disabled]="isDisabled() || visiblePageIndex() <= 0"
         (click)="goPrevious($event)"
-        aria-label="Previous step"
+        [attr.aria-label]="'form.step.previous.aria' | i18n"
       >
         <mat-icon>chevron_left</mat-icon>
       </button>
@@ -62,8 +62,8 @@
         [class.is-blocked]="nextStepBlocked()"
         [disabled]="isDisabled() || visiblePageIndex() >= totalPageCount() - 1 || nextStepBlocked()"
         (click)="goNext($event)"
-        [attr.aria-label]="nextStepBlocked() ? 'Complete required fields before continuing' : 'Next step'"
-        [attr.title]="nextStepBlocked() ? currentMissingRequiredCount() + ' required field missing' : 'Next step'"
+        [attr.aria-label]="nextStepBlocked() ? ('form.step.required.description' | i18n) : ('next.step' | i18n)"
+        [attr.title]="nextStepBlocked() ? currentMissingRequiredCount() + ' required field missing' : ('next.step' | i18n)"
       >
         <mat-icon>chevron_right</mat-icon>
       </button>
@@ -89,7 +89,7 @@
   @if (loading || preparing()) {
     <article class="form-flow__loading" role="status">
       <app-indicator kind="spinner-ring" state="loading"></app-indicator>
-      <span>{{ (model?.loadingLabel || 'Loading form') | i18n }}</span>
+      <span>{{ (model?.loadingLabel || 'form.loading') | i18n }}</span>
     </article>
   }
   @if (renderForm() && model && totalPageCount() > 0) {
@@ -305,7 +305,7 @@
                         [autoSize]="image.autoSize === true"
                         [slotImageVariant]="image.slotImageVariant ?? 'small'"
                         [previewMode]="image.previewMode === true && !isMobileViewport"
-                        [ariaLabel]="image.ariaLabel || control.label || 'Images'"
+                        [ariaLabel]="image.ariaLabel || control.label || ('image.carousel.images' | i18n)"
                         [uploadOwnerId]="image.uploadOwnerId || ''"
                         [uploadEntityId]="image.uploadEntityId || 'image'"
                         [disabled]="isControlDisabled(control)"
@@ -506,12 +506,12 @@
           data-motion="none"
           [disabled]="isDisabled() || visiblePageIndex() <= 0"
           (click)="goPrevious($event)"
-          aria-label="Previous step"
+          [attr.aria-label]="'form.step.previous.aria' | i18n"
         >
           <mat-icon>chevron_left</mat-icon>
         </button>
       }
-      <div class="form-flow__dots" aria-label="Form steps">
+      <div class="form-flow__dots" [attr.aria-label]="'form.steps.aria' | i18n">
         @for (step of pages(); track step.id; let index = $index) {
           <button
             type="button"
@@ -543,8 +543,8 @@
           [class.is-blocked]="nextStepBlocked()"
           [disabled]="isDisabled() || visiblePageIndex() >= totalPageCount() - 1 || nextStepBlocked()"
           (click)="goNext($event)"
-          [attr.aria-label]="nextStepBlocked() ? 'Complete required fields before continuing' : 'Next step'"
-          [attr.title]="nextStepBlocked() ? currentMissingRequiredCount() + ' required field missing' : 'Next step'"
+          [attr.aria-label]="nextStepBlocked() ? ('form.step.required.description' | i18n) : ('next.step' | i18n)"
+          [attr.title]="nextStepBlocked() ? currentMissingRequiredCount() + ' required field missing' : ('next.step' | i18n)"
         >
           <mat-icon>chevron_right</mat-icon>
         </button>
@@ -554,7 +554,7 @@
   } @else if (!loading && !preparing()) {
     <article class="form-flow__empty">
       <mat-icon>dynamic_form</mat-icon>
-      <h3>No form available</h3>
+      <h3>{{ 'form.empty.description' | i18n }}</h3>
     </article>
   }
 </section>

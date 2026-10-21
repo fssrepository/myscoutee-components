@@ -1,5 +1,6 @@
+import { UI_TRANSLATIONS } from '../../../../../../foundation/translation';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 import {
@@ -66,6 +67,8 @@ export type TextCardSelectPalette =
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TextCardComponent {
+  private readonly i18n = inject(UI_TRANSLATIONS);
+
   @Input() title = '';
   @Input() subtitle = '';
   @Input() meta = '';
@@ -193,7 +196,7 @@ export class TextCardComponent {
     if (label) {
       return label;
     }
-    return this.selected ? 'Remove selection' : 'Select';
+    return this.selected ? 'Remove selection' : this.i18n.translate('select');
   }
 
   protected selectActionClassList(): string[] {

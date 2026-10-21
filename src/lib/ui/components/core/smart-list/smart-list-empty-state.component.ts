@@ -22,7 +22,7 @@ import { I18nPipe } from '../../../../pipes/i18n.pipe';
   styleUrl: './smart-list-empty-state.component.scss'
 })
 export class SmartListEmptyStateComponent {
-  readonly label = input('No items');
+  readonly label = input('no.items');
   readonly description = input('');
   readonly placement = input<'center' | 'start'>('center');
   readonly tone = input<'empty' | 'error'>('empty');

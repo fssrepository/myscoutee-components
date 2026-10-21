@@ -1,3 +1,4 @@
+import { UI_TRANSLATIONS } from '../../../../foundation/translation';
 import { SmartListEmptyStateComponent } from './smart-list-empty-state.component';
 import { clampNumber } from '../../../../foundation/number-utils';
 import { UiDateUtils } from '../../../../foundation/date-utils';
@@ -116,6 +117,8 @@ import type {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SmartListComponent<T, TFilters extends SmartListFilters = SmartListFilters> implements AfterViewInit, OnChanges, OnDestroy {
+  private readonly i18n = inject(UI_TRANSLATIONS);
+
   private static readonly DEFAULT_LOADING_DELAY_MS = 0;
   private readonly defaults = inject(UI_LIST_DEFAULTS);
   private static readonly DEFAULT_MOBILE_BREAKPOINT_PX = 760;
@@ -1573,7 +1576,7 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
   }
 
   protected emptyLabel(): string {
-    return this.resolveText(this.config.emptyLabel, 'No items');
+    return this.resolveText(this.config.emptyLabel, this.i18n.translate('no.items'));
   }
 
   protected emptyDescription(): string {
@@ -4262,7 +4265,7 @@ private updateListSnapNearEndSuppression(scrollElement?: HTMLDivElement | null):
   }
 
   private resolveEmptyStickyLabel(): string {
-    return this.resolveText(this.config.emptyStickyLabel, 'No items');
+    return this.resolveText(this.config.emptyStickyLabel, this.i18n.translate('no.items'));
   }
 
   private resolveText(value: string | ((query: ListQuery<TFilters>) => string) | undefined, fallback: string): string {

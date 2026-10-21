@@ -1,5 +1,7 @@
+import { I18nPipe } from '../../../../pipes/i18n.pipe';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef, inject } from '@angular/core';
+import { UI_TRANSLATIONS } from '../../../../foundation/translation';
 import { MatIconModule } from '@angular/material/icon';
 
 import { AppMenuComponent, type AppMenuItemSelectEvent } from '../menu/index';
@@ -17,12 +19,13 @@ import type {
 @Component({
   selector: 'app-accordion',
   standalone: true,
-  imports: [CommonModule, MatIconModule, AppMenuComponent],
+  imports: [CommonModule, MatIconModule, AppMenuComponent, I18nPipe],
   templateUrl: './accordion.component.html',
   styleUrl: './accordion.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccordionComponent<TId extends string = string, TContext = unknown, TMenuContext = unknown> {
+  private readonly i18n = inject(UI_TRANSLATIONS);
   @Input() model: UiAccordionModel<TId, TContext, TMenuContext> | null = null;
   @Input() itemTemplate: TemplateRef<unknown> | null = null;
 
@@ -56,7 +59,9 @@ export class AccordionComponent<TId extends string = string, TContext = unknown,
 
   protected selectionAriaLabel(item: UiAccordionItem<TId, TContext, TMenuContext>): string {
     return item.selectionAriaLabel?.trim()
-      || `${this.isSelected(item) ? 'Deselect' : 'Select'} ${item.title}`;
+      ? this.i18n.translate(item.selectionAriaLabel)
+      : this.i18n.translateParams(this.isSelected(item) ? 'accordion.selection.clear.aria' : 'accordion.selection.set.aria',
+        { title: this.i18n.translate(item.title) });
   }
 
   protected actionMenu(item: UiAccordionItem<TId, TContext, TMenuContext>): UiAccordionActionMenu<TMenuContext> | null {

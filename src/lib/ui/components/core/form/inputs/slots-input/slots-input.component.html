@@ -18,7 +18,7 @@
         [class.event-slots-enable-btn-off]="!slotsEnabled()" [disabled]="!canUpdateSlotsConfig()"
         (click)="toggleSlotsEnabled($event)" [attr.aria-label]="slotLabel('slotsToggleAria') | i18n">
         <mat-icon>{{ slotsEnabled() ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-        <span>{{ slotsEnabled() ? 'On' : 'Off' }}</span>
+        <span>{{ slotsEnabled() ? ('on' | i18n) : ('off' | i18n) }}</span>
       </button>
     </div>
     }

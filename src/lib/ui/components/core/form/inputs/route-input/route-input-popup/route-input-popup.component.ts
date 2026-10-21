@@ -1,3 +1,4 @@
+import { I18nPipe } from '../../../../../../../pipes/i18n.pipe';
 import { DragDropModule, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
@@ -19,7 +20,7 @@ import { type PopupAction, type PopupActionEvent, type PopupModel } from '../../
     FormsModule,
     DragDropModule,
     MatIconModule,
-    PopupComponent
+    PopupComponent, I18nPipe
   ],
   templateUrl: './route-input-popup.component.html',
   styleUrl: './route-input-popup.component.scss',
@@ -185,7 +186,7 @@ export class RouteInputPopupComponent implements OnChanges {
     return [{
       id: 'route-save',
       icon: 'done',
-      ariaLabel: 'Save route',
+      ariaLabel: 'route.save.aria',
       palette: hasError || (!canSave && !editor.saving) ? 'danger' : 'success',
       disabled: !canSave
     }];

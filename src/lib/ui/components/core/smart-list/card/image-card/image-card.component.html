@@ -56,14 +56,14 @@
       <span
         data-guide-field="card-status"
         [ngClass]="statusChipClassList(chip)"
-        [attr.aria-label]="chip.ariaLabel || null"
-        [attr.title]="chip.title || null"
+        [attr.aria-label]="(chip.ariaLabel || null) | i18n"
+        [attr.title]="(chip.title || null) | i18n"
         >
         @if (chip.icon) {
           <mat-icon>{{ chip.icon }}</mat-icon>
         }
         @if (chip.label) {
-          <span>{{ chip.label }}</span>
+          <span>{{ chip.label | i18n }}</span>
         }
       </span>
     }
@@ -72,10 +72,10 @@
       <span
         data-guide-field="card-state-detail"
         [ngClass]="badgeClassList(badge)"
-        [attr.aria-label]="badge.ariaLabel || null"
-        [attr.title]="badge.ariaLabel || null"
+        [attr.aria-label]="(badge.ariaLabel || null) | i18n"
+        [attr.title]="(badge.ariaLabel || null) | i18n"
         >
-        {{ badge.label }}
+        {{ badge.label | i18n }}
       </span>
     }
 

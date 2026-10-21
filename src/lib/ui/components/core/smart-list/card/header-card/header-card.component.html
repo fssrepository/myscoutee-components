@@ -35,7 +35,7 @@
           class="header-card__edit"
           [attr.data-guide-field]="editGuideField"
           [disabled]="card?.editDisabled === true"
-          [attr.aria-label]="card?.editAriaLabel || 'Edit'"
+          [attr.aria-label]="card?.editAriaLabel || ('edit' | i18n)"
           (click)="onEdit($event)"
         >
           <mat-icon>edit</mat-icon>

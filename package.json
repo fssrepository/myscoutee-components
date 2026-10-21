@@ -1,6 +1,6 @@
 {
   "name": "@fssrepository/myscoutee-components",
-  "version": "1.4.1",
+  "version": "1.4.5",
   "private": true,
   "scripts": {
     "build": "ng-packagr -p ng-package.json -c tsconfig.lib.json",

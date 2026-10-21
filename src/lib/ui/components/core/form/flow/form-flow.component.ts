@@ -1,3 +1,4 @@
+import { UI_TRANSLATIONS } from '../../../../../foundation/translation';
 import { FORM_FLOW_CONTROLS, FORM_FLOW_BUILTIN_CONTROLS } from '../../../../../foundation/form-flow-controls';
 import { type FormFlowControlContext } from '../../../../../foundation/form-flow-controls';
 import { FormFlowControlDirective } from './form-flow-control.directive';
@@ -105,6 +106,8 @@ interface FormFlowSelectedMenuItem {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDestroy {
+  private readonly i18n = inject(UI_TRANSLATIONS);
+
   private static readonly MOBILE_BREAKPOINT_PX = 720;
   private static readonly HORIZONTAL_SWIPE_THRESHOLD_PX = 8;
 
@@ -290,7 +293,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
       return this.model?.title ?? '';
     }
     if (this.isSummaryPage()) {
-      return this.model?.summary?.title?.trim() || 'Overview';
+      return this.model?.summary?.title?.trim() || this.i18n.translate('form.summary.title');
     }
     return this.activeStep()?.title ?? this.model?.title ?? '';
   }
@@ -341,7 +344,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   }
 
   protected saveLabel(): string {
-    return this.model?.save?.label?.trim() || 'Save';
+    return this.model?.save?.label?.trim() || this.i18n.translate('save');
   }
 
   protected saveIcon(): string {
@@ -680,11 +683,11 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   }
 
   protected summaryTitle(): string {
-    return this.model?.summary?.title?.trim() || 'Overview';
+    return this.model?.summary?.title?.trim() || this.i18n.translate('form.summary.title');
   }
 
   protected summaryEmptyLabel(): string {
-    return this.model?.summary?.emptyLabel?.trim() || 'Not set';
+    return this.model?.summary?.emptyLabel?.trim() || this.i18n.translate('not.set');
   }
 
   protected summaryControls(step: FormFlowStepModel): readonly FormFlowControlModel[] {

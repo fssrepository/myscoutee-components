@@ -2,14 +2,14 @@
   <app-popup [model]="routePopupModel(editor)" [zIndex]="editor.zIndex">
     <div class="route-input-popup__body">
       <div class="route-input-popup__toolbar">
-        <span>Route Stops</span>
+        <span>{{ 'route.stops.title' | i18n }}</span>
         <div class="route-input-popup__toolbar-actions" [class.route-input-popup__toolbar-actions--single]="editor.readOnly">
           <button
             type="button"
             class="route-input-popup__icon-btn route-input-popup__main-map-btn"
             [disabled]="!canOpenRouteMap(editor)"
             (click)="openRouteMap(editor, $event)"
-            aria-label="Open multistep route on map"
+            [attr.aria-label]="'route.map.open.aria' | i18n"
           >
             <mat-icon>location_on</mat-icon>
           </button>
@@ -19,7 +19,7 @@
               class="route-input-popup__icon-btn route-input-popup__add-btn"
               [disabled]="editor.saving"
               (click)="addStop(editor, $event)"
-              aria-label="Add route stop"
+              [attr.aria-label]="'route.stop.add.aria' | i18n"
             >
               <mat-icon>add</mat-icon>
             </button>
@@ -45,7 +45,7 @@
               class="route-input-popup__icon-btn route-input-popup__drag-btn"
               cdkDragHandle
               [disabled]="editor.readOnly || editor.saving"
-              aria-label="Drag route stop"
+              [attr.aria-label]="'route.stop.drag.aria' | i18n"
             >
               <mat-icon>drag_indicator</mat-icon>
             </button>
@@ -61,7 +61,7 @@
               class="route-input-popup__icon-btn route-input-popup__map-btn"
               [disabled]="editor.saving || !stop.trim()"
               (click)="openStopMap(editor, stop, $event)"
-              aria-label="Open stop on map"
+              [attr.aria-label]="'route.stop.map.aria' | i18n"
             >
               <mat-icon>location_on</mat-icon>
             </button>
@@ -71,7 +71,7 @@
                 class="route-input-popup__icon-btn route-input-popup__delete-btn"
                 [disabled]="editor.saving"
                 (click)="removeStop(editor, stopIndex, $event)"
-                aria-label="Delete route stop"
+                [attr.aria-label]="'route.stop.delete.aria' | i18n"
               >
                 <mat-icon>delete</mat-icon>
               </button>
@@ -80,7 +80,7 @@
         }
         @if (editor.readOnly && visibleStops(editor).length === 0) {
           <div class="route-input-popup__empty">
-            <span>No route set yet.</span>
+            <span>{{ 'route.empty.description' | i18n }}</span>
           </div>
         }
       </div>
