@@ -69,30 +69,7 @@
         @if (shouldRenderListHeaderOutsideScroll()) {
           <div class="smart-list__sticky smart-list__sticky--list-header" [ngClass]="resolvedStickyHeaderClass()">
             <span class="smart-list__sticky-label">{{ stickyLabel }}</span>
-            @if (shouldRenderStickyPaginationActions()) {
-              <span class="smart-list__sticky-actions">
-                <button
-                  type="button"
-                  class="smart-list__sticky-action-btn"
-                  data-guide-field="pagination-prev"
-                  [disabled]="!canMovePagination(-1)"
-                  (click)="onPaginationPrev($event)"
-                  [attr.aria-label]="'pagination.previous.aria' | i18n"
-                >
-                  <mat-icon>chevron_left</mat-icon>
-                </button>
-                <button
-                  type="button"
-                  class="smart-list__sticky-action-btn"
-                  data-guide-field="pagination-next"
-                  [disabled]="!canMovePagination(1)"
-                  (click)="onPaginationNext($event)"
-                  [attr.aria-label]="'pagination.next.aria' | i18n"
-                >
-                  <mat-icon>chevron_right</mat-icon>
-                </button>
-              </span>
-            }
+            <ng-container [ngTemplateOutlet]="stickyPaginationActions"></ng-container>
           </div>
         }
         <div
@@ -137,30 +114,7 @@
               [ngClass]="resolvedStickyHeaderClass()"
             >
               <span class="smart-list__sticky-label">{{ stickyLabel }}</span>
-              @if (shouldRenderStickyPaginationActions()) {
-                <span class="smart-list__sticky-actions">
-                  <button
-                    type="button"
-                    class="smart-list__sticky-action-btn"
-                    data-guide-field="pagination-prev"
-                    [disabled]="!canMovePagination(-1)"
-                    (click)="onPaginationPrev($event)"
-                    [attr.aria-label]="'pagination.previous.aria' | i18n"
-                  >
-                    <mat-icon>chevron_left</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    class="smart-list__sticky-action-btn"
-                    data-guide-field="pagination-next"
-                    [disabled]="!canMovePagination(1)"
-                    (click)="onPaginationNext($event)"
-                    [attr.aria-label]="'pagination.next.aria' | i18n"
-                  >
-                    <mat-icon>chevron_right</mat-icon>
-                  </button>
-                </span>
-              }
+              <ng-container [ngTemplateOutlet]="stickyPaginationActions"></ng-container>
             </div>
           }
 
@@ -407,5 +361,32 @@
       [items]="paginationRatingMenuItems()"
       (itemSelect)="onMenuOutletItemSelect($event)"
     ></app-menu-outlet>
+  }
+</ng-template>
+
+<ng-template #stickyPaginationActions>
+  @if (shouldRenderStickyPaginationActions()) {
+    <span class="smart-list__sticky-actions">
+      <button
+        type="button"
+        class="smart-list__sticky-action-btn"
+        data-guide-field="pagination-prev"
+        [disabled]="!canMovePagination(-1)"
+        (click)="onPaginationPrev($event)"
+        [attr.aria-label]="'pagination.previous.aria' | i18n"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button
+        type="button"
+        class="smart-list__sticky-action-btn"
+        data-guide-field="pagination-next"
+        [disabled]="!canMovePagination(1)"
+        (click)="onPaginationNext($event)"
+        [attr.aria-label]="'pagination.next.aria' | i18n"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </span>
   }
 </ng-template>

@@ -1,3 +1,4 @@
+import { smartListPageBadgeLabel } from '../../smart-list-page.adapter';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, Input, TemplateRef, computed, signal } from '@angular/core';
 
@@ -309,22 +310,7 @@ export class CalendarCardComponent<T, TFilters extends SmartListFilters = SmartL
 
   protected calendarBadgeLabel(item: T): string {
     const query = this.query();
-    const label = query ? this.calendar()?.badgeLabel?.(item, query) : null;
-    if (typeof label === 'string' && label.trim()) {
-      return label;
-    }
-    if (typeof item === 'string' || typeof item === 'number') {
-      return String(item);
-    }
-    if (item && typeof item === 'object') {
-      const candidate = (item as { title?: unknown; name?: unknown; label?: unknown }).title
-        ?? (item as { name?: unknown }).name
-        ?? (item as { label?: unknown }).label;
-      if (typeof candidate === 'string' && candidate.trim()) {
-        return candidate;
-      }
-    }
-    return 'Item';
+    return smartListPageBadgeLabel(item, query ? this.calendar()?.badgeLabel?.(item, query) : null);
   }
 
   protected calendarBadgeToneClass(item: T): SmartListClassValue {

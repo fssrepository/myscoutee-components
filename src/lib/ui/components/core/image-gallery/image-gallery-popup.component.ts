@@ -1,9 +1,9 @@
-import { I18nPipe } from '../../../../pipes/index';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ImageCarouselComponent } from '../image-carousel/image-carousel.component';
-import { PopupComponent, PopupModel } from '../popup/index';
-import { ImageGalleryStore } from '../../../context/stores/media/image-gallery.store';
+import { PopupComponent, PopupModel } from '@fssrepository/myscoutee-components/core';
+import { ImageGalleryStore } from '@fssrepository/myscoutee-components/core';
 
 @Component({
   selector: 'app-image-gallery-popup',

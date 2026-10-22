@@ -1,4 +1,4 @@
-import { UiDateUtils } from '../../../../foundation/date-utils';
+import { UiDateUtils } from '@fssrepository/myscoutee-components/foundation';
 import type {
   ListQuery,
   SmartListCalendarConfig,

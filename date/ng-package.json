@@ -1,0 +1,6 @@
+{
+  "lib": {
+    "entryFile": "../src/date-api.ts",
+    "flatModuleFile": "components-date"
+  }
+}

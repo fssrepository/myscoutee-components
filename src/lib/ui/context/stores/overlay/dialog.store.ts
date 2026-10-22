@@ -47,6 +47,8 @@ export interface DialogState {
   onCancel: (() => void | Promise<void>) | null;
 }
 
+const DEFAULT_NOTICE_OPTIONS = { title: 'Notice' } as const;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -83,7 +85,7 @@ export class DialogStore {
 
   openInfo(
     message: string,
-    options: Omit<DialogConfig, 'message' | 'cancelLabel'> = { title: 'Notice' }
+    options: Omit<DialogConfig, 'message' | 'cancelLabel'> = DEFAULT_NOTICE_OPTIONS
   ): void {
     this.open({
       ...options,
@@ -95,7 +97,7 @@ export class DialogStore {
 
   openNotice(
     message: string,
-    options: Omit<DialogConfig, 'message' | 'cancelLabel' | 'confirmLabel' | 'onConfirm'> = { title: 'Notice' }
+    options: Omit<DialogConfig, 'message' | 'cancelLabel' | 'confirmLabel' | 'onConfirm'> = DEFAULT_NOTICE_OPTIONS
   ): void {
     this.open({
       ...options,

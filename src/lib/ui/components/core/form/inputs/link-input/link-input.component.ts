@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, forwardRef, inject, Input, signal }
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { UiLinkUtils } from '../../../../../../foundation/link-utils';
-import { UI_TRANSLATIONS } from '../../../../../../foundation/translation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 import {
   AppMenuComponent,
   type AppMenuItem,

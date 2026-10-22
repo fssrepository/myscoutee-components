@@ -26,6 +26,22 @@ describe('ImageCarouselComponent media variants', () => {
     TestBed.resetTestingModule();
   });
 
+  it('names each upload input through the same translated action as its visible button', () => {
+    const fixture = TestBed.createComponent(ImageCarouselComponent);
+    fixture.componentRef.setInput('slotCount', 2);
+    fixture.componentInstance.writeValue(['first.webp']);
+    fixture.detectChanges();
+    const slots = [...fixture.nativeElement.querySelectorAll('.image-carousel__slot')] as HTMLElement[];
+    expect(slots).toHaveLength(2);
+    for (const slot of slots) {
+      const input = slot.querySelector('input[type="file"]');
+      const button = slot.querySelector('.image-carousel__slot-hit');
+      expect(input?.getAttribute('aria-label')).toBeTruthy();
+      expect(input?.getAttribute('aria-label')).toBe(button?.getAttribute('aria-label'));
+    }
+    fixture.destroy();
+  });
+
   it('reports a removed slot while retaining the other image without replacement', () => {
     const component = TestBed.createComponent(ImageCarouselComponent).componentInstance;
     const view = component as unknown as ImageCarouselTestView;

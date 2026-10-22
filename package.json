@@ -1,42 +1,44 @@
 {
   "name": "@fssrepository/myscoutee-components",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "private": true,
   "scripts": {
     "build": "ng-packagr -p ng-package.json -c tsconfig.lib.json",
     "watch": "npm run build -- --watch",
     "test": "ng test components --watch=false",
-    "prepare:release": "node scripts/prepare-release.mjs"
+    "prepare:release": "node scripts/prepare-release.mjs",
+    "test:coverage": "npm test -- --coverage --coverage-reporters=lcov --coverage-reporters=text-summary"
   },
   "peerDependencies": {
+    "@angular/cdk": "^21.2.0",
     "@angular/common": "^21.2.0",
     "@angular/core": "^21.2.0",
     "@angular/forms": "^21.2.0",
     "@angular/material": "^21.2.0",
-    "@angular/cdk": "^21.2.0",
-    "rxjs": "^7.8.0",
-    "@angular/router": "^21.2.0"
+    "@angular/router": "^21.2.0",
+    "rxjs": "^7.8.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@angular/build": "21.2.12",
+    "@angular/cdk": "21.2.12",
+    "@angular/cli": "21.2.12",
     "@angular/common": "21.2.23",
     "@angular/compiler": "21.2.23",
     "@angular/compiler-cli": "21.2.23",
     "@angular/core": "21.2.23",
     "@angular/forms": "21.2.23",
-    "@angular/platform-browser": "21.2.23",
-    "@angular/cdk": "21.2.12",
     "@angular/material": "21.2.12",
-    "rxjs": "7.8.2",
-    "ng-packagr": "21.2.7",
-    "typescript": "5.9.3",
+    "@angular/platform-browser": "21.2.23",
     "@angular/router": "21.2.23",
-    "@angular/build": "21.2.12",
-    "@angular/cli": "21.2.12",
-    "vitest": "4.0.18",
-    "jsdom": "27.4.0"
+    "@vitest/coverage-v8": "4.0.18",
+    "jsdom": "27.4.0",
+    "ng-packagr": "21.2.7",
+    "rxjs": "7.8.2",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
   },
   "main": "./dist/fesm2022/components.mjs",
   "module": "./dist/fesm2022/components.mjs",

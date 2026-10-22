@@ -33,8 +33,6 @@ export class FloatingLauncherComponent {
   }
 
   constructor() {
-    // Recheck actual geometry after rendering and scrolling, without polling.
-    afterEveryRender({ read: () => this.avoidActions() });
     const document = this.host.nativeElement.ownerDocument;
     const window = document.defaultView;
     const unregister = this.launchers.register(this.host.nativeElement, () => this.menu?.nativeElement);
@@ -45,6 +43,9 @@ export class FloatingLauncherComponent {
         this.avoidActions();
       });
     };
+    // Rendering, scroll and transition bursts share the same geometry pass.
+    // Measure at most once per frame instead of forcing layout on every render.
+    afterEveryRender({ read: schedule });
     document.addEventListener('scroll', schedule, true);
     document.addEventListener('transitionend', schedule, true);
     window?.addEventListener('resize', schedule);

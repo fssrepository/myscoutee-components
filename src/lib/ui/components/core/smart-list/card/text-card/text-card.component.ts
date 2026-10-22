@@ -1,4 +1,4 @@
-import { UI_TRANSLATIONS } from '../../../../../../foundation/translation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';

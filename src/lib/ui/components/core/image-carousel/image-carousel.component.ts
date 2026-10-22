@@ -1,13 +1,13 @@
-import { ImageDetails } from '../../../../foundation/image-details';
-import { ImageDetailsConfig } from '../../../../foundation/image-details';
-import { ImageDetailsMap } from '../../../../foundation/image-details';
-import { IMAGE_CAPTION_MAX_LENGTH } from '../../../../foundation/image-details';
-import { UI_IMAGE_DETAILS } from '../../../../foundation/image-details';
-import { UI_IMAGE_UPLOAD } from '../../../../foundation/image-details';
-import { UI_IMAGE_URLS } from '../../../../foundation/image-urls';
-import { AppMenuComponent, type AppMenuItem } from '../menu/index';
-import { PopupComponent, PopupModel } from '../popup/index';
-import { LocationInputComponent } from '../form/inputs/location-input/location-input.component';
+import { ImageDetails } from '@fssrepository/myscoutee-components/core';
+import { ImageDetailsConfig } from '@fssrepository/myscoutee-components/core';
+import { ImageDetailsMap } from '@fssrepository/myscoutee-components/core';
+import { IMAGE_CAPTION_MAX_LENGTH } from '@fssrepository/myscoutee-components/core';
+import { UI_IMAGE_DETAILS } from '@fssrepository/myscoutee-components/core';
+import { UI_IMAGE_UPLOAD } from '@fssrepository/myscoutee-components/core';
+import { UI_IMAGE_URLS } from '@fssrepository/myscoutee-components/core';
+import { AppMenuComponent, type AppMenuItem } from '@fssrepository/myscoutee-components/core';
+import { PopupComponent, PopupModel } from '@fssrepository/myscoutee-components/core';
+import { LocationInputComponent } from '@fssrepository/myscoutee-components/core';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
@@ -28,9 +28,9 @@ import {
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
-import { LazyBgImageDirective } from '../../../directives/lazy-bg-image.directive';
-import { IndicatorComponent } from '../../../../components/indicator/index';
-import { I18nPipe } from '../../../../pipes/index';
+import { LazyBgImageDirective } from '@fssrepository/myscoutee-components/core';
+import { IndicatorComponent } from '@fssrepository/myscoutee-components/core';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 
 export type ImageCarouselMediaFit = 'default' | 'cover' | 'contain';
 export type ImageCarouselImagePosition = 'default' | 'center-top' | 'center';

@@ -14,7 +14,7 @@ then authenticate with a GitHub token with `read:packages` in your user-level
 configuration. Keep credentials out of Git.
 
 ```sh
-npm install @fssrepository/myscoutee-components@1.4.1
+npm install @fssrepository/myscoutee-components@1.4.6
 ```
 
 ## Documentation
@@ -24,7 +24,7 @@ npm install @fssrepository/myscoutee-components@1.4.1
 | Component catalogue, setup, examples, styles and release workflow | [PDF](https://github.com/fssrepository/myscoutee-components/blob/master/guides/manuals/MyScoutee_Components_Guide_EN.pdf) |
 | Editable guide and PDF regeneration | [HTML](guides/manuals/components-guide-en.html) · [Instructions](guides/manuals/README.md) |
 | Public API | [Exports](src/public-api.ts) |
-| Changes | [Changelog](CHANGELOG.md) · [1.4.1 release notes](releases/v1.4.1.md) |
+| Changes | [Changelog](CHANGELOG.md) · [1.4.6 release notes](releases/v1.4.6.md) |
 | Complete application foundation | [MyScoutee Template](https://github.com/fssrepository/myscoutee-template) |
 
 ## Development
@@ -35,8 +35,13 @@ npm run build
 npm test
 ```
 
-In a consuming MyScoutee checkout, use its existing components workspace and
-build workflow. Run one compiler per target; reuse a running watcher.
+Consumers install an exact published version and run their own Angular build.
+They do not need a components Git submodule, npm workspace or library compiler.
+Run component development and focused library tests in this repository. Run one
+compiler per target; reuse a running watcher.
+Use `npm run test:coverage -- --include=src/path/to/owner.spec.ts` for a focused
+LCOV report in `coverage/components/lcov.info`. The library owns its Sonar settings;
+run the shared Sonar tool against this repository, not an application dependency.
 See [Contributing](CONTRIBUTING.md) for focused changes.
 
 ## License and credit

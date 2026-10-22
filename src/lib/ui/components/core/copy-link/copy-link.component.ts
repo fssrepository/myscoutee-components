@@ -1,6 +1,6 @@
 import { Component, computed, input, signal } from '@angular/core';
 import { AppMenuComponent, type AppMenuItem } from '../menu/index';
-import { I18nPipe } from '../../../../pipes/i18n.pipe';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 
 @Component({
   selector: 'app-copy-link', standalone: true, imports: [AppMenuComponent, I18nPipe],

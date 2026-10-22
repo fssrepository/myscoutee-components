@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Output, computed, effect, input, untracked, viewChild } from '@angular/core';
 import { of } from 'rxjs';
-import { SmartListComponent, TextCardComponent, type SmartListConfig, type SmartListLoadPage } from '../../../smart-list/index';
+import { SmartListComponent } from '../../../smart-list/smart-list.component';
+import { TextCardComponent } from '../../../smart-list/card/text-card/text-card.component';
+import type { SmartListConfig, SmartListLoadPage } from '../../../smart-list/smart-list.types';
 import type { AppMenuItem, AppMenuItemSelectEvent } from '../../../menu/index';
 import type { TextCardTone } from '../../../smart-list/card/text-card/index';
 

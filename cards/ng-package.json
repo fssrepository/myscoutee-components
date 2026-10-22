@@ -1,0 +1,6 @@
+{
+  "lib": {
+    "entryFile": "../src/cards-api.ts",
+    "flatModuleFile": "components-cards"
+  }
+}

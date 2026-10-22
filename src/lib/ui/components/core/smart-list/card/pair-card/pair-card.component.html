@@ -1,26 +1,14 @@
 @if (resolvedPresentation() === 'fullscreen') {
   <div #fullscreenShell class="activities-rates-fullscreen">
-    <article
-      class="activities-rate-profile-card activities-row-item activities-rates-fullscreen-card"
-      [class.activities-rates-fullscreen-card-active]="resolvedState() === 'active'"
-      [class.activities-rates-fullscreen-card-leaving]="resolvedState() === 'leaving'"
-      [attr.data-activity-rate-row-id]="card?.rowId"
-      [style.width]="fullscreenCardWidth"
-      [style.height]="fullscreenCardHeight"
-      >
+    <article [appRateCardFrame]="card" [fullscreenWidth]="fullscreenCardWidth" [fullscreenHeight]="fullscreenCardHeight">
       <ng-container *ngTemplateOutlet="cardBody"></ng-container>
     </article>
   </div>
 } @else {
-  <article
-    class="activities-rate-profile-card activities-row-item"
-    [attr.data-activity-rate-row-id]="card?.rowId"
-    [attr.data-group-label]="card?.groupLabel"
-    >
+  <article [appRateCardFrame]="card">
     <ng-container *ngTemplateOutlet="cardBody"></ng-container>
   </article>
 }
-
 
 <ng-template #cardBody>
   <div
@@ -148,13 +136,7 @@
           type="button"
           class="activities-rate-score-badge"
           [attr.data-guide-field]="cardBadge.disabled ? 'pair-score-received' : 'score'"
-          [class.activities-rate-score-badge-floating]="usesFloatingBadge()"
-          [class.activities-rate-score-badge-between]="usesBetweenBadge()"
-          [class.activities-rate-score-badge-floating-pair-overlap]="usesPairOverlapBadge()"
-          [class.is-active]="cardBadge.active || badgeMenuOpen"
-          [class.is-pending]="cardBadge.pending"
-          [class.is-disabled]="cardBadge.disabled"
-          [class.is-blink]="isBadgeBlinking()"
+          [ngClass]="badgeClassList(cardBadge, true)"
           [disabled]="cardBadge.disabled"
           [attr.aria-label]="cardBadge.ariaLabel"
           (pointerdown)="onBadgePointerDown($event)"
@@ -172,13 +154,7 @@
         <span
           class="activities-rate-score-badge"
           [attr.data-guide-field]="cardBadge.disabled ? 'pair-score-received' : 'pair-score-summary'"
-          [class.activities-rate-score-badge-floating]="usesFloatingBadge()"
-          [class.activities-rate-score-badge-between]="usesBetweenBadge()"
-          [class.activities-rate-score-badge-floating-pair-overlap]="usesPairOverlapBadge()"
-          [class.is-active]="cardBadge.active"
-          [class.is-pending]="cardBadge.pending"
-          [class.is-disabled]="cardBadge.disabled"
-          [class.is-blink]="isBadgeBlinking()"
+          [ngClass]="badgeClassList(cardBadge, false)"
           [attr.aria-label]="cardBadge.ariaLabel"
           >
           <mat-icon>star</mat-icon>

@@ -30,7 +30,11 @@ for (const name of ['contextual-colors', 'form-controls', 'material', 'media-bad
 }
 pkg.files = ['fesm2022/*.mjs', 'types/**/*.d.ts', 'styles/**/*.scss',
   'README.md', 'LICENSE', 'BRANDING.md', 'CONTRIBUTING.md', 'CHANGELOG.md'];
-for (const file of [pkg.main, pkg.types, './styles/index.scss']) await access(path.join(output, file));
+const exportFiles = Object.values(pkg.exports).flatMap(target =>
+  typeof target === 'string' ? [target] : Object.values(target));
+for (const file of new Set([pkg.main, pkg.types, './styles/index.scss', ...exportFiles])) {
+  await access(path.join(output, file));
+}
 for (const file of ['README.md', 'LICENSE', 'BRANDING.md', 'CONTRIBUTING.md', 'CHANGELOG.md']) {
   await cp(path.join(root, file), path.join(output, file));
 }

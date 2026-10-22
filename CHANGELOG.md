@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.6 — MSC-127
+
+Publish secondary entry points for foundation, core, cards, date and forms while
+retaining root exports. Keep menu-trigger styling independent of panel styles and
+skip redundant observation of already loaded retained images. Consolidate shared
+menu, popup, card, route and indicator implementations; rating frame bindings use
+the existing article element without adding DOM nodes. Associate native form and
+upload controls with accessible labels, preserve index-aware list predicates and
+correct counter typography overwritten by a font shorthand. Add focused LCOV
+reporting and source-owned Sonar configuration. Applications consume this release
+as an exact npm dependency instead of building a source submodule.
+
 ## 1.4.5 — MSC-126
 
 Use semantic keys for shared date/accordion captions, preserve content identities,

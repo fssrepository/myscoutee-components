@@ -1,8 +1,8 @@
-import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { IndicatorComponent, type IndicatorState } from '../../../../../../components/indicator/index';
+import { IndicatorComponent, type IndicatorState } from '@fssrepository/myscoutee-components/core';
 
 export interface HeaderCardModel {
   title?: string | null;

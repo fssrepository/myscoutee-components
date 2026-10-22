@@ -1,22 +1,20 @@
-import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
+import { buildCardMenuItems } from '@fssrepository/myscoutee-components/core';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { inject as injectImageUrls } from '@angular/core';
-import { UI_IMAGE_URLS } from '../../../../../../foundation/image-urls';
+import { UI_IMAGE_URLS } from '@fssrepository/myscoutee-components/core';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
-import { LazyBgImageDirective } from '../../../../../directives/lazy-bg-image.directive';
+import { LazyBgImageDirective } from '@fssrepository/myscoutee-components/core';
 import {
   AppMenuTriggerComponent,
   type AppMenuItem,
-  type AppMenuPalette,
   type AppMenuTrigger
-} from '../../../menu/index';
-import { IndicatorComponent } from '../../../../../../components/indicator/index';
+} from '@fssrepository/myscoutee-components/core';
+import { IndicatorComponent } from '@fssrepository/myscoutee-components/core';
 import {
-  CARD_MENU_ACTIONS,
   type CardBadgeConfig,
-  type CardMenuAction,
   type ImageCardData,
   type ImageCardFrame,
   type ImageCardLayout,
@@ -25,7 +23,7 @@ import {
   type ImageCardMediaActionEvent,
   type ImageCardMediaActionPosition,
   type ImageCardStatusChip
-} from '../card.types';
+} from '@fssrepository/myscoutee-components/core';
 
 @Component({
   selector: 'app-image-card',
@@ -249,35 +247,8 @@ export class ImageCardComponent {
   }
 
   protected resolvedSharedMenuItems(): readonly AppMenuItem<string, unknown>[] {
-    if (this.sharedMenuItems?.length) {
-      return this.sharedMenuItems;
-    }
-    const card = this.card;
-    if (!card?.menuActions?.length) {
-      return [];
-    }
-    return card.menuActions.flatMap(actionId => {
-      const config = CARD_MENU_ACTIONS[actionId];
-      if (!config) {
-        return [];
-      }
-      const action: CardMenuAction = {
-        id: actionId,
-        ...config
-      };
-      return [{
-        id: actionId,
-        label: config.label,
-        icon: config.icon,
-        palette: this.sharedMenuActionPalette(config.tone),
-        surface: 'tinted',
-        context: {
-          ...(this.sharedMenuContext ?? {}),
-          card,
-          action
-        }
-      }];
-    });
+    if (this.sharedMenuItems?.length) return this.sharedMenuItems;
+    return buildCardMenuItems(this.card, this.sharedMenuContext, 'tinted', 'default');
   }
 
   private hasMenuActions(): boolean {
@@ -287,21 +258,4 @@ export class ImageCardComponent {
     return (this.card?.menuActions?.length ?? 0) > 0;
   }
 
-  private sharedMenuActionPalette(tone: CardMenuAction['tone']): AppMenuPalette {
-    switch (tone) {
-      case 'positive':
-        return 'teal';
-      case 'accent':
-        return 'brown';
-      case 'warning':
-      case 'share':
-        return 'teal';
-      case 'review':
-        return 'orange';
-      case 'destructive':
-        return 'danger';
-      default:
-        return 'default';
-    }
-  }
 }

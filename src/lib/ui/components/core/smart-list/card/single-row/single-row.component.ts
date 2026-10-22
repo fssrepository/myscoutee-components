@@ -1,13 +1,13 @@
-import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { inject as injectImageUrls } from '@angular/core';
-import { UI_IMAGE_URLS } from '../../../../../../foundation/image-urls';
-import { clampNumber } from '../../../../../../foundation/number-utils';
+import { UI_IMAGE_URLS } from '@fssrepository/myscoutee-components/core';
+import { clampNumber } from '@fssrepository/myscoutee-components/core';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
-import { CounterBadgePipe } from '../../../../../pipes/counter-badge.pipe';
-import { IndicatorComponent } from '../../../../../../components/indicator/index';
+import { CounterBadgePipe } from '@fssrepository/myscoutee-components/core';
+import { IndicatorComponent } from '@fssrepository/myscoutee-components/core';
 import {
   AppMenuComponent,
   type AppMenuKind,
@@ -17,7 +17,7 @@ import {
   type AppMenuPanelMode,
   type AppMenuPalette,
   type AppMenuTrigger
-} from '../../../menu/index';
+} from '@fssrepository/myscoutee-components/core';
 import {
   CARD_MENU_ACTIONS,
   type CardMenuAction,
@@ -27,7 +27,7 @@ import {
   type SingleRowBadge,
   type SingleRowBadgePosition,
   type SingleRowData
-} from '../card.types';
+} from '@fssrepository/myscoutee-components/core';
 
 type SingleRowMenuRequestEvent = CardMenuRequestEvent<SingleRowData> & {
   kind?: AppMenuKind;

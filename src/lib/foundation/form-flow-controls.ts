@@ -28,6 +28,10 @@ export const FORM_FLOW_CONTROLS = new InjectionToken<FormFlowControls>('FORM_FLO
 });
 
 export const FORM_FLOW_BUILTIN_CONTROLS: FormFlowControls['renderers'] = {
+  'date-input': {
+    load: () => import('@fssrepository/myscoutee-components/date').then(m => m.DateInputComponent),
+    inputs: context => ({ model: (context.control.config as { model?: unknown }).model })
+  },
   route: {
     load: () => import('../ui/components/core/form/inputs/route-input/route-input.component').then(m => m.RouteInputComponent),
     inputs: context => ({config: (context.control.config as {model?: unknown} | null)?.model ?? {},

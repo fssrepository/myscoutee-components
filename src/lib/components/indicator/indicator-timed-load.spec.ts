@@ -33,3 +33,33 @@ describe('Timed load ring', () => {
     fixture.destroy();
   });
 });
+
+describe('Action ring shared SVG definitions', () => {
+  afterEach(() => TestBed.resetTestingModule());
+
+  it.each(['circle', 'button', 'surface'] as const)('keeps %s geometry and its own gradient references', shape => {
+    const fixtures = [TestBed.createComponent(IndicatorComponent), TestBed.createComponent(IndicatorComponent)];
+    const ids = new Set<string>();
+    for (const fixture of fixtures) {
+      fixture.componentRef.setInput('kind', 'action-ring');
+      fixture.componentRef.setInput('shape', shape);
+      fixture.componentRef.setInput('state', 'loading');
+      fixture.componentRef.setInput('tone', 'accent');
+      fixture.detectChanges();
+      const svg = fixture.nativeElement.querySelector('svg') as SVGElement;
+      const gradients = svg.querySelectorAll('linearGradient');
+      expect(gradients).toHaveLength(3);
+      gradients.forEach(gradient => {
+        expect(gradient.namespaceURI).toBe('http://www.w3.org/2000/svg');
+        expect(ids.has(gradient.id)).toBe(false); ids.add(gradient.id);
+      });
+      const progress = svg.querySelector('.app-indicator__action-ring-progress')!;
+      expect(progress.tagName.toLowerCase()).toBe(shape === 'circle' ? 'circle' : 'path');
+      expect(progress.getAttribute('stroke')).toBe(`url(#${gradients[2].id})`);
+      expect(svg.getAttribute('preserveAspectRatio')).toBe(shape === 'circle' ? null : 'none');
+      fixture.componentRef.setInput('state', 'error'); fixture.detectChanges();
+      expect(progress.getAttribute('stroke')).toBe(`url(#${gradients[1].id})`);
+      fixture.destroy();
+    }
+  });
+});

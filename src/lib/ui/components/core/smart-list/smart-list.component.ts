@@ -1,7 +1,7 @@
-import { UI_TRANSLATIONS } from '../../../../foundation/translation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 import { SmartListEmptyStateComponent } from './smart-list-empty-state.component';
 import { clampNumber } from '../../../../foundation/number-utils';
-import { UiDateUtils } from '../../../../foundation/date-utils';
+import { UiDateUtils } from '@fssrepository/myscoutee-components/foundation';
 import { UI_LIST_DEFAULTS } from '../../../../foundation/list-defaults';
 import type { RatingSnapshot } from '../../../../foundation/rating';
 import { CommonModule } from '@angular/common';
@@ -64,7 +64,7 @@ import {
 import { FiniteStepper } from './finite-stepper';
 import { UiPollCoordinator } from '../../../scheduler/ui-poll-coordinator';
 import { UiTaskScheduler } from '../../../scheduler/ui-task-scheduler';
-import { I18nPipe } from '../../../../pipes/i18n.pipe';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import type {
   ListDirection,
   ListQuery,
@@ -832,7 +832,7 @@ export class SmartListComponent<T, TFilters extends SmartListFilters = SmartList
   }
 
   public findVisibleItem(predicate: (item: T, index: number) => boolean): T | null {
-    return this.items.find(predicate) ?? null;
+    return this.items.find((item, index) => predicate(item, index)) ?? null;
   }
 
   public paginationMenuHeightPx(): number {
@@ -4540,7 +4540,7 @@ private updateListSnapNearEndSuppression(scrollElement?: HTMLDivElement | null):
     if (this.currentViewMode !== 'list') {
       return false;
     }
-    const index = this.items.findIndex(predicate);
+    const index = this.items.findIndex((item, itemIndex) => predicate(item, itemIndex));
     if (index < 0) {
       return false;
     }
@@ -4569,6 +4569,13 @@ private updateListSnapNearEndSuppression(scrollElement?: HTMLDivElement | null):
     return true;
   }
 
+  private convertedItemPredicate(nextItem: T, predicate?: (item: T, index: number) => boolean): ((item: T, index: number) => boolean) | null {
+    const normalizedIdentity = `${smartListItemKeyFromItem(nextItem) ?? ''}`.trim();
+    return predicate ?? (normalizedIdentity
+      ? (item: T, index: number) => `${this.cacheTrackKey(item, index)}`.trim() === normalizedIdentity
+      : null);
+  }
+
   public patchConvertedVisibleItem<TSource>(
     source: TSource,
     options: {
@@ -4581,11 +4588,7 @@ private updateListSnapNearEndSuppression(scrollElement?: HTMLDivElement | null):
       return false;
     }
     const nextItem = converter.convert(source, this.converterOptions(query));
-    const normalizedIdentity = `${smartListItemKeyFromItem(nextItem) ?? ''}`.trim();
-    const predicate = options.predicate
-      ?? (normalizedIdentity
-        ? (item: T, index: number) => `${this.cacheTrackKey(item, index)}`.trim() === normalizedIdentity
-        : null);
+    const predicate = this.convertedItemPredicate(nextItem, options.predicate);
     if (!predicate) {
       return false;
     }
@@ -4611,11 +4614,7 @@ private updateListSnapNearEndSuppression(scrollElement?: HTMLDivElement | null):
       return false;
     }
     const nextItem = converter.convert(source, this.converterOptions(query));
-    const normalizedIdentity = `${smartListItemKeyFromItem(nextItem) ?? ''}`.trim();
-    const predicate = options.predicate
-      ?? (normalizedIdentity
-        ? (item: T, index: number) => `${this.cacheTrackKey(item, index)}`.trim() === normalizedIdentity
-        : null);
+    const predicate = this.convertedItemPredicate(nextItem, options.predicate);
     if (predicate && this.patchVisibleItem(predicate, () => nextItem)) {
       this.cacheVisibleSourceItem(source, nextItem);
       this.emitRefresh();

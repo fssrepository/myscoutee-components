@@ -1,7 +1,7 @@
 import { Inject, Injectable, InjectionToken, computed, effect, inject, signal, untracked } from '@angular/core';
 
 import type { GuideField, GuideRevision, GuideState } from './guide.types';
-import { UI_TRANSLATIONS } from '../foundation/translation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 
 export interface ExplanationGuideOptions {
   storageKey?: string;

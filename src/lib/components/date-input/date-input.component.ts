@@ -8,11 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTimepicker, MatTimepickerModule } from '@angular/material/timepicker';
 
-import { HOROSCOPE_META_BY_SIGN } from '../../foundation/horoscope-data';
-import { UiDateUtils } from '../../foundation/date-utils';
+import { HOROSCOPE_META_BY_SIGN } from '@fssrepository/myscoutee-components/foundation';
+import { UiDateUtils } from '@fssrepository/myscoutee-components/foundation';
 import { AppCalendarDateAdapter, AppCalendarDateFormats } from '../../foundation/calendar-date-adapter';
-import type { DateRangeDto } from '../../foundation/date.types';
-import { I18nPipe } from '../../pipes/i18n.pipe';
+import type { DateRangeDto } from '@fssrepository/myscoutee-components/foundation';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 
 export type DateInputMode = 'single' | 'range' | 'time';
 export type DateInputPrecision = 'date' | 'minute';

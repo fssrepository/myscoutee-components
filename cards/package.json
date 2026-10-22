@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "main": "../dist/fesm2022/components-cards.mjs",
+  "module": "../dist/fesm2022/components-cards.mjs",
+  "types": "../dist/types/components-cards.d.ts"
+}

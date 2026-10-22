@@ -43,7 +43,7 @@ describe('SmartList existing empty states', () => {
     expect(fixture.nativeElement.getAttribute('role')).toBe('alert');
     expect(fixture.nativeElement.classList.contains('smart-list__empty--error')).toBe(true);
     expect(fixture.nativeElement.textContent).toContain('Could not load the case');
-    expect(fixture.nativeElement.textContent).not.toContain('No items');
+    expect(fixture.nativeElement.textContent).not.toContain('no.items');
     fixture.destroy();
   });
 
@@ -87,7 +87,7 @@ describe('SmartList existing empty states', () => {
     const fixture = render({ listLayout: 'card-grid', orientation: 'horizontal', compactHorizontal: true, desktopColumns: 1 });
     const list = fixture.nativeElement.querySelector('.smart-list--horizontal');
     expect(list).not.toBeNull();
-    expect(list.querySelector('.smart-list__empty')?.textContent).toContain('No items');
+    expect(list.querySelector('.smart-list__empty')?.textContent).toContain('no.items');
     fixture.destroy();
   });
 
@@ -127,7 +127,7 @@ describe('SmartList existing empty states', () => {
     expect(fixture.nativeElement.querySelector('.smart-list--horizontal')).not.toBeNull();
     const empty = fixture.nativeElement.querySelector('.smart-list__empty');
     if (showEmptyState) {
-      expect(empty?.textContent).toContain('No items');
+      expect(empty?.textContent).toContain('no.items');
     } else {
       expect(empty).toBeNull();
     }
@@ -159,4 +159,29 @@ describe('SmartList existing empty states', () => {
     expect(fixture.nativeElement.querySelector('.smart-list__empty')).toBeNull();
     fixture.destroy();
   });
+  it.each([true, false])('retains sticky pagination controls outside-scroll=%s', outside => {
+    const fixture = TestBed.createComponent(SmartListComponent);
+    const component = fixture.componentInstance;
+    const view = component as unknown as {
+      shouldRenderListHeaderOutsideScroll(): boolean; shouldShowStickyHeader(): boolean;
+      shouldRenderStickyPaginationActions(): boolean; canMovePagination(direction: number): boolean;
+      onPaginationNext(event: Event): void;
+    };
+    Object.assign(component, { config: {}, initialLoading: false, currentViewMode: 'list', stickyLabel: 'Page' });
+    vi.spyOn(view, 'shouldRenderListHeaderOutsideScroll').mockReturnValue(outside);
+    vi.spyOn(view, 'shouldShowStickyHeader').mockReturnValue(true);
+    vi.spyOn(view, 'shouldRenderStickyPaginationActions').mockReturnValue(true);
+    vi.spyOn(view, 'canMovePagination').mockImplementation(direction => direction === 1);
+    const next = vi.spyOn(view, 'onPaginationNext').mockImplementation(() => {});
+    fixture.detectChanges();
+    const header = fixture.nativeElement.querySelector('.smart-list__sticky') as HTMLElement;
+    expect(header.textContent).toContain('Page');
+    expect(header.querySelector<HTMLButtonElement>('[data-guide-field="pagination-prev"]')!.disabled).toBe(true);
+    const nextButton = header.querySelector<HTMLButtonElement>('[data-guide-field="pagination-next"]')!;
+    expect(nextButton.disabled).toBe(false);
+    nextButton.click(); expect(next).toHaveBeenCalledOnce();
+    expect(header.closest('.smart-list') !== null).toBe(!outside);
+    fixture.destroy();
+  });
+
 });

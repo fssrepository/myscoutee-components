@@ -1,4 +1,4 @@
-import { I18nPipe } from '../../../../../../../pipes/i18n.pipe';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { DragDropModule, type CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
@@ -142,7 +142,7 @@ export class RouteInputPopupComponent implements OnChanges {
     if (editor.saving || !stop.trim()) {
       return;
     }
-    this.openGoogleMapsSearch(stop);
+    this.popupStore.openGoogleMapsSearch(stop);
   }
 
   protected openRouteMap(editor: RouteInputEditorState, event?: Event): void {
@@ -151,7 +151,7 @@ export class RouteInputPopupComponent implements OnChanges {
     if (!this.canOpenRouteMap(editor)) {
       return;
     }
-    this.openGoogleMapsDirections(this.routes);
+    this.popupStore.openGoogleMapsDirections(this.routes.map(stop => stop.trim()).filter(Boolean));
   }
 
   private replaceDraft(
@@ -199,36 +199,5 @@ export class RouteInputPopupComponent implements OnChanges {
   private nextRouteRowId(): string {
     this.rowIdSequence += 1;
     return `route-stop-local-${Date.now()}-${this.rowIdSequence}`;
-  }
-
-  private openGoogleMapsSearch(query: string): void {
-    const trimmed = query.trim();
-    if (!trimmed || typeof window === 'undefined') {
-      return;
-    }
-    window.open(
-      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`,
-      '_blank',
-      'noopener,noreferrer'
-    );
-  }
-
-  private openGoogleMapsDirections(stops: readonly string[]): void {
-    const normalized = stops.map(stop => stop.trim()).filter(Boolean);
-    if (normalized.length === 0 || typeof window === 'undefined') {
-      return;
-    }
-    if (normalized.length === 1) {
-      this.openGoogleMapsSearch(normalized[0]);
-      return;
-    }
-    const origin = normalized[0];
-    const destination = normalized[normalized.length - 1];
-    const waypoints = normalized.slice(1, -1);
-    let url = `https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
-    if (waypoints.length > 0) {
-      url += `&waypoints=${encodeURIComponent(waypoints.join('|'))}`;
-    }
-    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

@@ -207,7 +207,7 @@ function formFlowReadPath(source: unknown, path: FormFlowControlModel['bind']): 
   return current;
 }
 
-function formFlowNormalizePath(path: FormFlowControlModel['bind']): Array<string | number> {
+export function formFlowNormalizePath(path: FormFlowControlModel['bind']): Array<string | number> {
   if (!path) {
     return [];
   }

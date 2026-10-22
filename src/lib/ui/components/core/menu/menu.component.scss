@@ -2,6 +2,9 @@
 @use '../../../../../../styles/_media-badge' as mediaBadge;
 @use '../../../../../../styles/_contextual-colors' as colors;
 
+// The detached trigger shares its styles without compiling the panel rules.
+$include-panel: true !default;
+
 :host {
   display: inline-block;
   min-width: 0;
@@ -989,6 +992,8 @@
   line-height: var(--app-menu-compact-trigger-icon-size);
 }
 
+@if $include-panel {
+
 .app-menu__button-row {
   display: inline-flex;
   flex-wrap: var(--app-menu-row-wrap, nowrap);
@@ -1372,6 +1377,7 @@
   font-size: 0.72rem;
   box-shadow: none;
 }
+}
 
 .app-menu__button-row-item--labelled .app-menu__counter--trigger:is(
   .app-menu__counter--alert,
@@ -1385,6 +1391,8 @@
   padding: var(--app-menu-counter-padding, 0 0.32rem);
   color: #fff;
 }
+
+@if $include-panel {
 
 .app-menu__button-row-item--labelled .app-menu__counter--trigger.app-menu__counter--alert {
   background: linear-gradient(180deg, #e24955 0%, #c93240 100%);
@@ -1410,10 +1418,13 @@
   background: var(--app-menu-bg-strong);
   color: #fff;
 }
+}
 
 :host(.app-menu-host--inline-row-big) .app-menu {
   width: 100%;
 }
+
+@if $include-panel {
 
 :host(.app-menu-host--inline-row-big) .app-menu__button-row {
   display: grid;
@@ -1513,6 +1524,7 @@
 :host(.app-menu-host--inline-row-big) .app-menu__button-row-item--open .app-menu__button-row-caret {
   transform: rotate(0deg);
 }
+}
 
 :host(.app-menu-host--inline-row-big) .app-menu__counter--value-corner {
   position: absolute;
@@ -1523,6 +1535,8 @@
   padding: 0 5px;
   font-size: 0.72rem;
 }
+
+@if $include-panel {
 
 :host(.app-menu-host--inline-row-big) .app-menu__button-row-item--labelled .app-menu__counter--trigger {
   position: absolute;
@@ -2037,6 +2051,7 @@
 .app-menu__tabs-tab--active .mat-icon {
   color: currentColor;
 }
+}
 
 .app-menu__counter--tabs-tab {
   position: absolute;
@@ -2047,6 +2062,8 @@
   font-size: 0.64rem;
   box-shadow: 0 0 0 2px #fff, 0 5px 10px rgba(163, 36, 48, 0.24);
 }
+
+@if $include-panel {
 
 .app-menu__tabs-panel {
   min-width: 0;
@@ -3048,6 +3065,7 @@ a.app-menu__item {
   text-align: center;
   text-transform: uppercase;
 }
+}
 
 .app-menu__counter {
   display: inline-flex;
@@ -3101,6 +3119,8 @@ a.app-menu__item {
 .app-menu__counter--pulse {
   animation: app-menu-counter-pulse 1.6s ease-in 1;
 }
+
+@if $include-panel {
 
 .app-menu__panel--dropdown-list .app-menu__counter {
   margin-left: auto;
@@ -3253,10 +3273,13 @@ a.app-menu__item {
 .app-menu__tile-section {
   grid-column: 1 / -1;
 }
+}
 
 :host(.app-menu-host--layout-mobile):not(.app-menu-host--layout-grid):not(.app-menu-host--kind-select):not(.app-menu-host--kind-fab):not(.app-menu-host--layout-row) .app-menu {
   position: static;
 }
+
+@if $include-panel {
 
 :host(.app-menu-host--layout-mobile):not(.app-menu-host--layout-grid):not(.app-menu-host--kind-select):not(.app-menu-host--kind-fab):not(.app-menu-host--layout-row) .app-menu__backdrop {
   position: fixed;
@@ -3294,10 +3317,13 @@ a.app-menu__item {
   border-radius: 999px;
   background: rgba(38, 62, 92, 0.22);
 }
+}
 
 :host(.app-menu-host--layout-mobile.app-menu-host--model-layout-tabs) .app-menu {
   position: static;
 }
+
+@if $include-panel {
 
 :host(.app-menu-host--layout-mobile.app-menu-host--model-layout-tabs) .app-menu__panel--tabs {
   position: fixed;
@@ -3331,6 +3357,7 @@ a.app-menu__item {
   min-width: 0;
   max-width: min(8.4rem, 31vw);
 }
+}
 
 :host(.app-menu-host--inline-row-labelled-action:not(.app-menu-host--content-actions)) {
   display: block;
@@ -3341,6 +3368,8 @@ a.app-menu__item {
   display: block;
   width: 100%;
 }
+
+@if $include-panel {
 
 :host(.app-menu-host--inline-row-labelled-action:not(.app-menu-host--content-actions)) .app-menu__button-row {
   display: flex;
@@ -3490,6 +3519,7 @@ a.app-menu__item {
     transform: translateY(0);
   }
 }
+}
 
 @keyframes app-menu-counter-pulse {
   0%,
@@ -3514,6 +3544,8 @@ a.app-menu__item {
     transition: none;
   }
 }
+
+@if $include-panel {
 
 // A switch may carry its own status color while its row keeps its category palette.
 .app-menu__button-row-item--labelled[data-toggle-palette],
@@ -3612,4 +3644,5 @@ a.app-menu__item {
     filter: var(--app-menu-on-off-disabled-filter, saturate(0.66));
     box-shadow: none;
   }
+}
 }

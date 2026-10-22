@@ -1,48 +1,33 @@
-import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { inject as injectImageUrls } from '@angular/core';
-import { UI_IMAGE_URLS } from '../../../../../../foundation/image-urls';
+import { UI_IMAGE_URLS } from '@fssrepository/myscoutee-components/core';
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostBinding,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Output,
-  SimpleChanges,
-  ViewChild,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
-import { LazyBgImageDirective } from '../../../../../directives/lazy-bg-image.directive';
-import { IndicatorComponent } from '../../../../../../components/indicator/index';
+import { LazyBgImageDirective } from '@fssrepository/myscoutee-components/core';
+import { IndicatorComponent } from '@fssrepository/myscoutee-components/core';
 import type {
   CardImageSlide,
-  CardMenuRequestEvent,
-  CardMenuTriggerRect,
-  CardProfileViewData,
   PairCardData,
   PairCardSlot
-} from '../card.types';
+} from '@fssrepository/myscoutee-components/core';
+
+import { RateCardBase } from '../rate-card-base';
+import { RateCardFrameDirective } from '../rate-card-frame.directive';
 
 @Component({
   selector: 'app-pair-card',
   standalone: true,
-  imports: [CommonModule, MatIconModule, LazyBgImageDirective, IndicatorComponent, I18nPipe],
+  imports: [CommonModule, RateCardFrameDirective, MatIconModule, LazyBgImageDirective, IndicatorComponent, I18nPipe],
   templateUrl: './pair-card.component.html',
   styleUrl: './pair-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class PairCardComponent extends RateCardBase<PairCardData> {
+  protected readonly defaultBadgeLayout = 'between';
   private readonly imageUrls = injectImageUrls(UI_IMAGE_URLS);
   private static readonly IMAGE_PULSE_DURATION_MS = 500;
-  private static readonly BADGE_BLINK_DURATION_MS = 420;
   private static readonly FULLSCREEN_ASPECT_RATIO = 4 / 3;
   private static readonly SPLIT_DEFAULT_PERCENT = 50;
   private static readonly SPLIT_MIN_PERCENT = 0;
@@ -50,7 +35,6 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
   private static readonly activeIndexByRowSlotKey: Record<string, number> = {};
   private static lastCompactSplitPercent = PairCardComponent.SPLIT_DEFAULT_PERCENT;
 
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly compactMedia = typeof globalThis.matchMedia === 'function'
     ? globalThis.matchMedia('(max-width: 760px)') : null;
   private compactViewport = this.compactMedia?.matches ?? false;
@@ -60,16 +44,11 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.cdr.markForCheck();
   };
   private readonly loadingTimersByKey: Record<string, ReturnType<typeof setTimeout>> = {};
-  private badgeBlinkTimer: ReturnType<typeof setTimeout> | null = null;
-  private fullscreenResizeObserver: ResizeObserver | null = null;
-  private previousRowId = '';
-  private previousBadgeLabel = '';
   private splitPointerId: number | null = null;
   private splitBounds: { left: number; width: number } | null = null;
   private splitDragStartClientX: number | null = null;
   private splitDragStartPercent: number | null = null;
   private dragListenersBound = false;
-  private fullscreenShellElementRef?: ElementRef<HTMLElement>;
   private readonly onWindowPointerMove = (event: PointerEvent): void => {
     // Touch browsers also send pointer moves. The touch handler owns this drag;
     // keep its duplicate pointer stream away from page-wide menu listeners.
@@ -126,96 +105,34 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.stopSplitDrag();
   };
 
-  @Input() card: PairCardData | null = null;
-  @Input() imagesEnabled = true;
   @Input() showSplitHandle = true;
-
-  @Output() readonly badgeClick = new EventEmitter<string>();
-  @Output() readonly menuRequest = new EventEmitter<CardMenuRequestEvent<PairCardData>>();
-  @Output() readonly detailClick = new EventEmitter<CardProfileViewData>();
 
   protected readonly activeIndexByKey: Record<string, number> = {};
   protected readonly loadingByKey: Record<string, boolean> = {};
   protected splitPercent = PairCardComponent.SPLIT_DEFAULT_PERCENT;
   protected isResizing = false;
-  protected transientBadgeBlink = false;
-  protected badgeMenuOpen = false;
-  protected fullscreenCardWidth: string | null = null;
-  protected fullscreenCardHeight: string | null = null;
 
-  @ViewChild('fullscreenShell', { read: ElementRef })
-  protected set fullscreenShellRef(value: ElementRef<HTMLElement> | undefined) {
-    this.fullscreenShellElementRef = value;
-    this.bindFullscreenObserver();
-    this.scheduleFullscreenLayoutSync();
-  }
-
-  @HostBinding('attr.data-card-presentation')
-  protected get hostPresentationAttr(): string {
-    return this.resolvedPresentation();
-  }
-
-  @HostBinding('style.height')
-  protected get hostHeight(): string | null {
-    return this.resolvedPresentation() === 'fullscreen' ? '100%' : null;
-  }
-
-  ngAfterViewInit(): void {
+  override ngAfterViewInit(): void {
     this.compactMedia?.addEventListener('change', this.onCompactViewportChange);
-    this.bindFullscreenObserver();
-    this.scheduleFullscreenLayoutSync();
+    super.ngAfterViewInit();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  override ngOnChanges(changes: SimpleChanges): void {
     if (changes['showSplitHandle'] && !this.showSplitHandle) {
       this.stopSplitDrag();
     }
-
-    if (!changes['card']) {
-      return;
-    }
-
-    const rowId = this.card?.rowId ?? '';
-    const badgeLabel = this.card?.badge?.label ?? '';
-
-    if (rowId !== this.previousRowId) {
-      this.syncStateFromCard();
-    }
-
-    if (rowId === this.previousRowId && badgeLabel !== this.previousBadgeLabel && this.card?.badge?.blink !== true) {
-      this.startTransientBadgeBlink();
-    }
-
-    this.previousRowId = rowId;
-    this.previousBadgeLabel = badgeLabel;
-    this.scheduleFullscreenLayoutSync();
+    super.ngOnChanges(changes);
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
     this.compactMedia?.removeEventListener('change', this.onCompactViewportChange);
     Object.values(this.loadingTimersByKey).forEach(timer => clearTimeout(timer));
-    if (this.badgeBlinkTimer) {
-      clearTimeout(this.badgeBlinkTimer);
-      this.badgeBlinkTimer = null;
-    }
-    this.disconnectFullscreenObserver();
+    super.ngOnDestroy();
     this.stopSplitDrag();
   }
 
   protected trackBySlot(_index: number, slot: PairCardSlot): string {
     return slot.key;
-  }
-
-  protected trackBySlide(index: number, slide: CardImageSlide): string {
-    return `${index}:${slide.imageUrl}`;
-  }
-
-  protected resolvedPresentation(): 'list' | 'fullscreen' {
-    return this.card?.presentation ?? 'list';
-  }
-
-  protected resolvedState(): 'default' | 'active' | 'leaving' {
-    return this.card?.state ?? 'default';
   }
 
   protected resolvedSlots(): readonly PairCardSlot[] {
@@ -224,10 +141,6 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   protected isImageSwitchButtonTarget(imageIndex: number): boolean {
     return imageIndex === 0 && (this.card?.guideImageSwitch !== true || this.resolvedState() === 'active');
-  }
-
-  protected resolvedStackClasses(): readonly string[] {
-    return this.card?.stackClasses ?? [];
   }
 
   protected currentSlide(slot: PairCardSlot): CardImageSlide | null {
@@ -254,32 +167,6 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   protected isLoading(slot: PairCardSlot): boolean {
     return this.loadingByKey[slot.key] ?? false;
-  }
-
-  protected isInteractive(): boolean {
-    return this.resolvedPresentation() === 'list' || this.resolvedState() === 'active';
-  }
-
-  protected isBadgeInteractive(): boolean {
-    return this.card?.badge?.interactive !== false;
-  }
-
-  protected usesFloatingBadge(): boolean {
-    const layout = this.card?.badge?.layout ?? 'between';
-    return layout === 'floating' || layout === 'pair-overlap';
-  }
-
-  protected usesBetweenBadge(): boolean {
-    const layout = this.card?.badge?.layout ?? 'between';
-    return layout === 'between' || layout === 'pair-overlap';
-  }
-
-  protected usesPairOverlapBadge(): boolean {
-    return (this.card?.badge?.layout ?? 'between') === 'pair-overlap';
-  }
-
-  protected isBadgeBlinking(): boolean {
-    return !!this.card?.badge?.blink || this.transientBadgeBlink;
   }
 
   protected resolvedSplitCssValue(): string {
@@ -328,52 +215,6 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
       PairCardComponent.activeIndexByRowSlotKey[this.rowSlotKey(this.card.rowId, slot.key)] = nextIndex;
     }
     this.startLoadingPulse(slot.key);
-  }
-
-  protected onBadgePointerDown(event: Event): void {
-    event.stopPropagation();
-  }
-
-  protected onBadgeClick(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    const card = this.card;
-    const badge = card?.badge;
-    if (!this.isBadgeInteractive() || badge?.disabled || !card?.rowId || !badge) {
-      return;
-    }
-    if (badge.menuRequest === true) {
-      const trigger = event.currentTarget as HTMLElement | null;
-      this.badgeMenuOpen = true;
-      this.cdr.markForCheck();
-      this.menuRequest.emit({
-        id: card.rowId,
-        card,
-        actions: [],
-        badge,
-        triggerRect: this.resolveBadgeTriggerRect(trigger),
-        openUp: this.shouldOpenBadgeMenuUp(trigger),
-        closeTrigger: () => this.closeBadgeMenu()
-      });
-      return;
-    }
-    this.badgeClick.emit(card.rowId);
-  }
-
-  protected onProfileClick(profileView: CardProfileViewData | null | undefined, event: MouseEvent): void {
-    event.stopPropagation();
-    const userId = `${profileView?.userId ?? ''}`.trim();
-    if (!userId) {
-      return;
-    }
-    this.emitDetailClick({
-      ...profileView,
-      userId
-    });
-  }
-
-  private emitDetailClick(event: CardProfileViewData): void {
-    this.detailClick.emit(event);
   }
 
   protected consumeClick(event: Event): void {
@@ -437,16 +278,13 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  private syncStateFromCard(): void {
+  protected override syncStateFromCard(): void {
     const rowId = this.card?.rowId ?? '';
     Object.values(this.loadingTimersByKey).forEach(timer => clearTimeout(timer));
     Object.keys(this.loadingTimersByKey).forEach(key => delete this.loadingTimersByKey[key]);
     Object.keys(this.activeIndexByKey).forEach(key => delete this.activeIndexByKey[key]);
     Object.keys(this.loadingByKey).forEach(key => delete this.loadingByKey[key]);
-    if (this.badgeBlinkTimer) {
-      clearTimeout(this.badgeBlinkTimer);
-      this.badgeBlinkTimer = null;
-    }
+    this.clearBadgeBlinkTimer();
 
     this.resolvedSlots().forEach(slot => {
       const storedIndex = rowId ? PairCardComponent.activeIndexByRowSlotKey[this.rowSlotKey(rowId, slot.key)] : undefined;
@@ -462,39 +300,6 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  private closeBadgeMenu(): void {
-    if (!this.badgeMenuOpen) {
-      return;
-    }
-    this.badgeMenuOpen = false;
-    this.cdr.markForCheck();
-  }
-
-  private shouldOpenBadgeMenuUp(trigger: HTMLElement | null): boolean {
-    if (typeof window === 'undefined' || !trigger) {
-      return false;
-    }
-    const rect = trigger.getBoundingClientRect();
-    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-    const estimatedMenuHeight = 128;
-    return viewportHeight - rect.bottom < estimatedMenuHeight && rect.top > viewportHeight - rect.bottom;
-  }
-
-  private resolveBadgeTriggerRect(trigger: HTMLElement | null): CardMenuTriggerRect | null {
-    if (typeof window === 'undefined' || !trigger) {
-      return null;
-    }
-    const rect = trigger.getBoundingClientRect();
-    return {
-      left: rect.left,
-      top: rect.top,
-      right: rect.right,
-      bottom: rect.bottom,
-      width: rect.width,
-      height: rect.height
-    };
-  }
-
   private startLoadingPulse(slotKey: string): void {
     const timer = this.loadingTimersByKey[slotKey];
     if (timer) {
@@ -507,31 +312,6 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
       delete this.loadingTimersByKey[slotKey];
       this.cdr.markForCheck();
     }, PairCardComponent.IMAGE_PULSE_DURATION_MS);
-  }
-
-  private startTransientBadgeBlink(): void {
-    if (this.badgeBlinkTimer) {
-      clearTimeout(this.badgeBlinkTimer);
-      this.badgeBlinkTimer = null;
-    }
-    this.transientBadgeBlink = false;
-    this.cdr.detectChanges();
-
-    const startBlink = () => {
-      this.transientBadgeBlink = true;
-      this.cdr.detectChanges();
-      this.badgeBlinkTimer = setTimeout(() => {
-        this.badgeBlinkTimer = null;
-        this.transientBadgeBlink = false;
-        this.cdr.detectChanges();
-      }, PairCardComponent.BADGE_BLINK_DURATION_MS);
-    };
-
-    if (typeof globalThis.requestAnimationFrame === 'function') {
-      globalThis.requestAnimationFrame(() => startBlink());
-      return;
-    }
-    setTimeout(() => startBlink(), 0);
   }
 
   private clampIndex(index: number, slideCount: number): number {
@@ -605,73 +385,11 @@ export class PairCardComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.dragListenersBound = false;
   }
 
-  private bindFullscreenObserver(): void {
-    if (typeof ResizeObserver === 'undefined') {
-      return;
-    }
-    const shell = this.fullscreenShellElementRef?.nativeElement;
-    if (!shell) {
-      this.disconnectFullscreenObserver();
-      return;
-    }
-    if (!this.fullscreenResizeObserver) {
-      this.fullscreenResizeObserver = new ResizeObserver(() => this.updateFullscreenCardSize());
-    }
-    this.fullscreenResizeObserver.disconnect();
-    this.fullscreenResizeObserver.observe(shell);
-  }
-
-  private disconnectFullscreenObserver(): void {
-    if (!this.fullscreenResizeObserver) {
-      return;
-    }
-    this.fullscreenResizeObserver.disconnect();
-    this.fullscreenResizeObserver = null;
-  }
-
-  private scheduleFullscreenLayoutSync(): void {
-    if (this.resolvedPresentation() !== 'fullscreen') {
-      this.setFullscreenCardSize(null, null);
-      return;
-    }
-    const sync = () => this.updateFullscreenCardSize();
-    if (typeof globalThis.requestAnimationFrame === 'function') {
-      globalThis.requestAnimationFrame(() => sync());
-      return;
-    }
-    setTimeout(sync, 0);
-  }
-
-  private updateFullscreenCardSize(): void {
-    if (this.resolvedPresentation() !== 'fullscreen') {
-      this.setFullscreenCardSize(null, null);
-      return;
-    }
-    const shell = this.fullscreenShellElementRef?.nativeElement;
-    if (!shell) {
-      return;
-    }
-    const availableWidth = shell.clientWidth;
-    const availableHeight = shell.clientHeight;
-    if (availableWidth <= 0 || availableHeight <= 0) {
-      return;
-    }
+  protected override fullscreenDimensions(availableWidth: number, availableHeight: number): readonly [number, number] {
     if (this.isCompactViewport()) {
-      this.setFullscreenCardSize(`${availableWidth}px`, `${availableHeight}px`);
-      return;
+      return [availableWidth, availableHeight];
     }
-    const aspectRatio = PairCardComponent.FULLSCREEN_ASPECT_RATIO;
-    const nextWidth = Math.min(availableWidth, availableHeight * aspectRatio);
-    const nextHeight = nextWidth / aspectRatio;
-    this.setFullscreenCardSize(`${nextWidth}px`, `${nextHeight}px`);
-  }
-
-  private setFullscreenCardSize(width: string | null, height: string | null): void {
-    if (this.fullscreenCardWidth === width && this.fullscreenCardHeight === height) {
-      return;
-    }
-    this.fullscreenCardWidth = width;
-    this.fullscreenCardHeight = height;
-    this.cdr.markForCheck();
+    const width = Math.min(availableWidth, availableHeight * PairCardComponent.FULLSCREEN_ASPECT_RATIO);
+    return [width, width / PairCardComponent.FULLSCREEN_ASPECT_RATIO];
   }
 }

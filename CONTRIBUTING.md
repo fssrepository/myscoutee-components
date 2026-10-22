@@ -29,8 +29,9 @@ Do not include credentials or private data.
    State any checks you could not run.
 
 Documentation-only contributions do not need an application build. Commit a
-component change before updating the consuming frontend submodule pointer.
-Separate checkouts do not share uncommitted edits.
+component change, build the library, then use `npm run prepare:release` and publish
+the prepared distribution. Consumers update their exact npm dependency and lockfile
+after publication. Separate checkouts do not share uncommitted edits.
 
 ## License and branding
 

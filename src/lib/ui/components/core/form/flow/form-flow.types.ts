@@ -7,11 +7,11 @@ import type {
   AppMenuPanelMode,
   AppMenuTrigger
 } from '../../menu/index';
-import type { DateInputMetaModel, DateInputModel } from '../../../../../components/date-input/index';
+import type { DateInputMetaModel, DateInputModel } from '@fssrepository/myscoutee-components/date';
 import type { LinkInputConfig } from '../inputs/link-input/index';
 import type { LocationInputConfig } from '../inputs/location-input/index';
 import type { TextCardsConfig } from '../inputs/text-cards-input/text-cards-input.component';
-import type { ImageCardData, InfoCardData } from '../../smart-list/card/index';
+import type { ImageCardData, InfoCardData } from '../../smart-list/card/card.types';
 
 export interface FormFlowDraft<TData> {
   version: 1;

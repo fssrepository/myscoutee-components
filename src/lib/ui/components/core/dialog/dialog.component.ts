@@ -12,7 +12,7 @@ import {
   type AppMenuItemSelectEvent,
   type AppMenuPalette
 } from '../menu/index';
-import { I18nPipe } from '../../../../pipes/index';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 
 export interface DialogLocalConfig {
   visible?: boolean;

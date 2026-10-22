@@ -224,7 +224,7 @@
               }
 
                 <div class="form-flow__controls" [class.form-flow__controls--mobile-wrap]="step.wrapControlsOnMobile" [hidden]="step.controls.length === 0">
-                @for (control of step.controls; track control.id) {
+                @for (control of step.controls; track control.id; let controlIndex = $index) {
                   @let validationError = controlValidationError(control);
                   <div
                     class="form-flow__control"
@@ -250,9 +250,9 @@
                       <app-text-cards-input [config]="textCardsConfig(control)" (menuSelect)="emitControlAction(control, $event)"></app-text-cards-input>
                     } @else if (control.kind === 'menu') {
                       @if (control.label) {
-                        <label class="form-flow__label">
+                        <div class="form-flow__label">
                           <span>{{ control.label }}@if (control.required) { <strong>*</strong> }</span>
-                        </label>
+                        </div>
                       }
                       @if (control.bind !== undefined) {
                       <app-menu
@@ -289,9 +289,9 @@
                       }
                     } @else if (control.kind === 'image-carousel') {
                       @if (control.label) {
-                        <label class="form-flow__label">
+                        <div class="form-flow__label">
                           <span>{{ control.label | i18n }}@if (control.required) { <strong>*</strong> }</span>
-                        </label>
+                        </div>
                       }
                       @let image = imageConfig(control);
                       @if (image.gallery) {
@@ -324,13 +324,14 @@
                         <span>{{ control.label }}@if (control.required) { <strong>*</strong> }</span>
                       </label>
                     } @else if (control.kind === 'textarea') {
-                      <label class="form-flow__label">
+                      <label class="form-flow__label" [for]="controlIdPrefix + '-' + stepIndex + '-' + controlIndex">
                         <span>{{ control.label }}@if (control.required) { <strong>*</strong> }</span>
                         @if (control.maxLength || control.minLength) {
                           <small>{{ controlTextValue(control).length }}/{{ control.maxLength ?? control.minLength }}</small>
                         }
                       </label>
                       <textarea
+                        [id]="controlIdPrefix + '-' + stepIndex + '-' + controlIndex"
                         [rows]="control.rows ?? 3"
                         [attr.minlength]="control.minLength ?? null"
                         [attr.maxlength]="control.maxLength ?? null"
@@ -386,10 +387,11 @@
                     } @else if (customControls.renderers[control.kind]) {
                       <ng-container [formFlowControl]="customControlContext(control)" [controlInjector]="controlInjector" />
                     } @else {
-                      <label class="form-flow__label">
+                      <label class="form-flow__label" [for]="controlIdPrefix + '-' + stepIndex + '-' + controlIndex">
                         <span>{{ control.label }}@if (control.required) { <strong>*</strong> }</span>
                       </label>
                       <input
+                        [id]="controlIdPrefix + '-' + stepIndex + '-' + controlIndex"
                         [type]="inputType(control)"
                         [attr.min]="control.min ?? null"
                         [attr.max]="control.max ?? null"

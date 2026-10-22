@@ -20,7 +20,8 @@ class CustomField {
 describe('FormFlow consumer controls', () => {
   afterEach(() => { TestBed.resetTestingModule(); vi.unstubAllGlobals(); });
   it('renders a built-in route alongside consumer registrations and propagates changes', async () => {
-    vi.stubGlobal('matchMedia', () => ({matches: false, addEventListener() {}, removeEventListener() {}}));
+    vi.stubGlobal('matchMedia', () => ({matches: false, addEventListener() {}, removeEventListener() {},
+      addListener() {}, removeListener() {}}));
     TestBed.configureTestingModule({providers: [{provide: FORM_FLOW_CONTROLS, useValue: {
       renderers: {custom: {load: async () => CustomField}}
     }}]});
@@ -32,6 +33,10 @@ describe('FormFlow consumer controls', () => {
     const changed = vi.fn();
     fixture.componentInstance.registerOnChange(changed);
     fixture.detectChanges(); await fixture.whenStable(); fixture.detectChanges();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.directive(RouteInputComponent))).not.toBeNull();
+    });
     const route = fixture.debugElement.query(By.directive(RouteInputComponent));
     expect(route).not.toBeNull();
     expect(route.nativeElement.textContent).toContain('Budapest');
@@ -44,7 +49,7 @@ describe('FormFlow consumer controls', () => {
     const stops = fixture.nativeElement.querySelectorAll('.route-input-popup__row input');
     stops[1].value = 'Bratislava';
     stops[1].dispatchEvent(new Event('input')); fixture.detectChanges();
-    fixture.nativeElement.querySelector('[aria-label="Save route"]').click(); fixture.detectChanges();
+    fixture.nativeElement.querySelector('[aria-label="route.save.aria"]').click(); fixture.detectChanges();
     expect(changed).toHaveBeenLastCalledWith({stops: ['Budapest', 'Bratislava']});
   });
 

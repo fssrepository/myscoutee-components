@@ -1,3 +1,4 @@
+import { buildCardMenuItems } from '../card-menu.helpers';
 import { inject as injectImageUrls } from '@angular/core';
 import { UI_IMAGE_URLS } from '../../../../../../foundation/image-urls';
 import { clampNumber } from '../../../../../../foundation/number-utils';
@@ -18,13 +19,12 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 
 import { LazyBgImageDirective } from '../../../../../directives/lazy-bg-image.directive';
-import { I18nPipe } from '../../../../../../pipes/index';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { IndicatorComponent } from '../../../../../../components/indicator/index';
 import { CounterBadgePipe } from '../../../../../pipes/counter-badge.pipe';
 import {
   AppMenuTriggerComponent,
   type AppMenuItem,
-  type AppMenuPalette,
   type AppMenuTrigger
 } from '../../../menu/index';
 import type {
@@ -326,6 +326,15 @@ export class InfoCardComponent implements OnDestroy, OnChanges {
     return action?.tone ?? 'default';
   }
 
+  protected overlayClassList(action: InfoCardOverlayAction): string[] {
+    const prefix = 'ui-info-card__overlay-action--';
+    const classes = [prefix + this.overlayVariant(action), prefix + 'tone-' + this.overlayTone(action)];
+    if (this.overlayShape(action) === 'circle') classes.push(prefix + 'shape-circle');
+    const layout = this.overlayLayout(action);
+    if (layout !== 'default') classes.push(prefix + 'layout-' + layout);
+    return classes;
+  }
+
   protected overlayLeadingAccessory(action: InfoCardOverlayAction | null | undefined): InfoCardOverlayAccessory | null {
     return action?.leadingAccessory ?? null;
   }
@@ -444,32 +453,7 @@ export class InfoCardComponent implements OnDestroy, OnChanges {
   }
 
   protected sharedMenuItems(): readonly AppMenuItem<string, Record<string, unknown>>[] {
-    const card = this.card;
-    if (!card?.menuActions?.length) {
-      return [];
-    }
-    return card.menuActions.flatMap(actionId => {
-      const config = CARD_MENU_ACTIONS[actionId];
-      if (!config) {
-        return [];
-      }
-      const action: CardMenuAction = {
-        id: actionId,
-        ...config
-      };
-      return [{
-        id: actionId,
-        label: config.label,
-        icon: config.icon,
-        palette: this.sharedMenuActionPalette(config.tone),
-        surface: 'action',
-        context: {
-          ...(this.sharedMenuContext ?? {}),
-          card,
-          action
-        }
-      }];
-    });
+    return buildCardMenuItems(this.card, this.sharedMenuContext, 'action', 'blue');
   }
 
   protected hasFooterChips(): boolean {
@@ -542,22 +526,16 @@ export class InfoCardComponent implements OnDestroy, OnChanges {
     return `${chip.label}:${chip.toneClass ?? ''}:${chip.actionId ?? ''}:${this.footerChipIcon(chip)}:${index}`;
   }
 
-  private sharedMenuActionPalette(tone: CardMenuAction['tone']): AppMenuPalette {
-    switch (tone) {
-      case 'positive':
-        return 'teal';
-      case 'accent':
-        return 'brown';
-      case 'warning':
-      case 'share':
-        return 'teal';
-      case 'review':
-        return 'orange';
-      case 'destructive':
-        return 'danger';
-      default:
-        return 'blue';
+
+  protected overlayAccessoryClassList(accessory: InfoCardOverlayAccessory, layout: 'avatar-metric' | 'badge'): string[] {
+    const classes = [`ui-info-card__overlay-leading-accessory--${layout}`];
+    const tone = accessory.tone;
+    if (tone && (tone === 'default' || tone === 'woman' || tone === 'man'
+        || /^tone-[1-8]$/.test(tone)
+        || (layout === 'badge' && (tone === 'positive' || tone === 'negative')))) {
+      classes.push(`ui-info-card__overlay-leading-accessory--tone-${tone}`);
     }
+    return classes;
   }
 
   protected rootClassList(): string[] {
@@ -590,7 +568,7 @@ export class InfoCardComponent implements OnDestroy, OnChanges {
       this.isMobileView = false;
       return;
     }
-    const next = window.innerWidth <= InfoCardComponent.MOBILE_BREAKPOINT_PX;
+    const next = window.matchMedia(`(max-width: ${InfoCardComponent.MOBILE_BREAKPOINT_PX}px)`).matches;
     if (next === this.isMobileView) {
       return;
     }

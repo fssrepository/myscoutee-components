@@ -14,7 +14,7 @@ import {
   inject
 } from '@angular/core';
 
-import { UI_TRANSLATIONS } from '../../foundation/translation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 import { IndicatorComponent } from '../../components/indicator/index';
 
 interface LazyImageScrollState {
@@ -226,7 +226,7 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
         const decodePromise = typeof img.decode === 'function'
           ? img.decode().catch(() => undefined)
           : Promise.resolve();
-        decodePromise.then(() => finish(true));
+        void decodePromise.then(() => finish(true));
       };
       img.onerror = () => finish(false);
       img.decoding = 'async';
@@ -363,6 +363,9 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
   }
 
   private observeBackgroundVisibility(url: string): void {
+    // Retained loaded backgrounds do not change when leaving the viewport.
+    if (this.appLazyImageRetainLoaded && this.hasLoaded
+      && !this.elementRef.nativeElement.classList.contains('lazy-bg-suspended')) return;
     if (typeof IntersectionObserver === 'undefined') {
       this.loadBackgroundUrl(url);
       return;
@@ -394,6 +397,8 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
 
   private loadBackgroundUrl(url: string): void {
     if (!this.appLazyImageEnabled || this.currentUrl !== url) return;
+    // A visible observer entry already answers the queued geometry check.
+    this.cancelBackgroundVisibilityCheck();
     const element = this.elementRef.nativeElement;
     const ready = this.hasLoaded;
     const retainedUrl = this.appLazyImageRetainLoaded ? this.renderedImageUrl(url) : null;
@@ -423,7 +428,7 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
     // Waiting outside the viewport is not an active load: do not animate a
     // spinner for every offscreen card. Start it only with the actual request.
     this.renderer.addClass(this.elementRef.nativeElement, this.loadingClass);
-    LazyBgImageDirective.withImageLoadTimeout(this.loadRenderableUrl(url), null).then(loadedUrl => {
+    void LazyBgImageDirective.withImageLoadTimeout(this.loadRenderableUrl(url), null).then(loadedUrl => {
       if (this.currentUrl !== url) {
         return;
       }
@@ -842,7 +847,7 @@ export class LazyBgImageDirective implements AfterViewInit, OnChanges, OnDestroy
     }
     image.dataset['lazyImageSvgOriginalSrc'] = originalSrc;
     image.dataset['lazyImageSvgRevision'] = revision;
-    this.prepareRenderableImageUrl(originalSrc, this.forceSvgLocalization(image)).then(localizedUrl => {
+    void this.prepareRenderableImageUrl(originalSrc, this.forceSvgLocalization(image)).then(localizedUrl => {
       if (!localizedUrl
         || image.dataset['lazyImageSvgOriginalSrc'] !== originalSrc
         || image.dataset['lazyImageFallbackActive'] === 'true') {

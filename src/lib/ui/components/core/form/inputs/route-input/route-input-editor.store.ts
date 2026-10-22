@@ -96,6 +96,36 @@ export class RouteInputEditorStore {
     this.routeInputEditorComponentRef.set(module.RouteInputPopupComponent);
   }
 
+  openGoogleMapsSearch(query: string): void {
+    const trimmed = query.trim();
+    if (!trimmed || typeof window === 'undefined') {
+      return;
+    }
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`,
+      '_blank',
+      'noopener,noreferrer'
+    );
+  }
+
+  openGoogleMapsDirections(normalized: readonly string[]): void {
+    if (normalized.length === 0 || typeof window === 'undefined') {
+      return;
+    }
+    if (normalized.length === 1) {
+      this.openGoogleMapsSearch(normalized[0]);
+      return;
+    }
+    const origin = normalized[0];
+    const destination = normalized[normalized.length - 1];
+    const waypoints = normalized.slice(1, -1);
+    let url = `https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
+    if (waypoints.length > 0) {
+      url += `&waypoints=${encodeURIComponent(waypoints.join('|'))}`;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
   private requestRouteInputEditorAction(request: RouteInputEditorActionPayload): void {
     this.routeInputEditorActionSequence += 1;
     this.routeInputEditorActionRequestRef.set({

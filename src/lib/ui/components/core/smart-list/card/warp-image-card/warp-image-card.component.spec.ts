@@ -1,9 +1,19 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { UI_TRANSLATIONS } from '../../../../../../../public-api';
-import { InfoCardComponent, LazyBgImageDirective, WarpImageCardComponent } from '../../../../../../../public-api';
+import { AppMenuTriggerComponent, InfoCardComponent, LazyBgImageDirective, WarpImageCardComponent } from '../../../../../../../public-api';
 
 describe('WarpImageCardComponent image loading', () => {
+  let viewportWidth = 1024;
+  beforeEach(() => {
+    viewportWidth = 1024;
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: viewportWidth <= Number(query.match(/max-width:\s*([\d.]+)px/)?.[1] ?? 0),
+      media: query, onchange: null, addListener() {}, removeListener() {},
+      addEventListener() {}, removeEventListener() {}, dispatchEvent: () => true
+    }));
+  });
+
   afterEach(() => {
     TestBed.resetTestingModule();
     vi.restoreAllMocks();
@@ -52,6 +62,38 @@ describe('WarpImageCardComponent image loading', () => {
     expect(media.style.backgroundImage).toContain(imageUrl);
     expect(getComputedStyle(loader).display).toBe('none');
     expect(fixture.nativeElement.textContent).toContain('Step title');
+  });
+
+  it('keeps the card action menu mobile through 760px and updates it when the viewport crosses the boundary', () => {
+    viewportWidth = 760;
+    TestBed.configureTestingModule({ imports: [InfoCardComponent] });
+    const fixture = TestBed.createComponent(InfoCardComponent);
+    fixture.componentRef.setInput('card', { id: 'article', title: 'Article', menuActions: ['edit'] });
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector('.ui-info-card__menu-trigger').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.ui-info-card__menu--mobile')).not.toBeNull();
+    viewportWidth = 761;
+    window.dispatchEvent(new Event('resize'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.ui-info-card__menu--desktop')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.ui-info-card__menu--mobile')).toBeNull();
+  });
+
+  it('keeps the shared trigger responsive at its configured mobile boundary', () => {
+    viewportWidth = 760;
+    TestBed.configureTestingModule({ imports: [AppMenuTriggerComponent] });
+    const fixture = TestBed.createComponent(AppMenuTriggerComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.classList.contains('app-menu-host--layout-mobile')).toBe(true);
+    viewportWidth = 761;
+    window.dispatchEvent(new Event('resize'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.classList.contains('app-menu-host--layout-desktop')).toBe(true);
+    fixture.componentRef.setInput('mobileBreakpointPx', 800);
+    window.dispatchEvent(new Event('resize'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.classList.contains('app-menu-host--layout-mobile')).toBe(true);
   });
 
   it('lets landing cards follow the page heading without changing shared defaults', () => {

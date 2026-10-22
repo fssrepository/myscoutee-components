@@ -78,6 +78,46 @@ describe('retained view background images', () => {
 });
 
 describe('background request lifecycle', () => {
+  it('paints a retained cached image without observing or measuring it again', () => {
+    const observe = vi.fn();
+    const url = '/cached-retained-atlas.webp';
+    vi.stubGlobal('IntersectionObserver', class { observe = observe; disconnect = vi.fn(); });
+    try {
+      LazyBgImageDirective['loadedUrls'].add(url);
+      const { instance, element } = background(true);
+      instance.currentUrl = url;
+      instance.appLazyImageRetainLoaded = true;
+      instance.appLazyImagePriority = 'high';
+      instance.isElementWithinPreloadRange = vi.fn(() => true);
+      instance.scheduleVisibleBackgroundLoad = vi.fn();
+      instance.setupObserver();
+      expect(element.style.backgroundImage).toContain(url);
+      expect(element.classList.contains('lazy-bg-loaded')).toBe(true);
+      expect(observe).not.toHaveBeenCalled();
+      expect(instance.isElementWithinPreloadRange).not.toHaveBeenCalled();
+      expect(instance.scheduleVisibleBackgroundLoad).not.toHaveBeenCalled();
+      expect(instance.loadRenderableUrl).not.toHaveBeenCalled();
+    } finally {
+      LazyBgImageDirective['loadedUrls'].delete(url);
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('keeps observing a suspended retained image until it becomes visible again', () => {
+    const observe = vi.fn();
+    vi.stubGlobal('IntersectionObserver', class { observe = observe; disconnect = vi.fn(); });
+    try {
+      const { instance, element } = background(true, true);
+      instance.appLazyImageRetainLoaded = true;
+      element.classList.add('lazy-bg-suspended');
+      instance.scheduleVisibleBackgroundLoad = vi.fn();
+      instance.setupObserver();
+      expect(observe).toHaveBeenCalledWith(element);
+      expect(element.classList.contains('lazy-bg-suspended')).toBe(true);
+      expect(instance.loadRenderableUrl).not.toHaveBeenCalled();
+    } finally { vi.unstubAllGlobals(); }
+  });
+
   it('starts a visible priority card before the observer callback, retaining offscreen and inactive deferral', () => {
     vi.stubGlobal('IntersectionObserver', class {
       observe = vi.fn();
@@ -130,6 +170,32 @@ describe('background request lifecycle', () => {
     expect(element.classList.contains('lazy-bg-loading')).toBe(true);
     await vi.waitFor(() => expect(element.classList.contains('lazy-bg-loaded')).toBe(true));
     expect(element.classList.contains('lazy-bg-loading')).toBe(false);
+  });
+
+  it('does not measure visibility again after the observer has started the request', async () => {
+    vi.useFakeTimers();
+    let notify!: IntersectionObserverCallback;
+    vi.stubGlobal('IntersectionObserver', class {
+      constructor(callback: IntersectionObserverCallback) { notify = callback; }
+      observe = vi.fn();
+      disconnect = vi.fn();
+    });
+    try {
+      const { instance } = background(true);
+      instance.cancelBackgroundVisibilityCheck = LazyBgImageDirective.prototype['cancelBackgroundVisibilityCheck'];
+      instance.isElementWithinPreloadRange = vi.fn(() => true);
+      instance.observeBackgroundVisibility('/ready.jpg');
+      notify([{ isIntersecting: true }] as IntersectionObserverEntry[], {} as IntersectionObserver);
+      vi.advanceTimersByTime(0);
+      expect(instance.loadRenderableUrl).toHaveBeenCalledOnce();
+      expect(instance.isElementWithinPreloadRange).not.toHaveBeenCalled();
+      await Promise.resolve();
+      await Promise.resolve();
+    } finally {
+      vi.clearAllTimers();
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    }
   });
 
   it('does not animate a spinner while an offscreen image waits for intersection', () => {
@@ -237,22 +303,26 @@ describe('cached image paint visibility', () => {
       disconnect = vi.fn();
     });
     const root = document.createElement('div');
-    const { instance, element } = background(true, true);
+    const { instance, element } = background(true);
+    const url = '/retained-carousel-inflight.webp';
+    instance.currentUrl = url;
     root.append(element);
     instance.appLazyImageRetainLoaded = true;
     instance.scheduleVisibleBackgroundLoad = vi.fn();
     const event = { target: root } as unknown as Event;
     try {
       instance.setupObserver();
+      instance.applyBackground(url);
       callback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver);
       expect(element.classList.contains('lazy-bg-suspended')).toBe(false);
       LazyBgImageDirective['onScroll'](event);
       callback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
       expect(element.classList.contains('lazy-bg-suspended')).toBe(false);
       expect(element.classList.contains('lazy-bg-loading')).toBe(false);
-      expect(element.style.backgroundImage).toContain('/ready.jpg');
+      expect(element.style.backgroundImage).toContain(url);
       expect(instance.loadRenderableUrl).not.toHaveBeenCalled();
     } finally {
+      LazyBgImageDirective['loadedUrls'].delete(url);
       LazyBgImageDirective['onScrollEnd'](event);
       vi.unstubAllGlobals();
     }

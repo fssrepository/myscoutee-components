@@ -1,4 +1,4 @@
-import { UI_TRANSLATIONS } from '../../../../foundation/translation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 import { ExplanationGuideService } from '../../../../guide/explanation-guide.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -10,6 +10,7 @@ import {
   HostListener,
   EventEmitter,
   Input,
+  Injector,
   OnDestroy,
   OnChanges,
   OnInit,
@@ -17,12 +18,13 @@ import {
   ViewEncapsulation,
   inject
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { I18nPipe } from '../../../../pipes/index';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { PopupPresenceStore } from '../../../context/stores/overlay/popup-presence.store';
 import { OverlayNavigationStore } from '../../../context/stores/overlay/overlay-navigation.store';
-import { DateInputComponent, type DateInputValue } from '../../../../components/date-input/date-input.component';
+import type { DateInputValue } from '@fssrepository/myscoutee-components/date';
+import type { FormFlowControlContext } from '../../../../foundation/form-flow-controls';
+import { FormFlowControlDirective } from '../form/flow/form-flow-control.directive';
 import { AppMenuComponent, type AppMenuItemSelectEvent } from '../menu/index';
 import type {
   PopupAction,
@@ -38,7 +40,7 @@ import type {
 @Component({
   selector: 'app-popup',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AppMenuComponent, DateInputComponent, I18nPipe],
+  imports: [CommonModule, MatIconModule, AppMenuComponent, FormFlowControlDirective, I18nPipe],
   templateUrl: './popup.component.html',
   styleUrl: './popup.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -46,6 +48,7 @@ import type {
 })
 export class PopupComponent<TContext = unknown> implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   private readonly i18n = inject(UI_TRANSLATIONS);
+  protected readonly dateControlInjector = inject(Injector);
 
   @ViewChild('surface') private surface?: ElementRef<HTMLElement>;
   private detachedSurface: HTMLElement | null = null;
@@ -327,6 +330,19 @@ export class PopupComponent<TContext = unknown> implements OnInit, OnChanges, On
     const event = { control, value };
     this.popupModel.onDateInputChange?.(event);
     this.dateInputChange.emit(event);
+  }
+
+  protected dateControlContext(control: PopupDateInputControl<TContext>): FormFlowControlContext {
+    return {
+      control: { id: control.id, kind: 'date-input', config: { model: control.model } },
+      value: control.value,
+      disabled: control.model.disabled === true,
+      enabled: true,
+      stringArrayValue: [],
+      change: value => this.changeDateInput(control, value as DateInputValue),
+      touch: () => {},
+      changeEnabled: () => {}
+    };
   }
 
   protected selectAction(action: PopupAction, sourceEvent: Event): void {

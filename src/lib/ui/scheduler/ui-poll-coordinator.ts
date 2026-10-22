@@ -120,7 +120,6 @@ export class UiPollCoordinator {
       }
       return candidate;
     }
-    return null;
   }
 
   private cancelQueuedBackgroundTasks(): void {

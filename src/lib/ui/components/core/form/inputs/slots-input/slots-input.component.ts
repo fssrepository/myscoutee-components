@@ -1,18 +1,33 @@
-import { type SlotTemplate, normalizeSlotTemplates, normalizeSlotOverrideDate, normalizeScheduleFrequency } from '../../../../../../foundation/slot-template';
-import { UiDateUtils } from '../../../../../../foundation/date-utils';
-import { AppMenuComponent } from '../../../menu/menu.component';
-import { type AppMenuItem, type AppMenuItemSelectEvent, type AppMenuPalette, type AppMenuTrigger } from '../../../menu/menu.types';
-import { TextCardComponent, type TextCardTone } from '../../../smart-list/card/text-card/text-card.component';
+import { type SlotTemplate, normalizeSlotTemplates, normalizeSlotOverrideDate, normalizeScheduleFrequency } from '@fssrepository/myscoutee-components/core';
+import { HOROSCOPE_META_BY_SIGN, UiDateUtils } from '@fssrepository/myscoutee-components/foundation';
+import { AppMenuComponent } from '@fssrepository/myscoutee-components/core';
+import { type AppMenuItem, type AppMenuItemSelectEvent, type AppMenuPalette, type AppMenuTrigger } from '@fssrepository/myscoutee-components/core';
+import { TextCardComponent, type TextCardTone } from '@fssrepository/myscoutee-components/core';
 import { FormFlowComponent } from '../../flow/form-flow.component';
-import { type FormFlowControlModel, type FormFlowModel } from '../../flow/form-flow.types';
-import { PopupComponent } from '../../../popup/popup.component';
-import { type PopupModel } from '../../../popup/popup.types';
-import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
+import { type FormFlowControlModel, type FormFlowModel } from '@fssrepository/myscoutee-components/core';
+import { PopupComponent } from '@fssrepository/myscoutee-components/core';
+import { type PopupModel } from '@fssrepository/myscoutee-components/core';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, EventEmitter, forwardRef, HostListener, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
+
+const SCHEDULE_MONTH_ZODIAC = new Map<string, { readonly icon: string; readonly palette: AppMenuPalette }>([
+  ['1', HOROSCOPE_META_BY_SIGN.Capricorn],
+  ['2', HOROSCOPE_META_BY_SIGN.Aquarius],
+  ['3', HOROSCOPE_META_BY_SIGN.Pisces],
+  ['4', HOROSCOPE_META_BY_SIGN.Aries],
+  ['5', HOROSCOPE_META_BY_SIGN.Taurus],
+  ['6', HOROSCOPE_META_BY_SIGN.Gemini],
+  ['7', HOROSCOPE_META_BY_SIGN.Cancer],
+  ['8', HOROSCOPE_META_BY_SIGN.Leo],
+  ['9', HOROSCOPE_META_BY_SIGN.Virgo],
+  ['10', HOROSCOPE_META_BY_SIGN.Libra],
+  ['11', HOROSCOPE_META_BY_SIGN.Scorpio],
+  ['12', HOROSCOPE_META_BY_SIGN.Sagittarius],
+]);
 
 /** Shared by schedule choices and read-only frequency badges. */
 export function scheduleFrequencyPalette(frequency: string): Extract<AppMenuPalette, 'blue' | 'green' | 'cyan' | 'violet' | 'amber' | 'gold'> {
@@ -997,34 +1012,7 @@ export class SlotsInputComponent implements OnChanges, DoCheck, ControlValueAcce
   }
 
   private scheduleMonthZodiac(value: string): { icon: string; palette: AppMenuPalette } {
-    switch (value) {
-      case '1':
-        return { icon: '♑', palette: 'capricorn' };
-      case '2':
-        return { icon: '♒', palette: 'aquarius' };
-      case '3':
-        return { icon: '♓', palette: 'pisces' };
-      case '4':
-        return { icon: '♈', palette: 'aries' };
-      case '5':
-        return { icon: '♉', palette: 'taurus' };
-      case '6':
-        return { icon: '♊', palette: 'gemini' };
-      case '7':
-        return { icon: '♋', palette: 'cancer' };
-      case '8':
-        return { icon: '♌', palette: 'leo' };
-      case '9':
-        return { icon: '♍', palette: 'virgo' };
-      case '10':
-        return { icon: '♎', palette: 'libra' };
-      case '11':
-        return { icon: '♏', palette: 'scorpio' };
-      case '12':
-        return { icon: '♐', palette: 'sagittarius' };
-      default:
-        return { icon: 'calendar_month', palette: 'amber' };
-    }
+    return SCHEDULE_MONTH_ZODIAC.get(value) ?? { icon: 'calendar_month', palette: 'amber' };
   }
 
   private scheduleFrequencyMenuItems(): readonly AppMenuItem<string, unknown>[] {

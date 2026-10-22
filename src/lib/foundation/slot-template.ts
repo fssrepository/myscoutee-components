@@ -1,4 +1,4 @@
-import { UiDateUtils } from './date-utils';
+import { UiDateUtils } from '@fssrepository/myscoutee-components/foundation';
 
 export interface SlotTemplate {
   id: string;

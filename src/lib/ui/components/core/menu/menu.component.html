@@ -371,6 +371,7 @@
                 <input
                   type="text"
                   class="app-menu__tabs-filter-input"
+                  [attr.aria-label]="resolvedTitle || ('menu.search.placeholder' | i18n)"
                   [value]="tabsFilterText"
                   [attr.placeholder]="resolvedTitle || ('menu.search.placeholder' | i18n)"
                   (input)="updateTabsFilter($event)"
@@ -591,7 +592,7 @@
               <div
                 class="app-menu__rate-item"
                 [class.app-menu__rate-item--disabled]="isItemDisabled(item)"
-                role="none"
+                role="presentation"
                 (click)="$event.stopPropagation()"
                 >
                 <app-menu-rate
@@ -620,67 +621,7 @@
                 [attr.aria-label]="itemAriaLabel(item)"
                 (click)="selectLinkItem(item, $event)"
                 >
-                @if (itemImageUrl(item) || itemImageFallback(item)) {
-                  <span class="app-menu__item-image" [class.app-menu__item-image--circle]="item.imageShape === 'circle'">
-                    @if (itemImageUrl(item); as imageUrl) {
-                      <img
-                        [src]="imageUrl"
-                        [alt]="itemImageAlt(item)"
-                        (error)="revealImageFallback($event)"
-                        (load)="hideImageFallback($event)"
-                      />
-                      @if (itemImageFallback(item); as imageFallback) {
-                        <span data-app-menu-image-fallback hidden>{{ imageFallback }}</span>
-                      }
-                    } @else {
-                      <span>{{ itemImageFallback(item) }}</span>
-                    }
-                  </span>
-                } @else if (itemIcon(item)) {
-                  <mat-icon class="app-menu__item-icon" [class.app-menu__item-icon--symbol]="isSymbolIcon(itemIcon(item))">{{ itemIcon(item) }}</mat-icon>
-                }
-                <span class="app-menu__item-main" [class.app-menu__item-main--with-body]="hasItemBody(item)">
-                  <span class="app-menu__item-header">
-                    <span class="app-menu__item-label" data-i18n-ignore>{{ itemLabel(item) | i18n }}</span>
-                    @if (showItemCheck(item)) {
-                      <mat-icon class="app-menu__item-check">done</mat-icon>
-                    }
-                    @if (hasItemHeaderBadge(item)) {
-                      <span
-                        class="app-menu__counter app-menu__counter--header-badge"
-                        [class.app-menu__counter--pulse]="isCounterPulsing(itemHeaderBadgeKey(item))"
-                        >
-                        {{ itemHeaderBadgeLabel(item) }}
-                      </span>
-                    }
-                    @if (hasItemCounter(item)) {
-                      <span
-                        class="app-menu__counter"
-                        [class.app-menu__counter--alert]="item.counterTone === 'alert'"
-                        [class.app-menu__counter--success]="item.counterTone === 'success'"
-                        [class.app-menu__counter--pulse]="isCounterPulsing(itemCounterKey(item))"
-                        >
-                        {{ itemCounterLabel(item) }}
-                      </span>
-                    }
-                  </span>
-                  @if (hasItemBody(item)) {
-                    <span class="app-menu__item-body">
-                      @if (itemDescription(item)) {
-                        <span class="app-menu__item-description">{{ itemDescription(item) | i18n }}</span>
-                      }
-                      @if (itemDetail(item) && itemVisualLayout(item) === 'pill') {
-                        <span class="app-menu__item-detail app-menu__item-detail--badge">{{ itemDetail(item) | i18n }}</span>
-                      }
-                    </span>
-                  }
-                </span>
-                @if (itemDetail(item) && itemVisualLayout(item) !== 'pill') {
-                  <span class="app-menu__item-detail">{{ itemDetail(item) | i18n }}</span>
-                }
-                @if (hasNestedItems(item)) {
-                  <mat-icon class="app-menu__item-branch">chevron_right</mat-icon>
-                }
+                <ng-container *ngTemplateOutlet="menuItemContent; context: { $implicit: item }"></ng-container>
               </a>
             } @else {
               @if (isItemRemovable(item)) {
@@ -689,83 +630,7 @@
                   [ngClass]="itemPaletteClass(item)"
                   [class.app-menu__item-row--pill]="itemVisualLayout(item) === 'pill'"
                   >
-                  <button
-                    type="button"
-                    class="app-menu__item app-menu__item--row-primary"
-                    [class.app-menu__item--surface-tinted]="itemSurface(item) === 'tinted'"
-                    [class.app-menu__item--surface-action]="itemSurface(item) === 'action'"
-                    [class.app-menu__item--layout-pill]="itemVisualLayout(item) === 'pill'"
-                    [class.app-menu__item--active]="isItemActive(item)"
-                    [class.app-menu__item--disabled]="isItemDisabled(item)"
-                    [class.app-menu__item--with-description]="itemDescription(item)"
-                    [disabled]="isItemDisabled(item)"
-                    [attr.role]="itemRole(item)"
-                    [attr.aria-checked]="isItemChecked(item)"
-                    [attr.aria-label]="itemAriaLabel(item)"
-                    (click)="selectItem(item, $event)"
-                    >
-                    @if (itemImageUrl(item) || itemImageFallback(item)) {
-                      <span class="app-menu__item-image" [class.app-menu__item-image--circle]="item.imageShape === 'circle'">
-                        @if (itemImageUrl(item); as imageUrl) {
-                          <img
-                            [src]="imageUrl"
-                            [alt]="itemImageAlt(item)"
-                            (error)="revealImageFallback($event)"
-                            (load)="hideImageFallback($event)"
-                          />
-                          @if (itemImageFallback(item); as imageFallback) {
-                            <span data-app-menu-image-fallback hidden>{{ imageFallback }}</span>
-                          }
-                        } @else {
-                          <span>{{ itemImageFallback(item) }}</span>
-                        }
-                      </span>
-                    } @else if (itemIcon(item)) {
-                      <mat-icon class="app-menu__item-icon" [class.app-menu__item-icon--symbol]="isSymbolIcon(itemIcon(item))">{{ itemIcon(item) }}</mat-icon>
-                    }
-                    <span class="app-menu__item-main" [class.app-menu__item-main--with-body]="hasItemBody(item)">
-                      <span class="app-menu__item-header">
-                        <span class="app-menu__item-label" data-i18n-ignore>{{ itemLabel(item) | i18n }}</span>
-                        @if (showItemCheck(item)) {
-                          <mat-icon class="app-menu__item-check">done</mat-icon>
-                        }
-                        @if (hasItemHeaderBadge(item)) {
-                          <span
-                            class="app-menu__counter app-menu__counter--header-badge"
-                            [class.app-menu__counter--pulse]="isCounterPulsing(itemHeaderBadgeKey(item))"
-                            >
-                            {{ itemHeaderBadgeLabel(item) }}
-                          </span>
-                        }
-                        @if (hasItemCounter(item)) {
-                          <span
-                            class="app-menu__counter"
-                            [class.app-menu__counter--alert]="item.counterTone === 'alert'"
-                            [class.app-menu__counter--success]="item.counterTone === 'success'"
-                            [class.app-menu__counter--pulse]="isCounterPulsing(itemCounterKey(item))"
-                            >
-                            {{ itemCounterLabel(item) }}
-                          </span>
-                        }
-                      </span>
-                      @if (hasItemBody(item)) {
-                        <span class="app-menu__item-body">
-                          @if (itemDescription(item)) {
-                            <span class="app-menu__item-description">{{ itemDescription(item) | i18n }}</span>
-                          }
-                          @if (itemDetail(item) && itemVisualLayout(item) === 'pill') {
-                            <span class="app-menu__item-detail app-menu__item-detail--badge">{{ itemDetail(item) | i18n }}</span>
-                          }
-                        </span>
-                      }
-                    </span>
-                    @if (itemDetail(item) && itemVisualLayout(item) !== 'pill') {
-                      <span class="app-menu__item-detail">{{ itemDetail(item) | i18n }}</span>
-                    }
-                    @if (hasNestedItems(item)) {
-                      <mat-icon class="app-menu__item-branch">chevron_right</mat-icon>
-                    }
-                  </button>
+                  <ng-container *ngTemplateOutlet="menuItemButton; context: { $implicit: item, rowPrimary: true }"></ng-container>
                   <button
                     type="button"
                     class="app-menu__item-remove"
@@ -777,85 +642,7 @@
                   </button>
                 </div>
               } @else {
-                <button
-                  type="button"
-                  class="app-menu__item"
-                  [attr.data-guide-item]="item.guideId ?? item.id"
-                  [ngClass]="itemPaletteClass(item)"
-                  [class.app-menu__item--surface-tinted]="itemSurface(item) === 'tinted'"
-                  [class.app-menu__item--surface-action]="itemSurface(item) === 'action'"
-                  [class.app-menu__item--layout-pill]="itemVisualLayout(item) === 'pill'"
-                  [class.app-menu__item--active]="isItemActive(item)"
-                  [class.app-menu__item--disabled]="isItemDisabled(item)"
-                  [class.app-menu__item--with-description]="itemDescription(item)"
-                  [disabled]="isItemDisabled(item)"
-                  [attr.role]="itemRole(item)"
-                  [attr.aria-checked]="isItemChecked(item)"
-                  [attr.aria-label]="itemAriaLabel(item)"
-                  (click)="selectItem(item, $event)"
-                >
-                  @if (itemImageUrl(item) || itemImageFallback(item)) {
-                    <span class="app-menu__item-image" [class.app-menu__item-image--circle]="item.imageShape === 'circle'">
-                      @if (itemImageUrl(item); as imageUrl) {
-                        <img
-                          [src]="imageUrl"
-                          [alt]="itemImageAlt(item)"
-                          (error)="revealImageFallback($event)"
-                          (load)="hideImageFallback($event)"
-                        />
-                        @if (itemImageFallback(item); as imageFallback) {
-                          <span data-app-menu-image-fallback hidden>{{ imageFallback }}</span>
-                        }
-                      } @else {
-                        <span>{{ itemImageFallback(item) }}</span>
-                      }
-                    </span>
-                  } @else if (itemIcon(item)) {
-                    <mat-icon class="app-menu__item-icon" [class.app-menu__item-icon--symbol]="isSymbolIcon(itemIcon(item))">{{ itemIcon(item) }}</mat-icon>
-                  }
-                  <span class="app-menu__item-main" [class.app-menu__item-main--with-body]="hasItemBody(item)">
-                    <span class="app-menu__item-header">
-                      <span class="app-menu__item-label" data-i18n-ignore>{{ itemLabel(item) | i18n }}</span>
-                      @if (showItemCheck(item)) {
-                        <mat-icon class="app-menu__item-check">done</mat-icon>
-                      }
-                      @if (hasItemHeaderBadge(item)) {
-                        <span
-                          class="app-menu__counter app-menu__counter--header-badge"
-                          [class.app-menu__counter--pulse]="isCounterPulsing(itemHeaderBadgeKey(item))"
-                          >
-                          {{ itemHeaderBadgeLabel(item) }}
-                        </span>
-                      }
-                      @if (hasItemCounter(item)) {
-                        <span
-                          class="app-menu__counter"
-                          [class.app-menu__counter--alert]="item.counterTone === 'alert'"
-                          [class.app-menu__counter--success]="item.counterTone === 'success'"
-                          [class.app-menu__counter--pulse]="isCounterPulsing(itemCounterKey(item))"
-                          >
-                          {{ itemCounterLabel(item) }}
-                        </span>
-                      }
-                    </span>
-                    @if (hasItemBody(item)) {
-                      <span class="app-menu__item-body">
-                        @if (itemDescription(item)) {
-                          <span class="app-menu__item-description">{{ itemDescription(item) | i18n }}</span>
-                        }
-                        @if (itemDetail(item) && itemVisualLayout(item) === 'pill') {
-                          <span class="app-menu__item-detail app-menu__item-detail--badge">{{ itemDetail(item) | i18n }}</span>
-                        }
-                      </span>
-                    }
-                  </span>
-                  @if (itemDetail(item) && itemVisualLayout(item) !== 'pill') {
-                    <span class="app-menu__item-detail">{{ itemDetail(item) | i18n }}</span>
-                  }
-                  @if (hasNestedItems(item)) {
-                    <mat-icon class="app-menu__item-branch">chevron_right</mat-icon>
-                  }
-                </button>
+                <ng-container *ngTemplateOutlet="menuItemButton; context: { $implicit: item, rowPrimary: false }"></ng-container>
               }
             }
           }
@@ -864,3 +651,90 @@
     </div>
   }
 </div>
+
+<ng-template #menuItemContent let-item>
+  @if (itemImageUrl(item) || itemImageFallback(item)) {
+    <span class="app-menu__item-image" [class.app-menu__item-image--circle]="item.imageShape === 'circle'">
+      @if (itemImageUrl(item); as imageUrl) {
+        <img
+          [src]="imageUrl"
+          [alt]="itemImageAlt(item)"
+          (error)="revealImageFallback($event)"
+          (load)="hideImageFallback($event)"
+        />
+        @if (itemImageFallback(item); as imageFallback) {
+          <span data-app-menu-image-fallback hidden>{{ imageFallback }}</span>
+        }
+      } @else {
+        <span>{{ itemImageFallback(item) }}</span>
+      }
+    </span>
+  } @else if (itemIcon(item)) {
+    <mat-icon class="app-menu__item-icon" [class.app-menu__item-icon--symbol]="isSymbolIcon(itemIcon(item))">{{ itemIcon(item) }}</mat-icon>
+  }
+  <span class="app-menu__item-main" [class.app-menu__item-main--with-body]="hasItemBody(item)">
+    <span class="app-menu__item-header">
+      <span class="app-menu__item-label" data-i18n-ignore>{{ itemLabel(item) | i18n }}</span>
+      @if (showItemCheck(item)) {
+        <mat-icon class="app-menu__item-check">done</mat-icon>
+      }
+      @if (hasItemHeaderBadge(item)) {
+        <span
+          class="app-menu__counter app-menu__counter--header-badge"
+          [class.app-menu__counter--pulse]="isCounterPulsing(itemHeaderBadgeKey(item))"
+          >
+          {{ itemHeaderBadgeLabel(item) }}
+        </span>
+      }
+      @if (hasItemCounter(item)) {
+        <span
+          class="app-menu__counter"
+          [class.app-menu__counter--alert]="item.counterTone === 'alert'"
+          [class.app-menu__counter--success]="item.counterTone === 'success'"
+          [class.app-menu__counter--pulse]="isCounterPulsing(itemCounterKey(item))"
+          >
+          {{ itemCounterLabel(item) }}
+        </span>
+      }
+    </span>
+    @if (hasItemBody(item)) {
+      <span class="app-menu__item-body">
+        @if (itemDescription(item)) {
+          <span class="app-menu__item-description">{{ itemDescription(item) | i18n }}</span>
+        }
+        @if (itemDetail(item) && itemVisualLayout(item) === 'pill') {
+          <span class="app-menu__item-detail app-menu__item-detail--badge">{{ itemDetail(item) | i18n }}</span>
+        }
+      </span>
+    }
+  </span>
+  @if (itemDetail(item) && itemVisualLayout(item) !== 'pill') {
+    <span class="app-menu__item-detail">{{ itemDetail(item) | i18n }}</span>
+  }
+  @if (hasNestedItems(item)) {
+    <mat-icon class="app-menu__item-branch">chevron_right</mat-icon>
+  }
+</ng-template>
+
+<ng-template #menuItemButton let-item let-rowPrimary="rowPrimary">
+  <button
+    type="button"
+    class="app-menu__item"
+    [class.app-menu__item--row-primary]="rowPrimary"
+    [attr.data-guide-item]="rowPrimary ? null : item.guideId ?? item.id"
+    [ngClass]="rowPrimary ? null : itemPaletteClass(item)"
+    [class.app-menu__item--surface-tinted]="itemSurface(item) === 'tinted'"
+    [class.app-menu__item--surface-action]="itemSurface(item) === 'action'"
+    [class.app-menu__item--layout-pill]="itemVisualLayout(item) === 'pill'"
+    [class.app-menu__item--active]="isItemActive(item)"
+    [class.app-menu__item--disabled]="isItemDisabled(item)"
+    [class.app-menu__item--with-description]="itemDescription(item)"
+    [disabled]="isItemDisabled(item)"
+    [attr.role]="itemRole(item)"
+    [attr.aria-checked]="isItemChecked(item)"
+    [attr.aria-label]="itemAriaLabel(item)"
+    (click)="selectItem(item, $event)"
+    >
+    <ng-container *ngTemplateOutlet="menuItemContent; context: { $implicit: item }"></ng-container>
+  </button>
+</ng-template>
