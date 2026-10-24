@@ -6,7 +6,7 @@ translations and branding.
 
 ## Install
 
-Requires Angular 21.2, RxJS 7.8 and compatible Angular Material/CDK peers.
+Requires Angular 22.2, RxJS 7.8 and compatible Angular Material/CDK peers. Use the Node version in `.nvmrc`.
 Development uses Node.js 24 and npm 11.
 
 Configure `@fssrepository:registry=https://npm.pkg.github.com` in `.npmrc`,
@@ -14,7 +14,7 @@ then authenticate with a GitHub token with `read:packages` in your user-level
 configuration. Keep credentials out of Git.
 
 ```sh
-npm install @fssrepository/myscoutee-components@1.4.1
+npm install @fssrepository/myscoutee-components@1.5.0
 ```
 
 ## Documentation
@@ -24,8 +24,33 @@ npm install @fssrepository/myscoutee-components@1.4.1
 | Component catalogue, setup, examples, styles and release workflow | [PDF](https://github.com/fssrepository/myscoutee-components/blob/master/guides/manuals/MyScoutee_Components_Guide_EN.pdf) |
 | Editable guide and PDF regeneration | [HTML](guides/manuals/components-guide-en.html) · [Instructions](guides/manuals/README.md) |
 | Public API | [Exports](src/public-api.ts) |
-| Changes | [Changelog](CHANGELOG.md) · [1.4.1 release notes](releases/v1.4.1.md) |
+| Changes | [Changelog](CHANGELOG.md) · [1.4.6 release notes](releases/v1.4.6.md) |
 | Complete application foundation | [MyScoutee Template](https://github.com/fssrepository/myscoutee-template) |
+
+## Dialog modes
+
+`DialogComponent` renders three configurations through its `dialog` input:
+
+| `mode` | Input and behavior |
+| --- | --- |
+| `confirmation` (default) | Ready text and actions from `DialogStore`, or `DialogLocalConfig` with `useStore="false"`. |
+| `tour` | `TourDialogConfig`: ready steps, sections and labels, surface/field resolution options, and navigation callbacks. Follows moving targets and popup transitions. |
+| `explanation` | `ExplanationDialogConfig`: ready popup text and sections with HTML, icons and layout metadata, plus a close action. |
+
+The tour and explanation renderers load when their mode is first requested.
+The application owns content loading, translation, preferences and persistence.
+Editor, version and audit DTOs stay in the application; the package exposes only
+display contracts. `GUIDE_CONTEXT` optionally connects popup context registration
+and SmartList coordination to the host's state, with an inert default.
+
+Confirmation text is prepared by `DialogStore` through `DIALOG_TEXT` (identity
+by default). An application can provide its existing translator there; signal
+reads in that callback keep the prepared text current. The dialog renderers
+receive ready text and do not invoke a translation service.
+
+The PDF catalogue describes the earlier 1.4.0 API. The mode configuration above
+and the current public exports describe the 1.5.0 dialog API; application-owned
+`ExplanationGuideService` and editor DTOs are no longer package exports.
 
 ## Development
 
@@ -35,8 +60,23 @@ npm run build
 npm test
 ```
 
-In a consuming MyScoutee checkout, use its existing components workspace and
-build workflow. Run one compiler per target; reuse a running watcher.
+Consumers install an exact published version and run their own Angular build.
+They do not need a components Git submodule, npm workspace or library compiler.
+Run component development and focused library tests in this repository. Run one
+compiler per target; reuse a running watcher.
+Use `npm run test:coverage -- --include=src/path/to/owner.spec.ts` for a focused
+LCOV report in `coverage/components/lcov.info`. The library owns its Sonar settings;
+run the shared Sonar tool against this repository, not an application dependency.
+Every test run also writes `test-results/sonar.xml` through the reporter configured
+in `angular.json`. Sonar imports test counts, durations and failures from that report;
+coverage is imported separately from LCOV. Both generated report directories are ignored.
+Generate reports for the full suite before a complete Sonar analysis:
+
+```sh
+npm run test:coverage
+../myscoutee-sonarqube/run.sh . scan components
+```
+
 See [Contributing](CONTRIBUTING.md) for focused changes.
 
 ## License and credit

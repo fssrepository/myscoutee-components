@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
-import { LazyBgImageDirective } from '../../../../../directives/lazy-bg-image.directive';
-import { UI_TRANSLATIONS } from '../../../../../../foundation/translation';
-import { I18nPipe } from '../../../../../../pipes/index';
-import { IndicatorComponent } from '../../../../../../components/indicator/index';
-import type { AppMenuItem } from '../../../menu/index';
-import type { CardMenuTriggerRect, PaymentCardData } from '../card.types';
+import { LazyBgImageDirective } from '@fssrepository/myscoutee-components/core';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
+import { IndicatorComponent } from '@fssrepository/myscoutee-components/core';
+import type { AppMenuItem } from '@fssrepository/myscoutee-components/core';
+import type { CardMenuTriggerRect, PaymentCardData } from '@fssrepository/myscoutee-components/core';
 
 export interface PaymentCardMenuRequest {
   id: string;

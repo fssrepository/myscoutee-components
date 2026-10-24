@@ -188,6 +188,7 @@
   border-radius: 999px;
   border: 1px solid rgba(41, 69, 101, 0.25);
   color: #13345a;
+  font: inherit;
   font-size: 0.62rem;
   font-weight: 800;
   display: inline-flex;
@@ -195,7 +196,6 @@
   justify-content: center;
   gap: 0.22rem;
   padding: 0 0.22rem;
-  font: inherit;
   cursor: pointer;
   touch-action: pan-x pan-y;
 }
@@ -473,6 +473,7 @@
   border-radius: 999px;
   border: 1px solid rgba(41, 69, 101, 0.25);
   color: #13345a;
+  font: inherit;
   font-size: 0.62rem;
   font-weight: 800;
   display: inline-flex;
@@ -481,7 +482,6 @@
   justify-content: center;
   gap: 0.14rem;
   padding: 0 0.22rem;
-  font: inherit;
   cursor: pointer;
   touch-action: pan-x pan-y;
 }
@@ -580,6 +580,7 @@
   border-radius: 999px;
   border: 1px solid rgba(41, 69, 101, 0.25);
   color: #13345a;
+  font: inherit;
   font-size: 0.62rem;
   font-weight: 800;
   display: inline-flex;
@@ -588,7 +589,6 @@
   justify-content: center;
   gap: 0.14rem;
   padding: 0 0.18rem;
-  font: inherit;
   cursor: pointer;
   touch-action: pan-x pan-y;
 }

@@ -94,3 +94,30 @@ describe('SmartList row keys while Angular reconciles a reordered snapshot', () 
     expect(keyFor.call(component, 0, component.items[0])).toBe('second');
   });
 });
+
+describe('SmartList converted row matching', () => {
+  it.each(['patchConvertedVisibleItem', 'upsertConvertedVisibleItem'] as const)('%s converts once and preserves an explicit index-aware predicate', method => {
+    const nextItem = { id: 'row', value: 2 };
+    const predicate = (_item: Row, index: number) => index === 1;
+    const converter = { convert: vi.fn(() => nextItem) };
+    const component = {
+      currentQuery: () => ({}), resolvedConverter: () => converter, converterOptions: () => ({}),
+      convertedItemPredicate: Reflect.get(SmartListComponent.prototype, 'convertedItemPredicate'),
+      patchVisibleItem: vi.fn((_predicate: unknown, _patch: unknown) => true), cacheVisibleSourceItem: vi.fn(), emitRefresh: vi.fn()
+    };
+    const source = { raw: 'row' };
+    expect(Reflect.get(SmartListComponent.prototype, method).call(component, source, { predicate })).toBe(true);
+    expect(converter.convert).toHaveBeenCalledExactlyOnceWith(source, {});
+    expect(component.patchVisibleItem.mock.calls[0][0]).toBe(predicate);
+    expect(component.cacheVisibleSourceItem).toHaveBeenCalledWith(source, nextItem);
+    expect(component.emitRefresh).toHaveBeenCalledOnce();
+  });
+
+  it('matches the converted identity against the cached row key when no predicate was supplied', () => {
+    const resolve = Reflect.get(SmartListComponent.prototype, 'convertedItemPredicate');
+    const predicate = resolve.call({ cacheTrackKey: (row: Row) => row.id }, { smartListKey: ' row ', value: 1 });
+    expect(predicate({ id: 'row', value: 2 }, 0)).toBe(true);
+    expect(predicate({ id: 'other', value: 2 }, 0)).toBe(false);
+    expect(resolve.call({}, { value: 1 })).toBeNull();
+  });
+});

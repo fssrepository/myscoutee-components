@@ -7,6 +7,7 @@ import { FORM_FLOW_BUILTIN_CONTROLS, FORM_FLOW_CONTROLS, type FormFlowControlCon
 export class FormFlowControlDirective implements OnChanges, OnDestroy {
   @Input({required: true}) formFlowControl!: FormFlowControlContext;
   @Input({required: true}) controlInjector!: Injector;
+  @Input() controlAttributes: Readonly<Record<string, string | null>> = {};
   private readonly controls = inject(FORM_FLOW_CONTROLS);
   private readonly view = inject(ViewContainerRef);
   private readonly errors = inject(ErrorHandler);
@@ -18,6 +19,7 @@ export class FormFlowControlDirective implements OnChanges, OnDestroy {
   private value: unknown;
   private disabled?: boolean;
   private written = false;
+  private appliedAttributes: Readonly<Record<string, string | null>> = {};
 
   ngOnChanges(): void {
     const kind = this.formFlowControl.control.kind;
@@ -44,6 +46,17 @@ export class FormFlowControlDirective implements OnChanges, OnDestroy {
   private update(): void {
     if (!this.ref || !this.definition) return;
     const context = this.formFlowControl;
+    const host = this.ref.location.nativeElement as HTMLElement;
+    for (const name of new Set([...Object.keys(this.appliedAttributes), ...Object.keys(this.controlAttributes)])) {
+      const value = this.controlAttributes[name] ?? null;
+      if (value === (this.appliedAttributes[name] ?? null)) continue;
+      if (name === 'class') {
+        for (const token of (this.appliedAttributes[name] ?? '').split(/\s+/).filter(Boolean)) host.classList.remove(token);
+        for (const token of (value ?? '').split(/\s+/).filter(Boolean)) host.classList.add(token);
+      } else if (value === null) host.removeAttribute(name);
+      else host.setAttribute(name, value);
+    }
+    this.appliedAttributes = { ...this.controlAttributes };
     for (const [name, value] of Object.entries(this.definition.inputs?.(context) ?? {})) this.ref.setInput(name, value);
     const value = this.definition.value ? this.definition.value(context) : context.value;
     if (!this.written || !Object.is(value, this.value)) {
@@ -55,7 +68,7 @@ export class FormFlowControlDirective implements OnChanges, OnDestroy {
   }
   private clear(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe()); this.subscriptions = [];
-    this.view.clear(); this.ref = undefined; this.written = false;
+    this.view.clear(); this.ref = undefined; this.written = false; this.appliedAttributes = {};
   }
   ngOnDestroy(): void { this.version++; this.clear(); }
 }

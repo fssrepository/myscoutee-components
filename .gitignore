@@ -3,3 +3,5 @@
 /.angular/
 /out-tsc/
 /coverage/
+/test-results/
+/build/

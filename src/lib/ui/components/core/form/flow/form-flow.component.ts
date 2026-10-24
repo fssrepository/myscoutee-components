@@ -1,8 +1,8 @@
-import { UI_TRANSLATIONS } from '../../../../../foundation/translation';
-import { FORM_FLOW_CONTROLS, FORM_FLOW_BUILTIN_CONTROLS } from '../../../../../foundation/form-flow-controls';
-import { type FormFlowControlContext } from '../../../../../foundation/form-flow-controls';
-import { FormFlowControlDirective } from './form-flow-control.directive';
-import { TextCardsInputComponent, type TextCardsConfig } from '../inputs/text-cards-input/text-cards-input.component';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
+import { FORM_FLOW_CONTROLS, FORM_FLOW_BUILTIN_CONTROLS } from '@fssrepository/myscoutee-components/core';
+import { type FormFlowControlContext } from '@fssrepository/myscoutee-components/core';
+import { FormFlowControlDirective } from '@fssrepository/myscoutee-components/core';
+import { TextCardsInputComponent, type TextCardsConfig } from '@fssrepository/myscoutee-components/core';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -26,7 +26,7 @@ import {
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
-import { AppMenuComponent } from '../../menu/menu.component';
+import { AppMenuComponent } from '@fssrepository/myscoutee-components/core';
 import type {
   AppMenuItem,
   AppMenuItemSelectEvent,
@@ -36,16 +36,17 @@ import type {
   AppMenuPanelMode,
   AppMenuTrigger,
   AppMenuValueKey
-} from '../../menu/menu.types';
+} from '@fssrepository/myscoutee-components/core';
 import { ImageGalleryComponent } from '../../image-gallery/image-gallery.component';
-import { ImageCarouselComponent } from '../../image-carousel/index';
-import { IndicatorComponent } from '../../../../../components/indicator/index';
-import { ImageCardComponent, InfoCardComponent } from '../../smart-list/card/index';
-import { UiTaskScheduler } from '../../../../scheduler/index';
-import { scheduleAfterPaint } from '../../../../scheduler/after-paint';
-import { DateInputComponent, type DateInputModel, type DateInputValue } from '../../../../../components/date-input/index';
-import { LinkInputComponent, type LinkInputConfig } from '../inputs/link-input/index';
-import { LocationInputComponent, type LocationInputConfig } from '../inputs/location-input/index';
+import { ImageCarouselComponent } from '../../image-carousel/image-carousel.component';
+import { IndicatorComponent } from '@fssrepository/myscoutee-components/core';
+import { ImageCardComponent } from '@fssrepository/myscoutee-components/cards';
+import { InfoCardComponent } from '@fssrepository/myscoutee-components/core';
+import { UiTaskScheduler } from '@fssrepository/myscoutee-components/core';
+import { scheduleAfterPaint } from '@fssrepository/myscoutee-components/core';
+import { DateInputComponent, type DateInputModel, type DateInputValue } from '@fssrepository/myscoutee-components/date';
+import { LinkInputComponent, type LinkInputConfig } from '@fssrepository/myscoutee-components/core';
+import { LocationInputComponent, type LocationInputConfig } from '@fssrepository/myscoutee-components/core';
 import type {
   FormFlowActionEvent,
   FormFlowControlModel,
@@ -59,14 +60,15 @@ import type {
   FormFlowSaveEvent,
   FormFlowStepModel,
   FormFlowTone
-} from './form-flow.types';
+} from '@fssrepository/myscoutee-components/core';
 import {
   formFlowCompletionPercent,
   formFlowIsControlMissingRequired,
   formFlowMissingRequiredControls
-} from './form-flow.utils';
-import { I18nPipe } from '../../../../../pipes/index';
-import { LazyBgImageDirective } from '../../../../directives/lazy-bg-image.directive';
+} from '@fssrepository/myscoutee-components/core';
+import { formFlowNormalizePath } from './form-flow.utils';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
+import { LazyBgImageDirective } from '@fssrepository/myscoutee-components/core';
 
 interface FormFlowSelectedMenuItem {
   item: AppMenuItem<string, unknown>;
@@ -110,6 +112,8 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
 
   private static readonly MOBILE_BREAKPOINT_PX = 720;
   private static readonly HORIZONTAL_SWIPE_THRESHOLD_PX = 8;
+  private static nextInstanceId = 0;
+  protected readonly controlIdPrefix = `form-flow-${++FormFlowComponent.nextInstanceId}`;
 
   @ViewChild('flowViewport')
   private flowViewportRef?: ElementRef<HTMLDivElement>;
@@ -914,7 +918,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
 
   private stepRequiredControlCount(step: FormFlowStepModel): number {
     return step.controls.filter(control =>
-      control.required === true && this.normalizePath(control.bind).length > 0
+      control.required === true && formFlowNormalizePath(control.bind).length > 0
     ).length;
   }
 
@@ -950,7 +954,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   }
 
   private readPath(source: unknown, path: FormFlowControlModel['bind']): unknown {
-    const segments = this.normalizePath(path);
+    const segments = formFlowNormalizePath(path);
     if (segments.length === 0) {
       return source;
     }
@@ -973,7 +977,7 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
   }
 
   private writePath(source: unknown, path: FormFlowControlModel['bind'], value: unknown): unknown {
-    const segments = this.normalizePath(path);
+    const segments = formFlowNormalizePath(path);
     if (segments.length === 0) {
       return value;
     }
@@ -1008,21 +1012,6 @@ export class FormFlowComponent implements ControlValueAccessor, OnChanges, OnDes
       (clone as Record<string, unknown>)[String(segment)] = nextChild;
     }
     return clone;
-  }
-
-  private normalizePath(path: FormFlowControlModel['bind']): Array<string | number> {
-    if (!path) {
-      return [];
-    }
-    if (typeof path !== 'string') {
-      return path.map(segment => typeof segment === 'number' ? segment : `${segment}`.trim()).filter(segment => segment !== '');
-    }
-    return path
-      .replace(/\[(\d+)]/g, '.$1')
-      .split('.')
-      .map(segment => segment.trim())
-      .filter(Boolean)
-      .map(segment => /^\d+$/.test(segment) ? Number(segment) : segment);
   }
 
   private csvStringArrayValue(value: unknown): readonly string[] {

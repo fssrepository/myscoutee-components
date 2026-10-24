@@ -1,21 +1,92 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { PopupComponent, PopupPresenceStore } from '../../../../../public-api';
+import { FORM_FLOW_BUILTIN_CONTROLS, PopupComponent, PopupPresenceStore, type PopupDateInputControl } from '../../../../../public-api';
 
 import { UI_TRANSLATIONS } from '../../../../../public-api';
 
-@Component({ imports: [PopupComponent], template: `
+@Component({ imports: [PopupComponent], changeDetection: ChangeDetectionStrategy.Eager,
+ template: `
   <app-popup [active]="open()" [model]="{title: 'Profile'}"><input value="cached"></app-popup>
 ` })
 class RetainedPopup { open = signal(true); }
 
-@Component({ imports: [PopupComponent], template: `
+@Component({ imports: [PopupComponent], changeDetection: ChangeDetectionStrategy.Eager,
+ template: `
   <app-popup [model]="{title: 'Parent'}"><input value="draft"></app-popup>
   @if (childOpen()) {
     <app-popup [model]="{title: 'Child'}" (close)="childOpen.set(false)">Details</app-popup>
   }
 ` })
 class StackedPopups { childOpen = signal(false); }
+
+describe('popup date controls', () => {
+  afterEach(() => { TestBed.resetTestingModule(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+
+  it('does not load date controls for an ordinary popup', () => {
+    const load = vi.spyOn(FORM_FLOW_BUILTIN_CONTROLS['date-input'], 'load');
+    const fixture = TestBed.createComponent(PopupComponent);
+    fixture.componentRef.setInput('model', { title: 'Details' });
+    fixture.detectChanges();
+    expect(load).not.toHaveBeenCalled();
+  });
+
+  it.each(['header', 'toolbar-start', 'toolbar-end'])('keeps the %s action and its event context in the shared template', location => {
+    const control = { id: 'apply', label: 'Apply', icon: 'check', guideFieldId: 'apply-action',
+      align: location === 'toolbar-end' ? 'end' : 'start' };
+    const key = location === 'header' ? 'headerControls' : 'toolbarControls';
+    const fixture = TestBed.createComponent(PopupComponent);
+    const action = vi.fn();
+    fixture.componentInstance.action.subscribe(action);
+    fixture.componentRef.setInput('model', { title: 'Details', [key]: [control] });
+    fixture.detectChanges();
+    const button = fixture.nativeElement.querySelector('[data-guide-control="apply"]') as HTMLButtonElement;
+    expect(button.getAttribute('data-guide-field')).toBe('apply-action');
+    button.click();
+    expect(action).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ action: control }));
+    fixture.destroy();
+  });
+
+  it.each(['header', 'toolbar-start', 'toolbar-end'])('retains %s date value, callbacks and guide attributes', async location => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener() {}, removeEventListener() {},
+      addListener() {}, removeListener() {} }));
+    const control: PopupDateInputControl = {
+      id: 'date', kind: 'date-input', guideFieldId: 'filter-date',
+      align: location === 'toolbar-end' ? 'end' : 'start',
+      model: { valueFormat: 'iso-date', updateOn: 'blur' }, value: '2026-10-04'
+    };
+    const controls = location === 'header' ? 'headerControls' : 'toolbarControls';
+    const fixture = TestBed.createComponent(PopupComponent);
+    const changed = vi.fn();
+    fixture.componentInstance.dateInputChange.subscribe(changed);
+    fixture.componentRef.setInput('model', { title: 'Details', [controls]: [control] });
+    fixture.detectChanges();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('app-date-input input')).not.toBeNull();
+    });
+    const host = fixture.nativeElement.querySelector('app-date-input') as HTMLElement;
+    expect(host.classList.contains('ui-popup__date-input')).toBe(true);
+    expect(host.getAttribute('data-guide-control')).toBe('date');
+    expect(host.getAttribute('data-guide-field')).toBe('filter-date');
+    const input = host.querySelector('input')!;
+    expect(input.value).toBe('2026/10/04');
+    expect(changed).not.toHaveBeenCalled();
+    input.value = '2026/11/05';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+    expect(changed).toHaveBeenCalledExactlyOnceWith({ control, value: '2026-11-05' });
+    fixture.componentRef.setInput('model', { title: 'Details', [controls]: [
+      { ...control, value: '2027-01-01', model: { ...control.model, disabled: true } }
+    ] });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(input.value).toBe('2027/01/01');
+    expect(input.disabled).toBe(true);
+    expect(host).toBe(fixture.nativeElement.querySelector('app-date-input'));
+  });
+});
 
 describe('retained popup visibility', () => {
   afterEach(() => TestBed.resetTestingModule());

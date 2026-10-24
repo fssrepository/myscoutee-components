@@ -131,6 +131,7 @@
                   class="image-carousel__slot-input"
                   type="file"
                   accept="image/*"
+                  [attr.aria-label]="((imageUrl ? 'replace.image.slot' : 'upload.image.slot') | i18n) + ' ' + (slotIndex + 1)"
                   [disabled]="isDisabled() || uploadingSlotIndex !== null"
                   (change)="uploadFromInput($event, slotIndex)"
                 />

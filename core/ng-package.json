@@ -1,0 +1,6 @@
+{
+  "lib": {
+    "entryFile": "../src/core-api.ts",
+    "flatModuleFile": "components-core"
+  }
+}

@@ -1,42 +1,46 @@
 {
   "name": "@fssrepository/myscoutee-components",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
     "build": "ng-packagr -p ng-package.json -c tsconfig.lib.json",
     "watch": "npm run build -- --watch",
     "test": "ng test components --watch=false",
-    "prepare:release": "node scripts/prepare-release.mjs"
+    "prepare:release": "node scripts/prepare-release.mjs",
+    "test:coverage": "npm test -- --coverage --coverage-reporters=lcov --coverage-reporters=text-summary"
   },
   "peerDependencies": {
-    "@angular/common": "^21.2.0",
-    "@angular/core": "^21.2.0",
-    "@angular/forms": "^21.2.0",
-    "@angular/material": "^21.2.0",
-    "@angular/cdk": "^21.2.0",
-    "rxjs": "^7.8.0",
-    "@angular/router": "^21.2.0"
+    "@angular/cdk": "^22.2.3",
+    "@angular/common": "^22.2.3",
+    "@angular/core": "^22.2.3",
+    "@angular/forms": "^22.2.3",
+    "@angular/material": "^22.2.3",
+    "@angular/router": "^22.2.3",
+    "rxjs": "^7.8.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular/common": "21.2.23",
-    "@angular/compiler": "21.2.23",
-    "@angular/compiler-cli": "21.2.23",
-    "@angular/core": "21.2.23",
-    "@angular/forms": "21.2.23",
-    "@angular/platform-browser": "21.2.23",
-    "@angular/cdk": "21.2.12",
-    "@angular/material": "21.2.12",
+    "@angular/build": "22.2.4",
+    "@angular/cdk": "22.2.3",
+    "@angular/cli": "22.2.4",
+    "@angular/common": "22.2.3",
+    "@angular/compiler": "22.2.3",
+    "@angular/compiler-cli": "22.2.3",
+    "@angular/core": "22.2.3",
+    "@angular/forms": "22.2.3",
+    "@angular/material": "22.2.3",
+    "@angular/platform-browser": "22.2.3",
+    "@angular/router": "22.2.3",
+    "@vitest/coverage-v8": "4.1.12",
+    "esbuild": "0.28.2",
+    "jsdom": "27.4.0",
+    "ng-packagr": "22.2.5",
     "rxjs": "7.8.2",
-    "ng-packagr": "21.2.7",
-    "typescript": "5.9.3",
-    "@angular/router": "21.2.23",
-    "@angular/build": "21.2.12",
-    "@angular/cli": "21.2.12",
-    "vitest": "4.0.18",
-    "jsdom": "27.4.0"
+    "typescript": "6.0.3",
+    "vitest": "4.1.12",
+    "vitest-sonar-reporter": "3.0.0"
   },
   "main": "./dist/fesm2022/components.mjs",
   "module": "./dist/fesm2022/components.mjs",
@@ -62,5 +66,13 @@
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
+  },
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  },
+  "overrides": {
+    "@angular/build": {
+      "vite": "^8.3.5"
+    }
   }
 }

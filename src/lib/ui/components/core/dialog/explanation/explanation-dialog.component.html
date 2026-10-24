@@ -1,0 +1,20 @@
+@if (model().open) {
+  <app-popup [model]="popup()" [zIndex]="model().zIndex">
+    @if (model().loading) {
+      <div class="explanation-popup__loading-body"><app-indicator kind="load-ring" state="loading"></app-indicator><span>{{ model().loadingLabel }}</span></div>
+    } @else {
+      <div class="explanation-popup__body"><div class="explanation-popup__grid">
+        @for (section of model().sections; track section.id) {
+          <section class="explanation-popup__item" [class.explanation-popup__item--span-1]="section.layout === 'span-1'"
+            [class.explanation-popup__item--span-2]="section.layout === 'span-2'" [class.explanation-popup__item--span-3]="section.layout === 'span-3'">
+            <div class="explanation-popup__item-copy"><h3 data-i18n-ignore>{{ section.title }}</h3>
+              @if (section.blurb) { <p data-i18n-ignore>{{ section.blurb }}</p> }
+              <div class="explanation-popup__html" appLazyBgImage [appLazyHtmlImages]="true" data-i18n-ignore [innerHTML]="section.html"></div>
+              @if (section.showIcon) { <div class="explanation-popup__item-visual" aria-hidden="true"><span class="explanation-popup__visual-generic"><mat-icon>{{ section.icon }}</mat-icon></span></div> }
+            </div>
+          </section>
+        }
+      </div></div>
+    }
+  </app-popup>
+}

@@ -1,261 +1,57 @@
-import { OverlayNavigationStore } from '../../../context/stores/overlay/overlay-navigation.store';
+import { NgComponentOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, ErrorHandler, Input, OnChanges, inject, signal, type Type } from '@angular/core';
+import { ConfirmationDialogComponent, type DialogLocalConfig } from './confirmation/confirmation-dialog.component';
+import type { TourDialogConfig } from './tour/tour-dialog.types';
+import type { ExplanationDialogConfig } from './explanation/explanation-dialog.types';
+export type { DialogLocalConfig } from './confirmation/confirmation-dialog.component';
+export type DialogViewConfig = DialogLocalConfig | TourDialogConfig | ExplanationDialogConfig;
 
-import { Component, DoCheck, HostListener, Input, OnDestroy, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-
-import { DialogStore, type DialogState, type DialogTone } from '../../../context/stores/overlay/dialog.store';
-import { PopupPresenceStore } from '../../../context/stores/overlay/popup-presence.store';
-import {
-  AppMenuComponent,
-  type AppMenuItem,
-  type AppMenuItemSelectEvent,
-  type AppMenuPalette
-} from '../menu/index';
-import { I18nPipe } from '../../../../pipes/index';
-
-export interface DialogLocalConfig {
-  visible?: boolean;
-  title?: string;
-  message?: string;
-  warningMessage?: string;
-  cancelLabel?: string | null;
-  confirmLabel?: string;
-  busyConfirmLabel?: string;
-  confirmTone?: DialogTone;
-  confirmPalette?: AppMenuPalette | null;
-  allowBackdropClose?: boolean;
-  allowEscapeClose?: boolean;
-  showActions?: boolean;
-  showClose?: boolean;
-  busy?: boolean;
-  errorMessage?: string;
-  ringPerimeter?: number;
-  cancelAction?: (() => void | Promise<void>) | null;
-  confirmAction?: (() => void | Promise<void>) | null;
-}
-
-type RenderedDialogState = {
-  input?: DialogState['input'];
-  title: string;
-  message: string;
-  warningMessage: string;
-  cancelLabel: string | null;
-  confirmLabel: string;
-  busyConfirmLabel: string;
-  confirmTone: DialogTone;
-  confirmPalette: AppMenuPalette | null;
-  allowBackdropClose: boolean;
-  allowEscapeClose: boolean;
-  showActions: boolean;
-  showClose: boolean;
-  busy: boolean;
-  errorMessage: string;
-  ringPerimeter: number;
-};
-
+/** Selects the UI mode. Content loading, localization and persistence belong to the host/store. */
 @Component({
-  selector: 'app-dialog',
-  standalone: true,
-  imports: [FormsModule, MatIconModule, AppMenuComponent, I18nPipe],
-  templateUrl: './dialog.component.html',
-  styleUrl: './dialog.component.scss'
+  selector: 'app-dialog', standalone: true,
+  imports: [NgComponentOutlet, ConfirmationDialogComponent],
+  templateUrl: './dialog.component.html', styles: [':host { display: contents; }'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DialogComponent implements DoCheck, OnDestroy {
-  private readonly overlayNavigation = inject(OverlayNavigationStore);
-  private navigationToken: symbol | null = null;
-
-  ngDoCheck(): void {
-    if (this.dialogState() && !this.navigationToken) {
-      this.navigationToken = this.overlayNavigation.register(() => {
-        const dialog = this.dialogState();
-        if (dialog && !dialog.busy && (dialog.showClose || dialog.allowEscapeClose)) this.cancel();
-      });
-    } else if (!this.dialogState()) {
-      this.clearNavigation();
-    }
-  }
-
-  ngOnDestroy(): void { this.clearNavigation(); }
-
-  private clearNavigation(): void {
-    if (!this.navigationToken) return;
-    this.overlayNavigation.unregister(this.navigationToken);
-    this.navigationToken = null;
-  }
-
+export class DialogComponent implements OnChanges {
   @Input() useStore = true;
-  @Input() dialog: DialogLocalConfig | null = null;
+  @Input() dialog: DialogViewConfig | null = null;
   @Input() zIndex: number | null = null;
+  protected readonly renderer = signal<Type<unknown> | null>(null);
+  private rendererMode: string | undefined;
+  private loadSerial = 0;
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly errors = inject(ErrorHandler);
 
-  protected readonly dialogStore = inject(DialogStore);
-  private readonly popupPresenceStore = inject(PopupPresenceStore);
-
-  protected effectiveZIndex(): number {
-    return Math.max(this.zIndex ?? 20000, this.popupPresenceStore.topLayer() + 1);
+  ngOnChanges(): void {
+    const mode = this.dialog?.mode;
+    if (mode === this.rendererMode) return;
+    this.rendererMode = mode;
+    this.renderer.set(null);
+    const serial = ++this.loadSerial;
+    const loading = mode === 'tour'
+      ? import('./tour/tour-dialog.component').then(module => module.TourDialogComponent)
+      : mode === 'explanation'
+        ? import('./explanation/explanation-dialog.component').then(module => module.ExplanationDialogComponent)
+        : null;
+    if (loading) void loading.then(component => {
+      if (!this.destroyRef.destroyed && serial === this.loadSerial) this.renderer.set(component);
+    }).catch(error => this.errors.handleError(error));
   }
 
-  @HostListener('window:keydown.escape', ['$event'])
-  protected onEscapePressed(event: Event): void {
-    const keyboardEvent = event as KeyboardEvent;
-    const dialog = this.dialogState();
-    if (!dialog || keyboardEvent.defaultPrevented || !dialog.allowEscapeClose) {
-      return;
-    }
-    keyboardEvent.preventDefault();
-    keyboardEvent.stopPropagation();
-    this.cancel();
+  protected contentConfig(): TourDialogConfig | ExplanationDialogConfig | null {
+    return this.dialog?.mode === 'tour' || this.dialog?.mode === 'explanation' ? this.dialog : null;
   }
 
-  protected dialogState(): RenderedDialogState | null {
-    if (!this.useStore) {
-      const dialog = this.dialog;
-      if (!dialog?.visible) {
-        return null;
-      }
-      const confirmLabel = dialog.confirmLabel?.trim() || 'OK';
-      return {
-        title: dialog.title?.trim() || 'Confirmation',
-        message: dialog.message?.trim() ?? '',
-        warningMessage: dialog.warningMessage?.trim() ?? '',
-        cancelLabel: dialog.cancelLabel === undefined ? 'cancel' : dialog.cancelLabel,
-        confirmLabel,
-        busyConfirmLabel: dialog.busyConfirmLabel?.trim() || confirmLabel,
-        confirmTone: dialog.confirmTone ?? 'accent',
-        confirmPalette: dialog.confirmPalette ?? null,
-        allowBackdropClose: dialog.allowBackdropClose !== false,
-        allowEscapeClose: dialog.allowEscapeClose !== false,
-        showActions: dialog.showActions !== false,
-        showClose: dialog.showClose === true,
-        busy: dialog.busy === true,
-        errorMessage: dialog.errorMessage?.trim() ?? '',
-        ringPerimeter: Number.isFinite(Number(dialog.ringPerimeter)) ? Math.max(0, Number(dialog.ringPerimeter)) : 100
-      };
-    }
-
-    const state = this.dialogStore.dialog();
-    return state ? this.mapStoreState(state) : null;
+  protected contentInputs(): Record<string, unknown> {
+    const config = this.contentConfig();
+    if (!config) return {};
+    return config.mode === 'tour'
+      ? { model: config.model, options: config.options ?? {}, actions: config.actions }
+      : { model: config.model, actions: config.actions };
   }
 
-  protected confirmText(state: RenderedDialogState): string {
-    return state.busy ? state.busyConfirmLabel : state.confirmLabel;
-  }
-
-  protected confirmRingState(state: RenderedDialogState): 'loading' | 'error' {
-    return state.busy ? 'loading' : 'error';
-  }
-
-  protected dialogActionItems(state: RenderedDialogState): readonly AppMenuItem<string>[] {
-    const items: AppMenuItem<string>[] = [];
-    if (state.cancelLabel) {
-      items.push({
-        id: 'cancel',
-        label: state.cancelLabel,
-        layout: 'action',
-        palette: 'slate',
-        disabled: state.busy,
-        ariaLabel: state.cancelLabel
-      });
-    }
-    items.push({
-      id: 'confirm',
-      label: this.confirmText(state),
-      icon: state.busy ? 'hourglass_empty' : undefined,
-      layout: 'action',
-      palette: this.confirmPalette(state),
-      disabled: state.busy,
-      ariaLabel: this.confirmText(state),
-      progress: state.busy || state.errorMessage
-        ? {
-            state: state.busy ? 'loading' : 'error',
-            shape: 'button',
-            perimeter: state.ringPerimeter
-          }
-        : null
-    });
-    return items;
-  }
-
-  protected onDialogActionSelect(event: AppMenuItemSelectEvent<string>): void {
-    if (event.id === 'cancel') {
-      this.cancel(event.sourceEvent);
-    } else if (event.id === 'confirm') {
-      this.confirm(event.sourceEvent);
-    }
-  }
-
-  protected closeFromBackdrop(event: Event): void {
-    event.stopPropagation();
-    const dialog = this.dialogState();
-    if (!dialog || dialog.busy || !dialog.allowBackdropClose) {
-      return;
-    }
-    this.cancel();
-  }
-
-  protected cancel(event?: Event): void {
-    event?.stopPropagation();
-    const dialog = this.dialogState();
-    if (!dialog || dialog.busy) {
-      return;
-    }
-    if (!this.useStore) {
-      void this.dialog?.cancelAction?.();
-      return;
-    }
-    this.dialogStore.cancel();
-  }
-
-  protected confirm(event?: Event): void {
-    event?.stopPropagation();
-    const dialog = this.dialogState();
-    if (!dialog || dialog.busy) {
-      return;
-    }
-    if (!this.useStore) {
-      void this.dialog?.confirmAction?.();
-      return;
-    }
-    void this.dialogStore.confirm();
-  }
-
-  private confirmPalette(state: RenderedDialogState): AppMenuPalette {
-    if (state.errorMessage) {
-      return 'danger';
-    }
-    if (state.confirmPalette) {
-      return state.confirmPalette;
-    }
-    if (state.confirmTone === 'danger') {
-      return 'danger';
-    }
-    if (state.confirmTone === 'neutral') {
-      return 'slate';
-    }
-    if (state.confirmTone === 'warning') {
-      return 'warning';
-    }
-    return 'blue';
-  }
-
-  private mapStoreState(state: DialogState): RenderedDialogState {
-    return {
-      title: state.title,
-      message: state.message,
-      input: state.input,
-      warningMessage: state.warningMessage,
-      cancelLabel: state.cancelLabel,
-      confirmLabel: state.confirmLabel,
-      busyConfirmLabel: state.busyConfirmLabel,
-      confirmTone: state.confirmTone,
-      confirmPalette: state.confirmPalette,
-      allowBackdropClose: state.allowBackdropClose,
-      allowEscapeClose: state.allowEscapeClose,
-      showActions: state.showActions,
-      showClose: state.showClose,
-      busy: state.busy,
-      errorMessage: state.errorMessage,
-      ringPerimeter: state.ringPerimeter
-    };
+  protected confirmationConfig(): DialogLocalConfig | null {
+    return this.contentConfig() ? null : this.dialog as DialogLocalConfig | null;
   }
 }

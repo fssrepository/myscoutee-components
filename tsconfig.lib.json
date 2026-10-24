@@ -17,6 +17,12 @@
   },
   "angularCompilerOptions": {
     "strictTemplates": true,
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    },
     "strictInjectionParameters": true,
     "compilationMode": "partial"
   },

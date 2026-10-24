@@ -20,6 +20,10 @@
             "buildTarget": "components:build",
             "tsConfig": "tsconfig.spec.json",
             "providersFile": "testing/providers.ts",
+            "reporters": [
+              "default",
+              ["vitest-sonar-reporter", { "outputFile": "test-results/sonar.xml" }]
+            ],
             "include": [
               "src/**/*.spec.ts"
             ]

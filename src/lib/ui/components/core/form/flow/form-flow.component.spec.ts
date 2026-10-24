@@ -5,6 +5,33 @@ import { type FormFlowControlModel, FormFlowComponent, type LinkInputConfig } fr
 import { UI_TRANSLATIONS } from '../../../../../../public-api';
 
 describe('FormFlowComponent controls', () => {
+  it('associates native field labels with unique controls across simultaneous forms', () => {
+    TestBed.configureTestingModule({ imports: [FormFlowComponent], providers: [
+      { provide: UI_TRANSLATIONS, useValue: { revision: () => 0, translate: (text: string) => text } }
+    ] });
+    const model = { title: 'Profile', layout: 'grouped' as const, header: false, deferPreparation: false,
+      steps: [{ id: 'basics', title: 'Basics', controls: [
+        { id: 'name', bind: 'name', kind: 'text' as const, label: 'Name' },
+        { id: 'about', bind: 'about', kind: 'textarea' as const, label: 'About' }
+      ] }] };
+    const fixtures = [TestBed.createComponent(FormFlowComponent), TestBed.createComponent(FormFlowComponent)];
+    const ids: string[] = [];
+    for (const fixture of fixtures) {
+      fixture.componentRef.setInput('model', model);
+      fixture.detectChanges();
+      const labels = [...fixture.nativeElement.querySelectorAll('label.form-flow__label')] as HTMLLabelElement[];
+      expect(labels).toHaveLength(2);
+      for (const label of labels) {
+        expect(label.control).not.toBeNull();
+        expect(fixture.nativeElement.contains(label.control)).toBe(true);
+        expect(label.htmlFor).toBe(label.control!.id);
+        ids.push(label.htmlFor);
+      }
+    }
+    expect(new Set(ids).size).toBe(4);
+    fixtures.forEach(fixture => fixture.destroy());
+  });
+
   afterEach(() => {
     TestBed.resetTestingModule();
     vi.unstubAllGlobals();
@@ -230,6 +257,28 @@ describe('FormFlowComponent carousel navigation', () => {
     vi.advanceTimersByTime(100); fixture.detectChanges();
     expectDestination();
     expect(body.scrollLeft).toBe(340);
+    fixture.destroy();
+  });
+});
+
+describe('FormFlow shared field path parsing', () => {
+  afterEach(() => TestBed.resetTestingModule());
+
+  it.each(['people[1].name', ['people', 1, ' name ']])('reads and immutably writes the same nested field path %s', bind => {
+    const fixture = TestBed.createComponent(FormFlowComponent);
+    const view = fixture.componentInstance as unknown as {
+      controlTextValue(control: FormFlowControlModel): string;
+      updateControlValue(control: FormFlowControlModel, value: unknown): void;
+    };
+    const control: FormFlowControlModel = { id: 'name', kind: 'text', bind };
+    const original = { people: [{ name: 'First' }, { name: 'Before' }] };
+    const changed = vi.fn();
+    fixture.componentInstance.registerOnChange(changed);
+    fixture.componentInstance.writeValue(original);
+    expect(view.controlTextValue(control)).toBe('Before');
+    view.updateControlValue(control, 'After');
+    expect(changed).toHaveBeenCalledWith({ people: [{ name: 'First' }, { name: 'After' }] });
+    expect(original.people[1].name).toBe('Before');
     fixture.destroy();
   });
 });

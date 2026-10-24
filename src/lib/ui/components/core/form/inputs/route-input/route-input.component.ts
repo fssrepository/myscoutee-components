@@ -15,7 +15,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
-import { UI_TRANSLATIONS } from '../../../../../../foundation/translation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 import {
   RouteInputEditorStore,
   type RouteInputEditorActionRequest,
@@ -271,7 +271,7 @@ export class RouteInputComponent implements ControlValueAccessor, OnDestroy {
   protected openRouteMap(event?: Event): void {
     event?.preventDefault();
     event?.stopPropagation();
-    this.openGoogleMapsDirections(this.routes);
+    this.formFlowPopupStore.openGoogleMapsDirections(this.normalizeRoutes(this.routes));
   }
 
   private resetWorkingRoutes(): void {
@@ -371,36 +371,5 @@ export class RouteInputComponent implements ControlValueAccessor, OnDestroy {
       return (value as () => TValue)();
     }
     return value ?? fallback;
-  }
-
-  private openGoogleMapsSearch(query: string): void {
-    const trimmed = query.trim();
-    if (!trimmed || typeof window === 'undefined') {
-      return;
-    }
-    window.open(
-      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`,
-      '_blank',
-      'noopener,noreferrer'
-    );
-  }
-
-  private openGoogleMapsDirections(stops: readonly string[]): void {
-    const normalized = this.normalizeRoutes(stops);
-    if (normalized.length === 0 || typeof window === 'undefined') {
-      return;
-    }
-    if (normalized.length === 1) {
-      this.openGoogleMapsSearch(normalized[0]);
-      return;
-    }
-    const origin = normalized[0];
-    const destination = normalized[normalized.length - 1];
-    const waypoints = normalized.slice(1, -1);
-    let url = `https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
-    if (waypoints.length > 0) {
-      url += `&waypoints=${encodeURIComponent(waypoints.join('|'))}`;
-    }
-    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

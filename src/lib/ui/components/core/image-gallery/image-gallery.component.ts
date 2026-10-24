@@ -1,8 +1,8 @@
-import { ImageDetailsMap } from '../../../../foundation/image-details';
-import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import { ImageDetailsMap } from '@fssrepository/myscoutee-components/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ImageCarouselComponent } from '../image-carousel/image-carousel.component';
-import { ImageGalleryStore } from '../../../context/stores/media/image-gallery.store';
+import { ImageGalleryStore } from '@fssrepository/myscoutee-components/core';
 
 /** Single cover; expansion delegates to the shared signal-driven gallery popup. */
 @Component({
@@ -10,6 +10,7 @@ import { ImageGalleryStore } from '../../../context/stores/media/image-gallery.s
   standalone: true,
   imports: [FormsModule, ImageCarouselComponent],
   templateUrl: './image-gallery.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [':host { display: flex; width: 100%; min-width: 0; }']
 })
 export class ImageGalleryComponent implements OnChanges, OnDestroy {

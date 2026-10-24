@@ -1,6 +1,6 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AppMenuComponent, type AppMenuItem } from '../menu/index';
-import { I18nPipe } from '../../../../pipes/i18n.pipe';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 
 @Component({
   selector: 'app-copy-link', standalone: true, imports: [AppMenuComponent, I18nPipe],
@@ -10,6 +10,7 @@ import { I18nPipe } from '../../../../pipes/i18n.pipe';
       [items]="actions()" (itemSelect)="copy()"></app-menu>
     @if (failed()) { <span role="alert">{{ 'invite.external.copy.failed' | i18n }}</span> }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     :host { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
       gap: .42rem; margin-top: .28rem; }

@@ -17,9 +17,24 @@ describe('SlotsInputComponent standalone schedules', () => {
     fixture.detectChanges();
     fixture.componentInstance.openScheduleEditor(); fixture.detectChanges();
     await fixture.whenStable(); fixture.detectChanges();
-    const save = fixture.nativeElement.querySelector('[aria-label="Add schedule"]') as HTMLButtonElement;
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('[aria-label="schedule.add.aria"]')).not.toBeNull();
+    });
+    const save = fixture.nativeElement.querySelector('[aria-label="schedule.add.aria"]') as HTMLButtonElement;
     expect(save).not.toBeNull(); save.click(); fixture.detectChanges();
     expect(scheduleChange).toHaveBeenCalledExactlyOnceWith({frequency, startAtIso:'2026-10-12T10:00:00.000Z'});
     expect(fixture.nativeElement.querySelector('app-popup')).toBeNull();
   });
+  it('retains all month zodiac choices and the unknown-month default', () => {
+    const fixture = TestBed.createComponent(SlotsInputComponent);
+    const view = fixture.componentInstance as unknown as { scheduleMonthZodiac(value: string): { icon: string; palette: string } };
+    const palettes = ['capricorn', 'aquarius', 'pisces', 'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra', 'scorpio', 'sagittarius'];
+    const icons = ['♑', '♒', '♓', '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐'];
+    palettes.forEach((palette, index) => expect(view.scheduleMonthZodiac(String(index + 1))).toMatchObject({ palette, icon: icons[index] }));
+    for (const value of ['', '0', '13', '01', 'constructor']) {
+      expect(view.scheduleMonthZodiac(value)).toEqual({ icon: 'calendar_month', palette: 'amber' });
+    }
+  });
+
 });

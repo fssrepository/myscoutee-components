@@ -14,7 +14,7 @@ import type {
 import type {
   DateInputModel,
   DateInputValue
-} from '../../../../components/date-input/date-input.component';
+} from '@fssrepository/myscoutee-components/date';
 
 export type PopupSize = 'small' | 'default' | 'wide' | 'fullscreen';
 export type PopupHeight = 'auto' | 'full';

@@ -1,3 +1,5 @@
+import { appMenuAncestorBounds } from '../menu-layout';
+import { appMenuResolveLiveValue } from '../menu-summary';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -315,21 +317,8 @@ export class AppMenuOutletComponent<TId extends string = string, TContext = unkn
       const rect=popup.getBoundingClientRect();
       return {...viewport,left:Math.max(viewport.left,rect.left),right:Math.min(viewport.right,rect.right)};
     }
-    let parent = triggerElement.parentElement;
-    while (parent && parent !== document.body && parent !== document.documentElement) {
-      const style = window.getComputedStyle(parent);
-      if (this.isMenuLayoutBoundary(parent, style)) {
-        const rect = parent.getBoundingClientRect();
-        return {
-          left: Math.max(viewport.left, rect.left),
-          top: Math.max(viewport.top, rect.top),
-          right: Math.min(viewport.right, rect.right),
-          bottom: Math.min(viewport.bottom, rect.bottom)
-        };
-      }
-      parent = parent.parentElement;
-    }
-    return viewport;
+    return appMenuAncestorBounds(triggerElement.parentElement, viewport,
+      (element, style) => this.isMenuLayoutBoundary(element, style));
   }
 
   private isMenuLayoutBoundary(element: HTMLElement, style: CSSStyleDeclaration): boolean {
@@ -379,9 +368,6 @@ export class AppMenuOutletComponent<TId extends string = string, TContext = unkn
   }
 
   private resolveLiveValue<T>(value: T | (() => T) | null | undefined): T | null | undefined {
-    if (typeof value === 'function') {
-      return (value as () => T)();
-    }
-    return value;
+    return appMenuResolveLiveValue(value);
   }
 }

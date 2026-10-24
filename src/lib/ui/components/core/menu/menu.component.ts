@@ -1,3 +1,6 @@
+import { appMenuAncestorBounds } from './menu-layout';
+import { appMenuTriggerImageUrl, appMenuTriggerImageAlt, appMenuTriggerImageFallback, appMenuImageLabelFallback } from './menu-summary';
+import { appMenuTriggerIcon, appMenuTriggerTrailingIcon, appMenuValueIdentity, appMenuResolveLiveValue, appMenuCounterConfig, appMenuCounterVisible, appMenuCounterLabel, appMenuCounterValue } from './menu-summary';
 import { OverlayNavigationStore } from '../../../context/stores/overlay/overlay-navigation.store';
 import { CommonModule } from '@angular/common';
 import {
@@ -21,8 +24,8 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
-import { I18nPipe } from '../../../../pipes/i18n.pipe';
-import { UI_TRANSLATIONS } from '../../../../foundation/translation';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 import { RateComponent } from './items/rate/rate.component';
 import { IndicatorComponent } from '../../../../components/indicator/indicator.component';
 import type { IndicatorShape, IndicatorState, IndicatorTone } from '../../../../components/indicator/index';
@@ -720,85 +723,27 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
   }
 
   protected triggerIcon(): string {
-    if (this.open) {
-      const configuredOpenIcon = this.resolveLiveValue(this.trigger?.closeIcon ?? this.trigger?.openIcon);
-      if (configuredOpenIcon !== null && configuredOpenIcon !== undefined) {
-        return `${configuredOpenIcon}`.trim();
-      }
-      const baseIcon = `${this.resolveLiveValue(this.trigger?.icon) ?? ''}`.trim();
-      if (this.shouldResolveTriggerIconToClose(baseIcon)) {
-        return 'close';
-      }
-      if (!baseIcon && this.isSelectLikeTrigger()) {
-        return '';
-      }
-      return `${baseIcon || 'close'}`.trim();
-    }
-    const configuredIcon = this.resolveLiveValue(this.trigger?.icon);
-    if (!configuredIcon && this.isFabKind) {
-      return 'add';
-    }
-    if (!configuredIcon && this.isSelectLikeTrigger()) {
-      return '';
-    }
-    return `${configuredIcon ?? 'more_vert'}`.trim();
+    return appMenuTriggerIcon(this.trigger, this.open, this.isFabKind, this.isSelectLikeTrigger(), this.triggerLayout());
   }
 
   protected triggerImageUrl(): string {
-    return `${this.resolveLiveValue(this.trigger?.imageUrl) ?? ''}`.trim();
+    return appMenuTriggerImageUrl(this.trigger);
   }
 
   protected triggerImageAlt(): string {
-    return `${this.resolveLiveValue(this.trigger?.imageAlt) ?? this.triggerLabel()}`.trim();
+    return appMenuTriggerImageAlt(this.trigger, () => this.triggerLabel());
   }
 
   protected triggerImageFallback(): string {
-    const configured = `${this.resolveLiveValue(this.trigger?.imageFallback) ?? ''}`.trim();
-    return configured || (this.triggerImageUrl()
-      ? this.imageLabelFallback(this.triggerLabel())
-      : '');
+    return appMenuTriggerImageFallback(this.trigger, () => this.triggerLabel());
   }
 
   protected isSymbolIcon(icon: string | null | undefined): boolean {
     return `${icon ?? ''}`.trim().length === 1;
   }
 
-  private shouldResolveTriggerIconToClose(icon: string): boolean {
-    if (this.triggerLayout() !== 'icon' && this.trigger?.hideLabel !== true) {
-      return false;
-    }
-    switch (icon) {
-      case 'add':
-      case 'add_box':
-      case 'add_circle':
-      case 'more_horiz':
-      case 'more_vert':
-        return true;
-      default:
-        return false;
-    }
-  }
-
   protected triggerTrailingIcon(): string {
-    const configuredIcon = this.resolveLiveValue(this.open
-      ? this.trigger?.closeTrailingIcon ?? this.trigger?.openTrailingIcon ?? this.trigger?.trailingIcon
-      : this.trigger?.trailingIcon);
-    if (configuredIcon !== null && configuredIcon !== undefined) {
-      return `${configuredIcon}`.trim();
-    }
-    if (this.trigger?.hideLabel === true) {
-      return '';
-    }
-    if (this.isCustomTriggerAction) {
-      return '';
-    }
-    if (this.isSelectKind && this.triggerLayout() !== 'icon') {
-      return 'expand_more';
-    }
-    if (this.isTabbedModelLayout && this.triggerLayout() !== 'icon') {
-      return 'expand_more';
-    }
-    return '';
+    return appMenuTriggerTrailingIcon(this.trigger, this.open, this.isCustomTriggerAction, this.isSelectLikeTrigger(), this.triggerLayout());
   }
 
   protected triggerCaretRotates(): boolean {
@@ -1602,7 +1547,7 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
   protected itemImageFallback(item: AppMenuItem<TId, TContext>): string {
     const configured = `${this.resolveLiveValue(item.imageFallback) ?? ''}`.trim();
     return configured || (this.itemImageUrl(item)
-      ? this.imageLabelFallback(this.itemLabel(item))
+      ? appMenuImageLabelFallback(this.itemLabel(item))
       : '');
   }
 
@@ -1626,10 +1571,6 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
     image.parentElement
       ?.querySelector<HTMLElement>('[data-app-menu-image-fallback]')
       ?.setAttribute('hidden', '');
-  }
-
-  private imageLabelFallback(label: string): string {
-    return Array.from(label.trim())[0]?.toLocaleUpperCase() ?? '';
   }
 
   protected itemIconKind(item: AppMenuItem<TId, TContext>): AppMenuIconKind {
@@ -2069,21 +2010,8 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
     if (typeof window === 'undefined') {
       return viewport;
     }
-    let parent = this.hostRef.nativeElement.parentElement;
-    while (parent && parent !== document.body && parent !== document.documentElement) {
-      const style = window.getComputedStyle(parent);
-      if (this.isMenuLayoutBoundary(parent, style)) {
-        const rect = parent.getBoundingClientRect();
-        return {
-          left: Math.max(viewport.left, rect.left),
-          top: Math.max(viewport.top, rect.top),
-          right: Math.min(viewport.right, rect.right),
-          bottom: Math.min(viewport.bottom, rect.bottom)
-        };
-      }
-      parent = parent.parentElement;
-    }
-    return viewport;
+    return appMenuAncestorBounds(this.hostRef.nativeElement.parentElement, viewport,
+      (element, style) => this.isMenuLayoutBoundary(element, style));
   }
 
   private isMenuLayoutBoundary(element: HTMLElement, style: CSSStyleDeclaration): boolean {
@@ -2538,13 +2466,7 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
   }
 
   private controlValueIdentity(value: unknown, valueKey: AppMenuValueKey): unknown {
-    if (typeof valueKey === 'function') {
-      return valueKey(value);
-    }
-    if (value && typeof value === 'object' && valueKey in value) {
-      return (value as Record<string, unknown>)[valueKey];
-    }
-    return value;
+    return appMenuValueIdentity(value, valueKey);
   }
 
   private resolveBoolean(value: AppMenuLiveValue<boolean | null | undefined> | null | undefined): boolean {
@@ -2552,20 +2474,11 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
   }
 
   private resolveLiveValue<T>(value: AppMenuLiveValue<T> | null | undefined): T | null | undefined {
-    if (typeof value === 'function') {
-      return (value as () => T)();
-    }
-    return value;
+    return appMenuResolveLiveValue(value);
   }
 
   private counterConfig(counter: AppMenuCounter | AppMenuCounterValue | null | undefined): AppMenuCounter | null {
-    if (counter === null || counter === undefined) {
-      return null;
-    }
-    if (typeof counter === 'object' && 'value' in counter) {
-      return counter;
-    }
-    return { value: counter };
+    return appMenuCounterConfig(counter);
   }
 
   private itemCounter(item: AppMenuItem<TId, TContext>): AppMenuCounter | AppMenuCounterValue | null | undefined {
@@ -2585,26 +2498,15 @@ export class AppMenuComponent<TId extends string = string, TContext = unknown>
   }
 
   private counterVisible(counter: AppMenuCounter | AppMenuCounterValue | null | undefined): boolean {
-    const value = this.resolveCounterValue(counter);
-    if (typeof value === 'number') {
-      return Number.isFinite(value) && value > 0;
-    }
-    return `${value ?? ''}`.trim().length > 0;
+    return appMenuCounterVisible(counter);
   }
 
   private counterLabel(counter: AppMenuCounter | AppMenuCounterValue | null | undefined): string {
-    const config = this.counterConfig(counter);
-    const value = this.resolveCounterValue(counter);
-    if (typeof value === 'number') {
-      const max = Math.max(1, Math.trunc(Number(config?.max) || 99));
-      return value > max ? `${max}+` : `${Math.trunc(value)}`;
-    }
-    return `${value ?? ''}`.trim();
+    return appMenuCounterLabel(counter);
   }
 
   private resolveCounterValue(counter: AppMenuCounter | AppMenuCounterValue | null | undefined): number | string | null | undefined {
-    const config = this.counterConfig(counter);
-    return this.resolveLiveValue(config?.value ?? null);
+    return appMenuCounterValue(counter);
   }
 
   private counterSignature(counter: AppMenuCounter | AppMenuCounterValue | null | undefined): string {

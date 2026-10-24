@@ -1,4 +1,4 @@
-import { UI_TRANSLATIONS } from '../../../../../../foundation/translation';
+import { UI_TRANSLATIONS } from '@fssrepository/myscoutee-components/foundation';
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, ElementRef, Output, inject } from '@angular/core';
 import { DecimalPipe, NgTemplateOutlet, NgStyle } from '@angular/common';
@@ -7,7 +7,7 @@ import type { PopupModel } from '../../../popup/popup.types';
 import { ratingAverage, shiftRatingCriteria, type RatingSnapshot } from '../../../../../../foundation/rating';
 import { MatIconModule } from '@angular/material/icon';
 
-import { I18nPipe } from '../../../../../../pipes/index';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import type {
   AppMenuRateAnimation,
   AppMenuRateConfig,

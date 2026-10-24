@@ -1,3 +1,4 @@
+import { smartListPageBadgeLabel } from './smart-list-page.adapter';
 import type {
   ListQuery,
   SmartListConfig,
@@ -343,22 +344,7 @@ function timelineBadgeLabel<T, TFilters extends SmartListFilters>(
   item: T,
   context: SmartListTimelinePageBuildContext<T, TFilters>
 ): string {
-  const custom = context.viewConfig.badgeLabel?.(item, context.query);
-  if (typeof custom === 'string' && custom.trim()) {
-    return custom;
-  }
-  if (typeof item === 'string' || typeof item === 'number') {
-    return String(item);
-  }
-  if (item && typeof item === 'object') {
-    const candidate = (item as { title?: unknown; name?: unknown; label?: unknown }).title
-      ?? (item as { name?: unknown }).name
-      ?? (item as { label?: unknown }).label;
-    if (typeof candidate === 'string' && candidate.trim()) {
-      return candidate;
-    }
-  }
-  return 'Item';
+  return smartListPageBadgeLabel(item, context.viewConfig.badgeLabel?.(item, context.query));
 }
 
 function initialOffsetMinutes<T, TFilters extends SmartListFilters>(

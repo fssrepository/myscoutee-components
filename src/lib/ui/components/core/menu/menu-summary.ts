@@ -5,8 +5,12 @@ import type {
   AppMenuItem,
   AppMenuLiveValue,
   AppMenuModel,
+  AppMenuTrigger,
+  AppMenuTriggerLayout,
   AppMenuValueKey
 } from './menu.types';
+
+const CLOSE_TRIGGER_ICONS: readonly string[] = ['add', 'add_box', 'add_circle', 'more_horiz', 'more_vert'];
 
 export interface AppMenuModelSummaryResult {
   label: string;
@@ -109,16 +113,78 @@ export function appMenuAlertCounter<TId extends string = string, TContext = unkn
   return fallbackLabel || null;
 }
 
-function appMenuCounterValue(
+export function appMenuCounterConfig(
   counter: AppMenuCounter | AppMenuCounterValue | null | undefined
-): number | string | null | undefined {
+): AppMenuCounter | null {
   if (counter === null || counter === undefined) {
     return null;
   }
   if (typeof counter === 'object' && 'value' in counter) {
-    return appMenuResolveLiveValue(counter.value);
+    return counter;
   }
-  return appMenuResolveLiveValue(counter);
+  return { value: counter };
+}
+
+export function appMenuCounterValue(counter: AppMenuCounter | AppMenuCounterValue | null | undefined): number | string | null | undefined {
+  return appMenuResolveLiveValue(appMenuCounterConfig(counter)?.value ?? null);
+}
+
+export function appMenuCounterVisible(counter: AppMenuCounter | AppMenuCounterValue | null | undefined): boolean {
+  const value = appMenuCounterValue(counter);
+  return typeof value === 'number' ? Number.isFinite(value) && value > 0 : `${value ?? ''}`.trim().length > 0;
+}
+
+export function appMenuCounterLabel(counter: AppMenuCounter | AppMenuCounterValue | null | undefined): string {
+  const value = appMenuCounterValue(counter);
+  if (typeof value !== 'number') return `${value ?? ''}`.trim();
+  const max = Math.max(1, Math.trunc(Number(appMenuCounterConfig(counter)?.max) || 99));
+  return value > max ? `${max}+` : `${Math.trunc(value)}`;
+}
+
+export function appMenuTriggerImageUrl(trigger: AppMenuTrigger | null): string {
+  return `${appMenuResolveLiveValue(trigger?.imageUrl) ?? ''}`.trim();
+}
+
+export function appMenuTriggerImageAlt(trigger: AppMenuTrigger | null, label: () => string): string {
+  return `${appMenuResolveLiveValue(trigger?.imageAlt) ?? label()}`.trim();
+}
+
+export function appMenuImageLabelFallback(label: string): string {
+  return Array.from(label.trim())[0]?.toLocaleUpperCase() ?? '';
+}
+
+export function appMenuTriggerImageFallback(trigger: AppMenuTrigger | null, label: () => string): string {
+  const configured = `${appMenuResolveLiveValue(trigger?.imageFallback) ?? ''}`.trim();
+  return configured || (appMenuTriggerImageUrl(trigger) ? appMenuImageLabelFallback(label()) : '');
+}
+
+export function appMenuTriggerIcon(
+  trigger: AppMenuTrigger | null, open: boolean, fab: boolean, selectLike: boolean, layout: AppMenuTriggerLayout
+): string {
+  if (open) {
+    const configuredOpenIcon = appMenuResolveLiveValue(trigger?.closeIcon ?? trigger?.openIcon);
+    if (configuredOpenIcon !== null && configuredOpenIcon !== undefined) return `${configuredOpenIcon}`.trim();
+    const baseIcon = `${appMenuResolveLiveValue(trigger?.icon) ?? ''}`.trim();
+    if ((layout === 'icon' || trigger?.hideLabel === true)
+        && CLOSE_TRIGGER_ICONS.includes(baseIcon)) return 'close';
+    if (!baseIcon && selectLike) return '';
+    return `${baseIcon || 'close'}`.trim();
+  }
+  const configuredIcon = appMenuResolveLiveValue(trigger?.icon);
+  if (!configuredIcon && fab) return 'add';
+  if (!configuredIcon && selectLike) return '';
+  return `${configuredIcon ?? 'more_vert'}`.trim();
+}
+
+export function appMenuTriggerTrailingIcon(
+  trigger: AppMenuTrigger | null, open: boolean, customAction: boolean, selectLike: boolean, layout: AppMenuTriggerLayout
+): string {
+  const configuredIcon = appMenuResolveLiveValue(open
+    ? trigger?.closeTrailingIcon ?? trigger?.openTrailingIcon ?? trigger?.trailingIcon
+    : trigger?.trailingIcon);
+  if (configuredIcon !== null && configuredIcon !== undefined) return `${configuredIcon}`.trim();
+  if (trigger?.hideLabel === true || customAction) return '';
+  return selectLike && layout !== 'icon' ? 'expand_more' : '';
 }
 
 function appMenuSelectedLabels<TId extends string, TContext>(
@@ -191,7 +257,7 @@ function appMenuValuesEqual(first: unknown, second: unknown, valueKey: AppMenuVa
   return Object.is(appMenuValueIdentity(first, valueKey), appMenuValueIdentity(second, valueKey));
 }
 
-function appMenuValueIdentity(value: unknown, valueKey: AppMenuValueKey): unknown {
+export function appMenuValueIdentity(value: unknown, valueKey: AppMenuValueKey): unknown {
   if (typeof valueKey === 'function') {
     return valueKey(value);
   }

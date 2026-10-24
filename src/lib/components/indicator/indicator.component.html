@@ -46,22 +46,26 @@
   </span>
 } @else if (isActionRingKind) {
   <span class="app-indicator app-indicator--action-ring" [style.visibility]="actionSizeReady() ? null : 'hidden'">
-    @if (isActionPathShape) {
-      <svg [attr.viewBox]="actionButtonViewBox()" preserveAspectRatio="none" class="app-indicator__action-ring-svg">
-        <defs>
-          <linearGradient [attr.id]="actionGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="rgb(235, 147, 33)"></stop>
-            <stop offset="100%" stop-color="rgb(247, 190, 52)"></stop>
-          </linearGradient>
-          <linearGradient [attr.id]="actionErrorGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="rgb(213, 54, 68)"></stop>
-            <stop offset="100%" stop-color="rgb(196, 29, 42)"></stop>
-          </linearGradient>
-          <linearGradient [attr.id]="actionAccentGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="rgb(91, 140, 247)"></stop>
-            <stop offset="100%" stop-color="rgb(47, 111, 214)"></stop>
-          </linearGradient>
-        </defs>
+    <svg
+      [attr.viewBox]="isActionPathShape ? actionButtonViewBox() : '0 0 ' + actionCircleSize() + ' ' + actionCircleSize()"
+      [attr.preserveAspectRatio]="isActionPathShape ? 'none' : null"
+      class="app-indicator__action-ring-svg"
+    >
+      <defs>
+        <linearGradient [attr.id]="actionGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgb(235, 147, 33)"></stop>
+          <stop offset="100%" stop-color="rgb(247, 190, 52)"></stop>
+        </linearGradient>
+        <linearGradient [attr.id]="actionErrorGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgb(213, 54, 68)"></stop>
+          <stop offset="100%" stop-color="rgb(196, 29, 42)"></stop>
+        </linearGradient>
+        <linearGradient [attr.id]="actionAccentGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgb(91, 140, 247)"></stop>
+          <stop offset="100%" stop-color="rgb(47, 111, 214)"></stop>
+        </linearGradient>
+      </defs>
+      @if (isActionPathShape) {
         <path
           class="app-indicator__action-ring-track"
           [attr.d]="actionButtonPath()"
@@ -75,23 +79,7 @@
           [attr.stroke-dasharray]="resolvedPerimeter"
           [attr.stroke-dashoffset]="actionRingDashOffset()"
         ></path>
-      </svg>
-    } @else {
-      <svg [attr.viewBox]="'0 0 ' + actionCircleSize() + ' ' + actionCircleSize()" class="app-indicator__action-ring-svg">
-        <defs>
-          <linearGradient [attr.id]="actionGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="rgb(235, 147, 33)"></stop>
-            <stop offset="100%" stop-color="rgb(247, 190, 52)"></stop>
-          </linearGradient>
-          <linearGradient [attr.id]="actionErrorGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="rgb(213, 54, 68)"></stop>
-            <stop offset="100%" stop-color="rgb(196, 29, 42)"></stop>
-          </linearGradient>
-          <linearGradient [attr.id]="actionAccentGradientId" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="rgb(91, 140, 247)"></stop>
-            <stop offset="100%" stop-color="rgb(47, 111, 214)"></stop>
-          </linearGradient>
-        </defs>
+      } @else {
         <circle class="app-indicator__action-ring-track"
           [attr.cx]="actionCircleSize() / 2" [attr.cy]="actionCircleSize() / 2" [attr.r]="actionCircleSize() * 15 / 34"></circle>
         <circle
@@ -105,7 +93,7 @@
           [attr.stroke-dasharray]="resolvedPerimeter"
           [attr.stroke-dashoffset]="actionRingDashOffset()"
         ></circle>
-      </svg>
-    }
+      }
+    </svg>
   </span>
 }

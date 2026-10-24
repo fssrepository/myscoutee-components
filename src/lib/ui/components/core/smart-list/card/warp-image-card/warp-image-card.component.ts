@@ -3,7 +3,7 @@ import { UI_IMAGE_URLS } from '../../../../../../foundation/image-urls';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { I18nPipe } from '../../../../../../pipes/index';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { LazyBgImageDirective } from '../../../../../directives/lazy-bg-image.directive';
 import { IndicatorComponent } from '../../../../../../components/indicator/index';
 

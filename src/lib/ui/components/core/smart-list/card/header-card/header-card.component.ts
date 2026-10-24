@@ -1,8 +1,8 @@
-import { I18nPipe } from '../../../../../../pipes/i18n.pipe';
+import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { IndicatorComponent, type IndicatorState } from '../../../../../../components/indicator/index';
+import { IndicatorComponent, type IndicatorState } from '@fssrepository/myscoutee-components/core';
 
 export interface HeaderCardModel {
   title?: string | null;
@@ -28,6 +28,7 @@ export interface HeaderCardModel {
   standalone: true,
   imports: [CommonModule, MatIconModule, IndicatorComponent, I18nPipe],
   templateUrl: './header-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './header-card.component.scss'
 })
 export class HeaderCardComponent {

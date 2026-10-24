@@ -4,10 +4,33 @@
     "declaration": false,
     "types": [
       "vitest/globals"
-    ]
+    ],
+    "paths": {
+      "@fssrepository/myscoutee-components/core": [
+        "./src/core-api.ts"
+      ],
+      "@fssrepository/myscoutee-components/forms": [
+        "./src/forms-api.ts"
+      ],
+      "@fssrepository/myscoutee-components/foundation": [
+        "./src/foundation-api.ts"
+      ],
+      "@fssrepository/myscoutee-components/date": [
+        "./src/date-api.ts"
+      ],
+      "@fssrepository/myscoutee-components/cards": [
+        "./src/cards-api.ts"
+      ]
+    }
   },
   "angularCompilerOptions": {
-    "compilationMode": "full"
+    "compilationMode": "full",
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
   },
   "include": [
     "src/**/*.ts",

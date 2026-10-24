@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, EventEmitter, Input, Output, ViewChild, afterEveryRender, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, EventEmitter, Input, Output, ViewChild, afterEveryRender, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AppMenuComponent, type AppMenuDragEvent, type AppMenuDragPosition, type AppMenuItemSelectEvent, type AppMenuTrigger } from '../menu/index';
 import { FloatingLauncherRegistry } from '../../../context/stores/overlay/floating-launcher-registry.service';
@@ -11,7 +11,8 @@ interface LauncherObstacle {
 
 @Component({ selector: 'app-floating-launcher', standalone: true,
   imports: [AppMenuComponent, MatIconModule],
-  templateUrl: './floating-launcher.component.html', styleUrl: './floating-launcher.component.scss' })
+  templateUrl: './floating-launcher.component.html', changeDetection: ChangeDetectionStrategy.Eager,
+ styleUrl: './floating-launcher.component.scss' })
 export class FloatingLauncherComponent {
   @Input({ required: true }) trigger!: AppMenuTrigger;
   @Input() position: AppMenuDragPosition = { x: 0, y: 0 };
@@ -33,8 +34,6 @@ export class FloatingLauncherComponent {
   }
 
   constructor() {
-    // Recheck actual geometry after rendering and scrolling, without polling.
-    afterEveryRender({ read: () => this.avoidActions() });
     const document = this.host.nativeElement.ownerDocument;
     const window = document.defaultView;
     const unregister = this.launchers.register(this.host.nativeElement, () => this.menu?.nativeElement);
@@ -45,6 +44,9 @@ export class FloatingLauncherComponent {
         this.avoidActions();
       });
     };
+    // Rendering, scroll and transition bursts share the same geometry pass.
+    // Measure at most once per frame instead of forcing layout on every render.
+    afterEveryRender({ read: schedule });
     document.addEventListener('scroll', schedule, true);
     document.addEventListener('transitionend', schedule, true);
     window?.addEventListener('resize', schedule);

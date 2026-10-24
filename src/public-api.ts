@@ -1,87 +1,17 @@
-export * from './lib/foundation/calendar-date-adapter';
-export * from './lib/foundation/converter.types';
-export * from './lib/foundation/date-utils';
-export * from './lib/foundation/date.types';
-export * from './lib/foundation/horoscope-data';
-export * from './lib/foundation/list.types';
-export * from './lib/foundation/number-utils';
-export * from './lib/foundation/rating';
-export * from './lib/foundation/translation';
-export * from './lib/components/indicator/indicator.component';
-export * from './lib/components/prompt/prompt.component';
-export * from './lib/components/prompt/prompt.types';
-export * from './lib/components/date-input/date-input.component';
-export * from './lib/pipes/i18n.pipe';
-export * from './lib/guide/guide.types';
-export * from './lib/guide/explanation-guide.service';
-export * from './lib/foundation/link-utils';
-export * from './lib/ui/components/core/menu/items/rate/rate.component';
-export * from './lib/ui/components/core/menu/menu-dispatcher.service';
-export * from './lib/ui/components/core/menu/menu-option-groups';
-export * from './lib/ui/components/core/menu/menu-summary';
-export * from './lib/ui/components/core/menu/menu.component';
-export * from './lib/ui/components/core/menu/menu.types';
-export * from './lib/ui/components/core/menu/outlet/menu-outlet.component';
-export * from './lib/ui/components/core/menu/trigger/menu-trigger.component';
-export * from './lib/ui/components/core/popup/popup.component';
-export * from './lib/ui/components/core/popup/popup.types';
-export * from './lib/ui/components/core/dialog/dialog.component';
-export * from './lib/ui/components/core/accordion/accordion.component';
-export * from './lib/ui/components/core/accordion/accordion.types';
-export * from './lib/ui/components/core/floating-launcher/floating-launcher.component';
-export * from './lib/ui/components/core/copy-link/copy-link.component';
-export * from './lib/ui/components/core/form/inputs/link-input/link-input.component';
-export * from './lib/ui/components/core/form/inputs/location-input/location-input.component';
-export * from './lib/ui/context/stores/overlay/dialog.store';
-export * from './lib/ui/context/stores/overlay/popup-presence.store';
-export * from './lib/ui/context/stores/overlay/overlay-navigation.store';
-export * from './lib/ui/context/stores/overlay/floating-launcher-registry.service';
-export * from './lib/ui/pipes/counter-badge.pipe';
-export * from './lib/foundation/image-urls';
-export * from './lib/foundation/list-defaults';
-export * from './lib/ui/components/core/smart-list/card/calendar-card/calendar-card.component';
-export * from './lib/ui/components/core/smart-list/card/calendar-card/calendar-card.types';
-export * from './lib/ui/components/core/smart-list/card/calendar-card/calendar-card.converter';
-export * from './lib/ui/components/core/smart-list/card/card.types';
-export * from './lib/ui/components/core/smart-list/card/header-card/header-card.component';
-export * from './lib/ui/components/core/smart-list/card/image-card/image-card.component';
-export * from './lib/ui/components/core/smart-list/card/info-card/info-card.component';
-export * from './lib/ui/components/core/smart-list/card/pair-card/pair-card.component';
-export * from './lib/ui/components/core/smart-list/card/payment-card/payment-card.component';
-export * from './lib/ui/components/core/smart-list/card/rate-card.helpers';
-export * from './lib/ui/components/core/smart-list/card/single-card/single-card.component';
-export * from './lib/ui/components/core/smart-list/card/single-row/single-row.component';
-export * from './lib/ui/components/core/smart-list/card/text-card/text-card.component';
-export * from './lib/ui/components/core/smart-list/card/warp-image-card/warp-image-card.component';
-export * from './lib/ui/components/core/smart-list/finite-stepper';
-export * from './lib/ui/components/core/smart-list/infinite-stepper';
-export * from './lib/ui/components/core/smart-list/smart-list-calendar.adapter';
-export * from './lib/ui/components/core/smart-list/smart-list-item-key';
-export * from './lib/ui/components/core/smart-list/smart-list-local-sort';
-export * from './lib/ui/components/core/smart-list/smart-list-page.adapter';
-export * from './lib/ui/components/core/smart-list/smart-list-timeline.adapter';
-export * from './lib/ui/components/core/smart-list/smart-list.component';
-export * from './lib/ui/components/core/smart-list/smart-list-empty-state.component';
-export * from './lib/ui/components/core/smart-list/smart-list.types';
-export * from './lib/ui/scheduler/after-paint';
-export * from './lib/ui/scheduler/ui-poll-coordinator';
-export * from './lib/ui/scheduler/ui-task-scheduler';
-export * from './lib/ui/directives/lazy-bg-image.directive';
-export * from './lib/ui/directives/viewport-seen.directive';
-export * from './lib/ui/components/core/form/inputs/text-cards-input/text-cards-input.component';
-export * from './lib/ui/components/core/image-carousel/image-carousel.component';
-export * from './lib/ui/components/core/image-gallery/image-gallery-popup.component';
-export * from './lib/ui/components/core/image-gallery/image-gallery.component';
-export * from './lib/ui/components/core/deployment-brand/deployment-brand.component';
-export * from './lib/ui/context/stores/media/image-gallery.store';
-export * from './lib/ui/components/core/form/flow/form-flow.component';
-export * from './lib/ui/components/core/form/flow/form-flow.types';
-export * from './lib/ui/components/core/form/flow/form-flow.utils';
-export * from './lib/ui/components/core/form/flow/form-flow-control.directive';
-export * from './lib/foundation/image-details';
-export * from './lib/foundation/branding';
-export * from './lib/foundation/form-flow-controls';
-
-export * from './lib/foundation/slot-template';
-export * from './lib/ui/components/core/form/inputs/route-input';
-export * from './lib/ui/components/core/form/inputs/slots-input';
+// Compatibility entry point. Applications can select a loading boundary explicitly.
+export {
+  UiDateUtils,
+  HOROSCOPE_META_BY_SIGN,
+  UI_TRANSLATIONS,
+  provideUiTranslations,
+  I18nPipe,
+  type UiDateValue,
+  type UiDateRange,
+  type UiTranslations,
+  type DateRangePrecision,
+  type DateRangeDto
+} from '@fssrepository/myscoutee-components/foundation';
+export * from '@fssrepository/myscoutee-components/core';
+export * from '@fssrepository/myscoutee-components/forms';
+export * from '@fssrepository/myscoutee-components/date';
+export * from '@fssrepository/myscoutee-components/cards';

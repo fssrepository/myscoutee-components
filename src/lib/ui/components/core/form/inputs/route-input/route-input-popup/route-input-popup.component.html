@@ -51,6 +51,7 @@
             </button>
             <input
               type="text"
+              [attr.aria-label]="('route.stops.title' | i18n) + ' ' + (stopIndex + 1)"
               [ngModel]="stop"
               (ngModelChange)="updateStop(editor, stopIndex, $event)"
               [disabled]="editor.readOnly || editor.saving"

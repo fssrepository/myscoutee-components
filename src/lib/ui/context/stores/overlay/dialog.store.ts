@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Inject, Injectable, InjectionToken, computed, signal } from '@angular/core';
 
 import type { AppMenuPalette } from '../../../components/core/menu/index';
 
@@ -25,6 +25,7 @@ export interface DialogConfig {
 }
 
 export interface DialogState {
+  closeLabel: string;
   id: number;
   title: string;
   message: string;
@@ -47,6 +48,12 @@ export interface DialogState {
   onCancel: (() => void | Promise<void>) | null;
 }
 
+export const DIALOG_TEXT = new InjectionToken<(value: string) => string>('Dialog text', {
+  providedIn: 'root', factory: () => value => value
+});
+
+const DEFAULT_NOTICE_OPTIONS = { title: 'Notice' } as const;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -54,11 +61,25 @@ export class DialogStore {
   private readonly stateRef = signal<DialogState | null>(null);
   private nextId = 0;
 
-  readonly dialog = this.stateRef.asReadonly();
+  constructor(@Inject(DIALOG_TEXT) private readonly text: (value: string) => string = value => value) {}
+
+  readonly labels = computed(() => ({ close: this.text('close'), cancel: this.text('cancel'),
+    confirmation: this.text('Confirmation'), ok: this.text('OK') }));
+  readonly dialog = computed(() => {
+    const state = this.stateRef();
+    if (!state) return null;
+    return { ...state, closeLabel: this.text('close'), title: this.text(state.title),
+      message: this.text(state.message), warningMessage: this.text(state.warningMessage),
+      cancelLabel: state.cancelLabel === null ? null : this.text(state.cancelLabel),
+      confirmLabel: this.text(state.confirmLabel), busyConfirmLabel: this.text(state.busyConfirmLabel),
+      errorMessage: this.text(state.errorMessage),
+      input: state.input ? { ...state.input, label: this.text(state.input.label) } : null };
+  });
 
   open(config: DialogConfig): void {
     this.stateRef.set({
       id: ++this.nextId,
+      closeLabel: 'close',
       title: config.title.trim() || 'Confirmation',
       message: config.message?.trim() ?? '',
       warningMessage: config.warningMessage?.trim() ?? '',
@@ -83,7 +104,7 @@ export class DialogStore {
 
   openInfo(
     message: string,
-    options: Omit<DialogConfig, 'message' | 'cancelLabel'> = { title: 'Notice' }
+    options: Omit<DialogConfig, 'message' | 'cancelLabel'> = DEFAULT_NOTICE_OPTIONS
   ): void {
     this.open({
       ...options,
@@ -95,7 +116,7 @@ export class DialogStore {
 
   openNotice(
     message: string,
-    options: Omit<DialogConfig, 'message' | 'cancelLabel' | 'confirmLabel' | 'onConfirm'> = { title: 'Notice' }
+    options: Omit<DialogConfig, 'message' | 'cancelLabel' | 'confirmLabel' | 'onConfirm'> = DEFAULT_NOTICE_OPTIONS
   ): void {
     this.open({
       ...options,

@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Output, computed, effect, input, untracked, viewChild } from '@angular/core';
+import { Component, EventEmitter, Output, computed, effect, input, untracked, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { of } from 'rxjs';
-import { SmartListComponent, TextCardComponent, type SmartListConfig, type SmartListLoadPage } from '../../../smart-list/index';
+import { SmartListComponent } from '../../../smart-list/smart-list.component';
+import { TextCardComponent } from '../../../smart-list/card/text-card/text-card.component';
+import type { SmartListConfig, SmartListLoadPage } from '../../../smart-list/smart-list.types';
 import type { AppMenuItem, AppMenuItemSelectEvent } from '../../../menu/index';
 import type { TextCardTone } from '../../../smart-list/card/text-card/index';
 
@@ -26,7 +28,8 @@ export interface TextCardsConfig {
       <app-text-card [title]="card.title" [subtitle]="card.subtitle || ''" [detail]="card.detail || ''"
         [icon]="card.icon || ''" [tone]="card.tone || 'neutral'" [badge]="card.price || ''" badgeTone="price" badgePosition="end"
         [menuTitle]="card.title" [menuItems]="card.menuItems" [useSharedMenuTrigger]="true" [sharedMenuId]="'text-card-' + card.id"></app-text-card>
-    </ng-template>`,styles:[`:host { display:block; min-width:0; }`]})
+    </ng-template>`,changeDetection: ChangeDetectionStrategy.Eager,
+styles:[`:host { display:block; min-width:0; }`]})
 export class TextCardsInputComponent {
   readonly config=input.required<TextCardsConfig>();
   private readonly list=viewChild(SmartListComponent<TextCardsItem>);

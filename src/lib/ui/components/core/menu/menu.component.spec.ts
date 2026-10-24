@@ -33,6 +33,28 @@ describe('AppMenuComponent delayed drag', () => {
     TestBed.resetTestingModule();
   });
 
+  it.each(['button', 'link', 'removable'])('keeps %s menu content and selection in the common item template', mode => {
+    const fixture = TestBed.createComponent(AppMenuComponent);
+    fixture.componentRef.setInput('kind', 'select');
+    fixture.componentRef.setInput('items', [{ id: 'one', label: 'One', icon: 'check', description: 'Description',
+      counter: 2, ...(mode === 'link' ? { href: '#target' } : {}), removable: mode === 'removable' }]);
+    const select = vi.fn();
+    fixture.componentInstance.itemSelect.subscribe(select);
+    fixture.componentInstance.open = true;
+    fixture.detectChanges();
+    const item = fixture.nativeElement.querySelector('.app-menu__item') as HTMLElement;
+    expect(item.querySelector('.app-menu__item-label')?.textContent?.trim()).toBe('One');
+    expect(item.querySelector('.app-menu__item-description')?.textContent?.trim()).toBe('Description');
+    expect(item.querySelector('.app-menu__counter')?.textContent?.trim()).toBe('2');
+    expect(item.tagName).toBe(mode === 'link' ? 'A' : 'BUTTON');
+    expect(item.getAttribute('data-guide-item')).toBe(mode === 'removable' ? null : 'one');
+    expect(item.classList.contains('app-menu__item--row-primary')).toBe(mode === 'removable');
+    item.addEventListener('click', event => event.preventDefault());
+    item.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(select).toHaveBeenCalledOnce();
+    fixture.destroy();
+  });
+
   it('closes a mobile titled menu through the shared X without changing a selection', () => {
     vi.stubGlobal('innerWidth', 360);
     const fixture = TestBed.createComponent(AppMenuComponent);

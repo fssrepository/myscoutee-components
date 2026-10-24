@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "main": "../dist/fesm2022/components-foundation.mjs",
+  "module": "../dist/fesm2022/components-foundation.mjs",
+  "types": "../dist/types/components-foundation.d.ts"
+}

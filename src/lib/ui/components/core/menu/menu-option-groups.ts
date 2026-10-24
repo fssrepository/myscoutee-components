@@ -145,5 +145,5 @@ export function appMenuNormalizeStaticOption(value: string): string {
 }
 
 function appMenuSafeId(value: string): string {
-  return appMenuNormalizeStaticOption(value).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'item';
+  return appMenuNormalizeStaticOption(value).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'item';
 }

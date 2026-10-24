@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "main": "../dist/fesm2022/components-forms.mjs",
+  "module": "../dist/fesm2022/components-forms.mjs",
+  "types": "../dist/types/components-forms.d.ts"
+}

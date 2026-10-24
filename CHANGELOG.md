@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.5.0 — 2026-10-24
+
+Unify confirmation, tour and explanation under the configured DialogComponent.
+Keep tracking and section rendering generic, with lazy tour/explanation renderers.
+Prepare confirmation text in DialogStore; applications own translation, content
+loading, preferences, persistence and editor DTOs. Replace the package's guide
+service with the minimal optional popup/list context binding. Preserve target
+tracking, popup continuation and navigation through focused component tests.
+
+Declare foundation runtime exports explicitly in the root and core entry points
+so standalone esbuild consumers initialize the same public values as native ESM
+consumers. Release preparation now checks both packaged entry points with the
+standalone bundler before publication. Angular 22.2 peers remain required.
+
+## 1.4.6 — MSC-127
+
+Publish secondary entry points for foundation, core, cards, date and forms while
+retaining root exports. Keep menu-trigger styling independent of panel styles and
+skip redundant observation of already loaded retained images. Consolidate shared
+menu, popup, card, route and indicator implementations; rating frame bindings use
+the existing article element without adding DOM nodes. Associate native form and
+upload controls with accessible labels, preserve index-aware list predicates and
+correct counter typography overwritten by a font shorthand. Add focused LCOV
+reporting and source-owned Sonar configuration. Applications consume this release
+as an exact npm dependency instead of building a source submodule.
+
 ## 1.4.5 — MSC-126
 
 Use semantic keys for shared date/accordion captions, preserve content identities,
