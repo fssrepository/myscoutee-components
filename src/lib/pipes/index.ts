@@ -1,2 +1,2 @@
 export * from './i18n.pipe';
-export * from '../ui/pipes/counter-badge.pipe';
+export * from './counter-badge.pipe';

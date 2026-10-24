@@ -2,6 +2,11 @@
 
 ## 1.5.0 — 2026-10-24
 
+Package the existing Roboto 300/400/500 and filled Material Icons WOFF/WOFF2
+assets with their original license notices. Expose an optional
+`styles/fonts.css` entry so applications can serve the fonts locally as separate
+media files without embedding their bytes in JavaScript or CSS bundles.
+
 Unify confirmation, tour and explanation under the configured DialogComponent.
 Keep tracking and section rendering generic, with lazy tour/explanation renderers.
 Prepare confirmation text in DialogStore; applications own translation, content

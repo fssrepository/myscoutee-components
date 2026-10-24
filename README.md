@@ -17,6 +17,18 @@ configuration. Keep credentials out of Git.
 npm install @fssrepository/myscoutee-components@1.5.0
 ```
 
+## Self-hosted fonts
+
+To use the optional Roboto 300/400/500 and filled Material Icons fonts, add
+`node_modules/@fssrepository/myscoutee-components/styles/fonts.css` to the
+application's `angular.json` global `styles` array. Replace existing Roboto and
+Material Icons stylesheet entries rather than loading both copies.
+
+The package includes the original WOFF/WOFF2 files, character subsets and license
+notices. Angular emits the fonts as separate local media files referenced by CSS;
+the browser loads them from the application's own server without a font CDN.
+Importing Angular components alone does not load these optional font styles.
+
 ## Documentation
 
 | Document | Link |

@@ -6,6 +6,31 @@
     "flatModuleFile": "components"
   },
   "assets": [
-    "styles"
+    "styles",
+    {
+      "input": "node_modules/@fontsource/roboto",
+      "glob": "{300,400,500}.css",
+      "output": "assets/fonts/roboto"
+    },
+    {
+      "input": "node_modules/@fontsource/roboto/files",
+      "glob": "*-{300,400,500}-normal.{woff,woff2}",
+      "output": "assets/fonts/roboto/files"
+    },
+    {
+      "input": "node_modules/@fontsource/roboto",
+      "glob": "LICENSE",
+      "output": "assets/fonts/roboto"
+    },
+    {
+      "input": "node_modules/material-icons/iconfont",
+      "glob": "{filled.css,material-icons.woff,material-icons.woff2}",
+      "output": "assets/fonts/material-icons"
+    },
+    {
+      "input": "node_modules/material-icons",
+      "glob": "LICENSE",
+      "output": "assets/fonts/material-icons"
+    }
   ]
 }

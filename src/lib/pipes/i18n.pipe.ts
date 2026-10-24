@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform, inject } from '@angular/core';
 
-import { UI_TRANSLATIONS } from '../foundation/translation';
-import type { UiTranslations } from '../foundation/translation';
+import { UI_TRANSLATIONS } from '../foundation/i18n/translation';
+import type { UiTranslations } from '../foundation/i18n/translation';
 
 @Pipe({
   name: 'i18n',
