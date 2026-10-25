@@ -2,6 +2,28 @@
 
 ## 1.5.0 — 2026-10-24
 
+Keep the tour highlight's base glow continuously visible and pulse only an
+additional glow layer. Preserve its 1.8-second rhythm, target geometry and
+reduced motion without animating box-shadow. Three uninterrupted cycles retain
+the base glow and animation timeline, with no jump at the cycle boundary or
+ongoing paint events in the compiled-CSS browser fixture.
+
+Share menu palette styles between full menus and detached triggers, preserving
+their selector specificity and keeping the styles available while either
+renderer remains mounted. Remove overwritten declarations, merge identical
+mobile panel rules and exclude panel-only styles from detached triggers.
+Release preparation checks that the packaged startup graph includes the palette
+stylesheet once when both renderers are used.
+
+Hide InfoCard and ImageCard image loaders outside the loading state so their
+invisible spinners stop animating after success or failure. This is an explicitly
+requested reissue of 1.5.0; consumers refresh their locked artifact integrity.
+
+Package the existing Roboto 300/400/500 and filled Material Icons WOFF/WOFF2
+assets with their original license notices. Expose an optional
+`styles/fonts.css` entry so applications can serve the fonts locally as separate
+media files without embedding their bytes in JavaScript or CSS bundles.
+
 Unify confirmation, tour and explanation under the configured DialogComponent.
 Keep tracking and section rendering generic, with lazy tour/explanation renderers.
 Prepare confirmation text in DialogStore; applications own translation, content

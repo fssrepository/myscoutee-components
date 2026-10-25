@@ -85,6 +85,16 @@
   transition: transform 140ms linear, opacity 90ms ease-out;
 }
 
+.app-indicator__bar-loading.is-timed {
+  transition: none;
+  animation: app-indicator-bar-progress var(--app-indicator-duration) linear forwards;
+}
+
+@keyframes app-indicator-bar-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
 .app-indicator--bar.is-state-loading .app-indicator__bar-fill,
 .app-indicator--bar.is-state-loading-overdue .app-indicator__bar-fill,
 .app-indicator--bar.is-state-error .app-indicator__bar-fill,
@@ -99,7 +109,6 @@
   opacity: 1;
 }
 
-.app-indicator--bar.is-state-loading-overdue .app-indicator__bar-loading,
 .app-indicator--bar.is-state-error .app-indicator__bar-loading {
   transform: scaleX(1) !important;
   background: linear-gradient(270deg, rgba(213, 54, 68, 0.98) 0%, rgba(196, 29, 42, 0.98) 100%);
@@ -218,9 +227,13 @@
   height: 100%;
 }
 
+.app-indicator--load-ring {
+  position: relative;
+  filter: drop-shadow(0 8px 18px rgba(29, 81, 139, 0.16));
+}
+
 .app-indicator__load-ring-svg {
   display: block;
-  filter: drop-shadow(0 8px 18px rgba(29, 81, 139, 0.16));
 }
 
 .app-indicator__load-ring-track,
@@ -335,7 +348,65 @@
 
 .app-indicator__load-ring-progress.is-timed {
   transition: none;
-  animation: app-indicator-action-progress var(--app-indicator-duration) linear forwards;
+  opacity: 0;
+}
+
+// Like the spinner, timed progress uses transforms on HTML layers. Animating
+// SVG stroke-dashoffset cannot run on the compositor while JavaScript is busy.
+.app-indicator__load-ring-half,
+.app-indicator__load-ring-half > span,
+.app-indicator__load-ring-cap {
+  position: absolute;
+  inset: 0;
+}
+
+.app-indicator__load-ring-half {
+  clip-path: inset(0 0 0 50%);
+}
+
+.app-indicator__load-ring-half > span {
+  box-sizing: border-box;
+  margin: 1.5px;
+  border: 5px solid var(--app-indicator-load-ring-color, #2f75bc);
+  border-radius: 50%;
+  clip-path: inset(0 50% 0 0);
+  will-change: transform;
+  animation: app-indicator-load-ring-half calc(var(--app-indicator-duration) / 2) linear both;
+}
+
+.app-indicator__load-ring-half--second {
+  transform: rotate(180deg);
+}
+
+.app-indicator__load-ring-half--second > span {
+  animation-delay: calc(var(--app-indicator-duration) / 2);
+}
+
+.app-indicator__load-ring-cap {
+  will-change: transform;
+  animation: app-indicator-spinner-ring-spin var(--app-indicator-duration) linear both;
+}
+
+.app-indicator__load-ring-cap::after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--app-indicator-load-ring-color, #2f75bc);
+  top: calc(50% - 2.5px);
+  right: 1.5px;
+}
+
+.app-indicator__load-ring-cap--start {
+  animation: none;
+  transform: rotate(-90deg);
+  will-change: auto;
+}
+
+@keyframes app-indicator-load-ring-half {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(180deg); }
 }
 
 :host(.app-indicator-host--shape-surface) .app-indicator__action-ring-progress.is-loading {

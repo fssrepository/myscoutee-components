@@ -1,4 +1,4 @@
-import { UI_TRANSLATIONS, type UiTranslations } from '../src/lib/foundation/translation';
+import { UI_TRANSLATIONS, type UiTranslations } from '../src/lib/foundation/i18n/translation';
 
 const translations: UiTranslations = {
   revision: () => 0,

@@ -8,7 +8,7 @@
     [class.is-state-error]="isErrorState"
   >
     <span class="app-indicator__bar-fill" [style.transform]="progressTransform()"></span>
-    <span class="app-indicator__bar-loading" [style.transform]="progressTransform()"></span>
+    <span class="app-indicator__bar-loading" [class.is-timed]="isTimedBar" [style.transform]="progressTransform()"></span>
   </div>
 } @else if (isPillBarKind) {
   <div class="app-indicator app-indicator--pill-bar">
@@ -36,6 +36,12 @@
         [attr.stroke-dashoffset]="loadRingDashOffset()"
       ></circle>
     </svg>
+    @if (isTimedLoadRing) {
+      <span class="app-indicator__load-ring-half"><span></span></span>
+      <span class="app-indicator__load-ring-half app-indicator__load-ring-half--second"><span></span></span>
+      <span class="app-indicator__load-ring-cap app-indicator__load-ring-cap--start"></span>
+      <span class="app-indicator__load-ring-cap"></span>
+    }
   </span>
 } @else if (isSpinnerRingKind) {
   <span class="app-indicator app-indicator--spinner-ring">

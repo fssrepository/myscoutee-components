@@ -10,7 +10,7 @@ import { MatTimepicker, MatTimepickerModule } from '@angular/material/timepicker
 
 import { HOROSCOPE_META_BY_SIGN } from '@fssrepository/myscoutee-components/foundation';
 import { UiDateUtils } from '@fssrepository/myscoutee-components/foundation';
-import { AppCalendarDateAdapter, AppCalendarDateFormats } from '../../foundation/calendar-date-adapter';
+import { AppCalendarDateAdapter, AppCalendarDateFormats } from '../../foundation/date/calendar-date-adapter';
 import type { DateRangeDto } from '@fssrepository/myscoutee-components/foundation';
 import { I18nPipe } from '@fssrepository/myscoutee-components/foundation';
 

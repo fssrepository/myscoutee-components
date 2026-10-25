@@ -33,7 +33,7 @@ export class IndicatorComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() size: IndicatorSize = 'md';
   @Input() state: IndicatorState = 'scrolling';
   @Input() tone: IndicatorTone = 'default';
-  @Input() position = 0;
+  @Input() position: number | undefined;
   @Input() perimeter = 100;
   @Input() durationMs = 3000;
   @Input() autoProgress = true;
@@ -42,15 +42,10 @@ export class IndicatorComponent implements AfterViewInit, OnChanges, OnDestroy {
   protected readonly actionGradientId = `app-indicator-action-gradient-${++indicatorId}`;
   protected readonly actionErrorGradientId = `app-indicator-action-error-gradient-${indicatorId}`;
   protected readonly actionAccentGradientId = `app-indicator-action-accent-gradient-${indicatorId}`;
-  private readonly timedLoadPosition = signal(0);
   protected readonly actionSizeReady = signal(false);
   private readonly actionButtonSize = signal({ width: 104, height: 48 });
-  private timedLoadStartedAtMs = 0;
-  private timedLoadFrameId: number | null = null;
-  private timedLoadTimerId: ReturnType<typeof setTimeout> | null = null;
   private actionButtonResizeObserver: ResizeObserver | null = null;
   private actionButtonMeasureFrameId: number | null = null;
-  private manualPositionInput = false;
 
   @HostBinding('class.app-indicator-host')
   protected readonly hostClass = true;
@@ -137,16 +132,11 @@ export class IndicatorComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.syncActionButtonSizeObserver();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['position']) {
-      this.manualPositionInput = true;
-    }
-    this.syncTimedLoadProgress();
+  ngOnChanges(_changes: SimpleChanges): void {
     this.syncActionButtonSizeObserver();
   }
 
   ngOnDestroy(): void {
-    this.clearTimedLoadProgress();
     this.clearActionButtonSizeObserver();
   }
 
@@ -164,6 +154,10 @@ export class IndicatorComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   protected get isTimedLoadRing(): boolean {
     return this.isLoadRingKind && this.usesTimedLoadProgress();
+  }
+
+  protected get isTimedBar(): boolean {
+    return this.isBarKind && this.usesTimedLoadProgress();
   }
 
   protected get isActionRingKind(): boolean {
@@ -218,9 +212,7 @@ export class IndicatorComponent implements AfterViewInit, OnChanges, OnDestroy {
     if (this.isInactiveState) {
       return 'scaleX(1)';
     }
-    const position = this.usesTimedLoadProgress()
-      ? this.timedLoadPosition()
-      : this.position;
+    const position = this.position ?? 0;
     return `scaleX(${this.clampUnit(position)})`;
   }
 
@@ -228,9 +220,7 @@ export class IndicatorComponent implements AfterViewInit, OnChanges, OnDestroy {
     if (this.isSuccessState) {
       return 0;
     }
-    const position = this.usesTimedLoadProgress()
-      ? this.timedLoadPosition()
-      : this.position;
+    const position = this.position ?? 0;
     return this.resolvedPerimeter * (1 - this.clampUnit(position));
   }
 
@@ -311,49 +301,6 @@ export class IndicatorComponent implements AfterViewInit, OnChanges, OnDestroy {
     return Math.max(0, Math.min(1, numericValue));
   }
 
-  private syncTimedLoadProgress(): void {
-    // Like action-ring, timed load rings use the browser's animation timeline.
-    // Data preparation must not be responsible for advancing each frame.
-    if (!this.usesTimedLoadProgress() || this.isTimedLoadRing) {
-      this.clearTimedLoadProgress();
-      return;
-    }
-    if (this.timedLoadStartedAtMs > 0) {
-      return;
-    }
-    this.timedLoadStartedAtMs = this.nowMs();
-    this.timedLoadPosition.set(0.02);
-    this.scheduleTimedLoadProgress();
-  }
-
-  private updateTimedLoadProgress(): void {
-    this.timedLoadFrameId = null;
-    this.timedLoadTimerId = null;
-    if (!this.usesTimedLoadProgress() || this.timedLoadStartedAtMs <= 0) {
-      this.clearTimedLoadProgress();
-      return;
-    }
-    const elapsedMs = Math.max(0, this.nowMs() - this.timedLoadStartedAtMs);
-    const durationMs = Math.max(1, Math.trunc(Number(this.durationMs) || 0));
-    this.timedLoadPosition.set(Math.min(0.92, elapsedMs / durationMs));
-    this.scheduleTimedLoadProgress();
-  }
-
-  private scheduleTimedLoadProgress(): void {
-    this.clearTimedLoadProgressHandle();
-    if (typeof globalThis.requestAnimationFrame === 'function') {
-      this.timedLoadFrameId = globalThis.requestAnimationFrame(() => this.updateTimedLoadProgress());
-      return;
-    }
-    this.timedLoadTimerId = setTimeout(() => this.updateTimedLoadProgress(), 80);
-  }
-
-  private clearTimedLoadProgress(): void {
-    this.clearTimedLoadProgressHandle();
-    this.timedLoadStartedAtMs = 0;
-    this.timedLoadPosition.set(0);
-  }
-
   private syncActionButtonSizeObserver(): void {
     if (!this.isActionRingKind) {
       this.clearActionButtonSizeObserver();
@@ -410,27 +357,11 @@ export class IndicatorComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.actionButtonMeasureFrameId = null;
   }
 
-  private clearTimedLoadProgressHandle(): void {
-    if (this.timedLoadFrameId !== null && typeof globalThis.cancelAnimationFrame === 'function') {
-      globalThis.cancelAnimationFrame(this.timedLoadFrameId);
-    }
-    if (this.timedLoadTimerId !== null) {
-      clearTimeout(this.timedLoadTimerId);
-    }
-    this.timedLoadFrameId = null;
-    this.timedLoadTimerId = null;
-  }
-
   private usesTimedLoadProgress(): boolean {
     return this.autoProgress
-      && !this.manualPositionInput
+      && this.position === undefined
       && this.isLoadingState
       && (this.isLoadRingKind || this.isBarKind);
   }
 
-  private nowMs(): number {
-    return typeof performance !== 'undefined' && typeof performance.now === 'function'
-      ? performance.now()
-      : Date.now();
-  }
 }
