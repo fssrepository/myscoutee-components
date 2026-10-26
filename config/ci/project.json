@@ -1,0 +1,10 @@
+{
+  "project": "myscoutee-components",
+  "type": "angular-library",
+  "depends_on": [],
+  "variables": {
+    "LAB_GITHUB_REPOSITORY": "fssrepository/myscoutee-components"
+  },
+  "release_notes": "releases/v{version}.md",
+  "release_name": "MyScoutee Components"
+}
